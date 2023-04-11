@@ -29,7 +29,8 @@ BEGIN
                 Read_Data <= (OTHERS => 'X');--read data is don't care
             ELSIF MemRead_en = '1' THEN --read data
                 Read_Data <= memory_data(to_integer(unsigned(Address_Read_Data)));
-
+            ELSE
+                Read_Data <= (OTHERS => 'X');--read data is don't care
             END IF;
         END IF;
     END PROCESS; -- main_loop
