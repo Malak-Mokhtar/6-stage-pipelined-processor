@@ -75,9 +75,9 @@ subb2 when func = "110";
 
 
 result_carry_out <= carry_out1 when func = "001" else
-carry_out2 when func ="010" else
+not carry_out2 when func ="010" else
 carry_out3 when func ="101" else
-carry_out4 when func ="110" else
+not carry_out4 when func ="110" else
 '0';
 
 
