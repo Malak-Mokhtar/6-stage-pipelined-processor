@@ -12,7 +12,7 @@ ENTITY Carry_flag IS
 	clk, rst : IN STD_LOGIC);
 END Carry_flag;
 
-ARCHITECTURE my_carry_flag OF cary_flag IS
+ARCHITECTURE my_carry_flag OF carry_flag IS
    component DFF IS
     PORT (
         d, clk, rst, enable : IN STD_LOGIC;
