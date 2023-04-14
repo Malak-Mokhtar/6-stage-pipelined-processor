@@ -12,7 +12,7 @@ BEGIN
     BEGIN
         IF (rst = '1') THEN
             NF_OUT <= '0';
-        ELSIF clk'event AND clk = '1' AND DE_ALU_en_out = '1' THEN
+        ELSIF falling_edge(clk) AND DE_ALU_en_out = '1' THEN
             NF_OUT <= NF_ALU;
         END IF;
     END PROCESS;
