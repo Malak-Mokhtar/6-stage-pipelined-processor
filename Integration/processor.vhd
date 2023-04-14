@@ -32,6 +32,48 @@ ARCHITECTURE arch OF processor IS
         );
     END COMPONENT;
     --------------------------------------------------------------------
+    -- Decode Stage
+    COMPONENT Decode_Stage IS
+        PORT (
+            --INPUT PORTS    
+            clk, Reg_File_rst : IN STD_LOGIC;
+            FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            FD_Read_Address, FD_IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            -- OUTPUT PORTS
+            IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_en : OUT STD_LOGIC;
+            FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Write_address_RD : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            RegWrite_en : OUT STD_LOGIC;
+            Carry_en : OUT STD_LOGIC;
+            ALU_en : OUT STD_LOGIC;
+            OPCODE : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+            Read_Data1 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Read_Data2 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Mem_to_Reg_en : OUT STD_LOGIC;
+            MemWrite_en : OUT STD_LOGIC;
+            MemRead_en : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
+    -- Decode Execute Register
+    COMPONENT DE_Register IS
+        PORT (
+            clk, en, rst : IN STD_LOGIC;
+            IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en : IN STD_LOGIC;
+            FD_IN_PORT_out, Read_Data1, Read_Data2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+
+            DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : OUT STD_LOGIC;
+            DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            DE_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+
+        );
+    END COMPONENT;
+    --------------------------------------------------------------------
     SIGNAL PC_en : STD_LOGIC := '1';
     SIGNAL FD_en : STD_LOGIC := '1';
     -------------------------------------------------------------
