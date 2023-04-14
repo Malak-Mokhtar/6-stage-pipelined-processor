@@ -6,15 +6,14 @@ use IEEE.std_logic_unsigned.all;
 
 
 Entity ALU is
-	   PORT (DE_Read_Data1_out, DE_Read_Data2_final_out: IN std_logic_vector (15 downto 0); 
+	   PORT (Read_Data1, Read_Data2: IN std_logic_vector (15 downto 0); 
 	         FUNC: IN std_logic_vector (2 downto 0);
-                 ALU_OUT: OUT std_logic_vector (15 downto 0);
-		 ZF_ALU, CF_ALU, NF_ALU: OUT std_logic);
+			 ALU_en: IN std_logic;
+            ALU_OUT: OUT std_logic_vector (15 downto 0);
+		 	ZF_ALU, CF_ALU, NF_ALU: OUT std_logic);
 		 
 
 END ALU;
-
-
 
 
 Architecture my_ALU of ALU is
@@ -35,78 +34,67 @@ component OR_GATE is
            output : out  STD_LOGIC);
 end component;
 		
-	 signal comp: std_logic_vector (15 downto 0);
-	 signal sum, subb,sum2, subb2:  std_logic_vector (15 downto 0);
-	 signal carry_out1, carry_out2,carry_out3, carry_out4, nf: std_logic; 
+	 signal comp, operand2_data: std_logic_vector (15 downto 0);
+	 signal adder_out:  std_logic_vector (15 downto 0);
+	 signal carry_out: std_logic; 
 	 signal result: std_logic_vector (15 downto 0);
-	 signal result_carry_out: std_logic;
+	 signal result_carry_out, operandcin: std_logic;
 	 signal or_result: std_logic;
 BEGIN
 
 
-comp <= not DE_Read_Data2_final_out;
+comp <= not Read_Data2;
 
+-- MUX to choose second operand for FULL ADDER
+operand2_data <= Read_Data2 when func = "000" else -- IADD
+Read_Data2 when func = "001" else -- ADD
+comp when func ="010" else -- SUB
+"0000000000000001" when func ="110" else -- INC
+x"FFFE"; -- DEC 
 
-adder: full_adder port map (DE_Read_Data1_out, DE_Read_Data2_final_out, '0', sum, carry_out1);
-adder2: full_adder port map (DE_Read_Data1_out, comp, '1', subb, carry_out2);
-adder3: full_adder port map (DE_Read_Data1_out, "0000000000000001", '0', sum2, carry_out3);
-adder4: full_adder port map (DE_Read_Data1_out, x"FFFE", '1', subb2, carry_out4);
+-- MUX to choose cin operand for FULL ADDER
+operandcin <= '0' when func = "000" else -- IADD
+'0' when func = "001" else -- ADD
+'1' when func ="010" else -- SUB
+'0' when func ="110" else -- INC
+'1' when func ="111" -- DEC 
+else '0';
+
+adder: full_adder port map (Read_Data1, operand2_data, operandcin, adder_out, carry_out);
+
+-- For zero flag
 ORING: OR_GATE port map (result, or_result);
 
+-- MUX to choose result
+result <= adder_out when func = "000" else -- IADD
+adder_out when func = "001" else -- ADD
+adder_out when func = "010" else -- SUB
+Read_Data1 and Read_Data2 when func = "011" else -- AND
+Read_Data1 OR Read_Data2 when func = "100" else -- OR
+not Read_Data1 when func = "101" else -- NOT
+adder_out when func = "110" else -- INC
+adder_out; -- DEC;
 
 
+result_carry_out <= carry_out when func = "000" else -- IADD
+carry_out when func = "001" else -- ADD
+not carry_out when func ="010" else -- SUB
+carry_out when func ="110" else -- INC
+not carry_out when func ="111" -- DEC 
+else '0';
 
 
-result <= DE_Read_Data1_out when func = "000" else
-sum when func = "001" else
-subb when func = "010" else
-DE_Read_Data1_out and DE_Read_Data2_final_out when func = "011" else
-DE_Read_Data1_out OR DE_Read_Data2_final_out when func = "100" else
-sum2 when func = "101" else
-subb2 when func = "110";
+ALU_OUT <= result when ALU_en = '1' else
+(others => '0');
 
-
-
-
-
-
-
-
-
-
-result_carry_out <= carry_out1 when func = "001" else
-not carry_out2 when func ="010" else
-carry_out3 when func ="101" else
-not carry_out4 when func ="110" else
+ZF_ALU <= not or_result when ALU_en = '1' else
 '0';
 
+CF_ALU <= result_carry_out when ALU_en = '1' else
+'0';
 
-
-
-
-
-
-
-
-
-
-
-ALU_OUT <= result;
-
-
-
-
-
-ZF_ALU <= not or_result;
-CF_ALU <= result_carry_out;
-NF_ALU <= result(15);
-
-
-
-
-											
-														
-
+NF_ALU <= result(15) when ALU_en = '1' else
+'0';
 
 
 
