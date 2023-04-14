@@ -80,7 +80,7 @@ BEGIN
     EM_ALU_Out_out => EM_ALU_Out_out,
 	EM_Write_Addr_out => EM_Write_Addr_out,
 	EM_RegWrite_en_out => EM_RegWrite_en_out,
-    EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out;
+    EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
 	MM_IN_en_out => MM_IN_en,
 	MM_IN_PORT_out => MM_IN_PORT,
     MM_ALU_Out_out => MM_ALU_Out,

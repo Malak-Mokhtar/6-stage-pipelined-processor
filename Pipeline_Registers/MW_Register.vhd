@@ -28,7 +28,7 @@ BEGIN
             MW_ALU_Out_out <= (OTHERS => '0');
             MW_Read_Data_out <= (OTHERS => '0');
             MW_Write_Addr_out <= (OTHERS => '0');
-            MW_Mem_to_Reg_en_out <= (OTHERS => '0');
+            MW_Mem_to_Reg_en_out <= '0';
             
         ELSIF falling_edge(clk) AND en = '1' THEN --check on enable and falling edge
             MW_IN_en_out <= MM_IN_en_out;
