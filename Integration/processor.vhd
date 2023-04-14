@@ -124,6 +124,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL PC_en : STD_LOGIC := '1';
     SIGNAL FD_en : STD_LOGIC := '1';
     SIGNAL DE_en : STD_LOGIC := '1';
+    SIGNAL EM_en : STD_LOGIC := '1';
     -------------------------------------------------------------
     --Fetch Stage
     SIGNAL Inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -164,7 +165,7 @@ ARCHITECTURE arch OF processor IS
 
     --EM Register
 
-    --OUTPUTS
+    --INPUTS
 
     SIGNAL DE_IN_en : STD_LOGIC;
     SIGNAL DE_Mem_to_Reg_en : STD_LOGIC;
@@ -176,6 +177,18 @@ ARCHITECTURE arch OF processor IS
     SIGNAL ALU_Out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DE_Read_Data1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DE_Read_Data2 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+    --OUTPUTS
+    SIGNAL EM_IN_en_out : STD_LOGIC;
+    SIGNAL EM_RegWrite_en_out : STD_LOGIC;
+    SIGNAL EM_Mem_to_Reg_en_out : STD_LOGIC;
+    SIGNAL EM_MemWrite_en_out : STD_LOGIC;
+    SIGNAL EM_MemRead_en_out : STD_LOGIC;
+    SIGNAL EM_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Read_Data1_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Read_Data2_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
 BEGIN
 
@@ -298,6 +311,34 @@ BEGIN
         ALU_Out => ALU_Out,
         DE_Read_Data1 => DE_Read_Data1,
         DE_Read_Data2 => DE_Read_Data2
+    );
+    Internal_EM_Register : EM_Register PORT MAP(
+        --INPUT PORTS
+        clk => clk,
+        en => EM_en,
+        rst => rst,
+        DE_IN_en_out => DE_IN_en,
+        DE_RegWrite_en_out => DE_RegWrite_en,
+        DE_Mem_to_Reg_en_out => DE_Mem_to_Reg_en,
+        DE_MemWrite_en_out => DE_MemWrite_en,
+        DE_MemRead_en_out => DE_MemRead_en,
+        DE_IN_PORT_out => DE_IN_PORT_out,
+        ALU_Out => ALU_Out,
+        DE_Read_Data1_out => DE_Read_Data1,
+        DE_Read_Data2_out => DE_Read_Data2,
+        DE_Write_Addr_out => DE_Write_Addr,
+
+        --OUTPUTS
+        EM_IN_en_out => EM_IN_en_out,
+        EM_RegWrite_en_out => EM_RegWrite_en_out,
+        EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
+        EM_MemWrite_en_out => EM_MemWrite_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
+        EM_IN_PORT_out => EM_IN_PORT_out,
+        EM_ALU_Out_out => EM_ALU_Out_out,
+        EM_Read_Data1_out => EM_Read_Data1_out,
+        EM_Read_Data2_out => EM_Read_Data2_out,
+        EM_Write_Addr_out => EM_Write_Addr_out
     );
 
 END ARCHITECTURE;
