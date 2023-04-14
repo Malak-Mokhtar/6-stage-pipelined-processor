@@ -27,11 +27,9 @@ BEGIN
 
             register_data(to_integer(unsigned((Write_Addesss)))) <= Write_Data;
 
-        ELSIF falling_edge(clk) THEN
-            Read_Data1 <= register_data(to_integer(unsigned((Read_Address1))));
-            Read_Data2 <= register_data(to_integer(unsigned((Read_Address2))));
-
         END IF;
     END PROCESS; -- main_loop
 
+    Read_Data1 <= register_data(to_integer(unsigned((Read_Address1))));
+    Read_Data2 <= register_data(to_integer(unsigned((Read_Address2))));
 END ARCHITECTURE;

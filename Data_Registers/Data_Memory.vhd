@@ -21,7 +21,7 @@ BEGIN
     BEGIN
         --async reset
         IF Rst = '1' THEN
-            memory_data <= (OTHERS => (OTHERS => '0'));
+            memory_data <= (OTHERS => (OTHERS => '-'));
 
         ELSIF rising_edge(clk) THEN
             IF MemWrite_en = '1' THEN --write data
