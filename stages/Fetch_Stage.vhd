@@ -6,13 +6,14 @@ ENTITY Fetch_Stage IS
     PORT (
         clk, pc_rst, pc_en : IN STD_LOGIC;
         IN_PC : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END Fetch_Stage;
 
 ARCHITECTURE arch OF Fetch_Stage IS
 
-    SIGNAL Read_Address : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Internal_Read_Address : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
     --PC component
     COMPONENT PC IS
@@ -39,11 +40,12 @@ BEGIN
         rst => pc_rst,
         en => pc_en,
         IN_PC => IN_PC,
-        Read_Address => Read_Address
+        Read_Address => Internal_Read_Address
     );
     Internal_Instruction_Memory : Instruction_Memory PORT MAP(
-        Read_Address => Read_Address,
+        Read_Address => Internal_Read_Address,
         Inst => Inst
     );
+    Read_Address <= Internal_Read_Address;
 
 END ARCHITECTURE;
