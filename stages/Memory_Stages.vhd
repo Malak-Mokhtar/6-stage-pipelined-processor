@@ -19,7 +19,8 @@ ENTITY Memory_Stages IS
 
         -- OUTPUT PORTS
         MM_IN_en,
-        MM_RegWrite_en : OUT STD_LOGIC;
+        MM_RegWrite_en,
+        MM_Mem_to_Reg_en : OUT STD_LOGIC;
         MM_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         MM_IN_PORT,
         MM_ALU_Out,
@@ -79,12 +80,13 @@ BEGIN
     EM_ALU_Out_out => EM_ALU_Out_out,
 	EM_Write_Addr_out => EM_Write_Addr_out,
 	EM_RegWrite_en_out => EM_RegWrite_en_out,
-    EM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en_out;
+    EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out;
 	MM_IN_en_out => MM_IN_en,
 	MM_IN_PORT_out => MM_IN_PORT,
     MM_ALU_Out_out => MM_ALU_Out,
 	MM_Write_Addr_out => MM_Write_Addr,
-    MM_RegWrite_en_out => MM_RegWrite_en 
+    MM_RegWrite_en_out => MM_RegWrite_en,
+    MM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en
     );
 
 END ARCHITECTURE;
