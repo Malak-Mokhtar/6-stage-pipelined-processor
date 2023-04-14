@@ -38,7 +38,6 @@ BEGIN
 	    MM_Write_Addr_out <= EM_Write_Addr_out;
 	    MM_RegWrite_en_out <= EM_RegWrite_en_out;
         MM_Mem_to_Reg_en_out <= EM_Mem_to_Reg_en_out;
-            
         END IF;
     END PROCESS; -- main_loop
 

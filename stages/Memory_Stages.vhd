@@ -46,12 +46,12 @@ ARCHITECTURE arch OF Memory_Stages IS
         EM_IN_en_out : IN STD_LOGIC;
 	EM_IN_PORT_out, EM_ALU_Out_out: IN STD_LOGIC_vector (15 DOWNTO 0);
 	EM_Write_Addr_out: IN STD_LOGIC_vector (2 downto 0);
-	EM_RegWrite_en_out: IN std_logic;
+	EM_RegWrite_en_out, EM_Mem_to_Reg_en_out: IN std_logic;
 
 	MM_IN_en_out: OUT std_logic;
 	MM_IN_PORT_out, MM_ALU_Out_out: OUT std_logic_vector (15 downto 0);
 	MM_Write_Addr_out: OUT std_logic_vector (2 downto 0);
-        MM_RegWrite_en_out: OUT std_logic
+    MM_RegWrite_en_out, MM_Mem_to_Reg_en_out: OUT std_logic
     );
     END COMPONENT;
 
@@ -79,6 +79,7 @@ BEGIN
     EM_ALU_Out_out => EM_ALU_Out_out,
 	EM_Write_Addr_out => EM_Write_Addr_out,
 	EM_RegWrite_en_out => EM_RegWrite_en_out,
+    EM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en_out;
 	MM_IN_en_out => MM_IN_en,
 	MM_IN_PORT_out => MM_IN_PORT,
     MM_ALU_Out_out => MM_ALU_Out,
