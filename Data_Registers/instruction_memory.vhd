@@ -15,9 +15,9 @@ END IC;
 
 ARCHITECTURE arch OF IC IS
 
-    TYPE IC_type IS ARRAY (0 TO 1024) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
+    TYPE IC_type IS ARRAY (0 TO 65535) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
 
-    SIGNAL instruction_cache : IC_type; -- 1024 by 32 bit array
+    SIGNAL instruction_cache : IC_type; -- 65535 by 32 bit array
 
 BEGIN
     --getting the address of 16 bits and the one near it
