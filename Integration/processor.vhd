@@ -73,6 +73,53 @@ ARCHITECTURE arch OF processor IS
 
         );
     END COMPONENT;
+
+    ----------------------------------------------------------------------
+    --Execute Stage 
+    COMPONENT Execute_Stage IS
+        PORT (
+            --INPUT PORTS    
+            clk, Reg_File_rst, general_rst : IN STD_LOGIC;
+            DE_IN_en_out,
+            DE_RegWrite_en_out,
+            DE_Carry_en_out,
+            DE_ALU_en_out,
+            DE_Mem_to_Reg_en_out,
+            DE_MemWrite_en_out,
+            DE_MemRead_en_out : IN STD_LOGIC;
+            DE_IN_PORT_out,
+            DE_Read_Data1_out,
+            DE_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            DE_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+
+            -- OUTPUT PORTS
+            DE_IN_en,
+            DE_Mem_to_Reg_en,
+            DE_RegWrite_en,
+            DE_MemWrite_en,
+            DE_MemRead_en : OUT STD_LOGIC;
+            DE_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            DE_IN_PORT,
+            ALU_Out,
+            DE_Read_Data1,
+            DE_Read_Data2 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+
+        );
+    END COMPONENT;
+
+    --EM Register
+    COMPONENT EM_Register IS
+        PORT (
+            clk, en, rst, DE_IN_en_out, DE_RegWrite_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : IN STD_LOGIC;
+            DE_IN_PORT_out, ALU_Out, DE_Read_Data1_out, DE_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            DE_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
+            EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            EM_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        );
+    END COMPONENT;
     --------------------------------------------------------------------
     SIGNAL PC_en : STD_LOGIC := '1';
     SIGNAL FD_en : STD_LOGIC := '1';
@@ -114,6 +161,22 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_Read_Data2_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DE_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DE_OPCODE_out : STD_LOGIC_VECTOR(4 DOWNTO 0);
+
+    --EM Register
+
+    --OUTPUTS
+
+    SIGNAL DE_IN_en : STD_LOGIC;
+    SIGNAL DE_Mem_to_Reg_en : STD_LOGIC;
+    SIGNAL DE_RegWrite_en : STD_LOGIC;
+    SIGNAL DE_MemWrite_en : STD_LOGIC;
+    SIGNAL DE_MemRead_en : STD_LOGIC;
+    SIGNAL DE_Write_Addr : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL DE_IN_PORT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL ALU_Out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_Read_Data1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_Read_Data2 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
 BEGIN
 
     --Fetch Stage
@@ -143,7 +206,7 @@ BEGIN
         FD_IN_PORT_out => FD_IN_PORT_out
 
     );
-
+    --------------------------------------------------------
     --Decode Stage
     Internal_Decode_Stage : Decode_Stage PORT MAP(
         --INPUT PORTS
@@ -168,6 +231,7 @@ BEGIN
         MemWrite_en => MemWrite_en,
         MemRead_en => MemRead_en
     );
+    --DE Register
     Internal_DE_Register : DE_Register PORT MAP(
         clk => clk,
         en => DE_en,
@@ -201,6 +265,39 @@ BEGIN
         DE_Write_Addr_out => DE_Write_Addr_out,
         DE_OPCODE_out => DE_OPCODE_out
 
+    );
+
+    ---------------------------------------------------------
+    --Execute Stage
+    Internal_Execute_Stage : Execute_Stage PORT MAP(
+
+        --INPUT PORTS
+        clk => clk,
+        Reg_File_rst => rst, -- TODO configure resets
+        general_rst => rst,
+        DE_IN_en_out => DE_IN_en_out,
+        DE_RegWrite_en_out => DE_RegWrite_en_out,
+        DE_Carry_en_out => DE_Carry_en_out,
+        DE_ALU_en_out => DE_ALU_en_out,
+        DE_Mem_to_Reg_en_out => DE_Mem_to_Reg_en_out,
+        DE_MemWrite_en_out => DE_MemWrite_en_out,
+        DE_MemRead_en_out => DE_MemRead_en_out,
+        DE_IN_PORT_out => DE_IN_PORT_out,
+        DE_Read_Data1_out => DE_Read_Data1_out,
+        DE_Read_Data2_out => DE_Read_Data2_out,
+        DE_Write_Addr_out => DE_Write_Addr_out,
+        DE_OPCODE_out => DE_OPCODE_out,
+        -- OUTPUT PORTS
+        DE_IN_en => DE_IN_en,
+        DE_Mem_to_Reg_en => DE_Mem_to_Reg_en,
+        DE_RegWrite_en => DE_RegWrite_en,
+        DE_MemWrite_en => DE_MemWrite_en,
+        DE_MemRead_en => DE_MemRead_en,
+        DE_Write_Addr => DE_Write_Addr,
+        DE_IN_PORT => DE_IN_PORT,
+        ALU_Out => ALU_Out,
+        DE_Read_Data1 => DE_Read_Data1,
+        DE_Read_Data2 => DE_Read_Data2
     );
 
 END ARCHITECTURE;
