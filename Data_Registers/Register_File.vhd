@@ -30,6 +30,7 @@ BEGIN
         END IF;
     END PROCESS; -- main_loop
 
+    -- ask if it needs to be synchronized
     Read_Data1 <= register_data(to_integer(unsigned((Read_Address1))));
     Read_Data2 <= register_data(to_integer(unsigned((Read_Address2))));
 END ARCHITECTURE;
