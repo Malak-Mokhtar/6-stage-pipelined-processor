@@ -76,6 +76,7 @@ ARCHITECTURE arch OF processor IS
     --------------------------------------------------------------------
     SIGNAL PC_en : STD_LOGIC := '1';
     SIGNAL FD_en : STD_LOGIC := '1';
+    SIGNAL DE_en : STD_LOGIC := '1';
     -------------------------------------------------------------
     --Fetch Stage
     SIGNAL Inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -84,7 +85,20 @@ ARCHITECTURE arch OF processor IS
     SIGNAL FD_Inst_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL FD_Read_Address_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FD_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
-
+    --DE Register
+    SIGNAL IN_PC : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL IN_en : STD_LOGIC;
+    SIGNAL FD_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Write_address_RD : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL RegWrite_en : STD_LOGIC;
+    SIGNAL Carry_en : STD_LOGIC;
+    SIGNAL ALU_en : STD_LOGIC;
+    SIGNAL OPCODE : STD_LOGIC_VECTOR(4 DOWNTO 0);
+    SIGNAL Read_Data1 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Read_Data2 : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Mem_to_Reg_en : STD_LOGIC;
+    SIGNAL MemWrite_en : STD_LOGIC;
+    SIGNAL MemRead_en : STD_LOGIC;
 BEGIN
 
     --Fetch Stage
@@ -114,4 +128,30 @@ BEGIN
         FD_IN_PORT_out => FD_IN_PORT_out
 
     );
+
+    --Decode Stage
+    Internal_Decode_Stage : Decode_Stage PORT MAP(
+        --INPUT PORTS
+        clk => clk,
+        Reg_File_rst => rst,
+        FD_Inst => FD_Inst_out,
+        FD_Read_Address => FD_Read_Address_out,
+        FD_IN_PORT => FD_IN_PORT_out,
+        MW_write_Data => "1111000000001111", --TODO add future MW Data
+        --OUTPUT PORTS
+        IN_PC => IN_PC,
+        IN_en => IN_en,
+        FD_IN_PORT_out => FD_IN_PORT_out,
+        Write_address_RD => Write_address_RD,
+        RegWrite_en => RegWrite_en,
+        Carry_en => Carry_en,
+        ALU_en => ALU_en,
+        OPCODE => OPCODE,
+        Read_Data1 => Read_Data1,
+        Read_Data2 => Read_Data2,
+        Mem_to_Reg_en => Mem_to_Reg_en,
+        MemWrite_en => MemWrite_en,
+        MemRead_en => MemRead_en
+    );
+
 END ARCHITECTURE;
