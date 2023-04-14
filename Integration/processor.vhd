@@ -88,7 +88,7 @@ ARCHITECTURE arch OF processor IS
     --DE Register
     SIGNAL IN_PC : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL IN_en : STD_LOGIC;
-    SIGNAL FD_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Write_address_RD : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL RegWrite_en : STD_LOGIC;
     SIGNAL Carry_en : STD_LOGIC;
@@ -141,7 +141,7 @@ BEGIN
         --OUTPUT PORTS
         IN_PC => IN_PC,
         IN_en => IN_en,
-        FD_IN_PORT_out => FD_IN_PORT_out,
+        FD_IN_PORT_out => DE_IN_PORT_out,
         Write_address_RD => Write_address_RD,
         RegWrite_en => RegWrite_en,
         Carry_en => Carry_en,
