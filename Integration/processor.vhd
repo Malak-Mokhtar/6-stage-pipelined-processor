@@ -121,6 +121,46 @@ ARCHITECTURE arch OF processor IS
         );
     END COMPONENT;
     --------------------------------------------------------------------
+    --Memory Stage
+    COMPONENT Memory_Stages IS
+        PORT (
+            --INPUT PORTS    
+            clk, general_rst : IN STD_LOGIC;
+            EM_IN_en_out,
+            EM_RegWrite_en_out,
+            EM_Mem_to_Reg_en_out,
+            EM_MemWrite_en_out,
+            EM_MemRead_en_out : IN STD_LOGIC;
+            EM_IN_PORT_out,
+            EM_ALU_Out_out,
+            EM_Read_Data1_out,
+            EM_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            -- OUTPUT PORTS
+            MM_IN_en,
+            MM_RegWrite_en : OUT STD_LOGIC;
+            MM_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            MM_IN_PORT,
+            MM_ALU_Out,
+            Read_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+
+        );
+    END COMPONENT;
+
+    --MW Register
+    COMPONENT MW_Register IS
+        PORT (
+            clk, en, rst, MM_IN_en_out, MM_RegWrite_en_out : IN STD_LOGIC;
+            MM_IN_PORT_out, MM_ALU_Out_out, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            MW_IN_en_out, MW_RegWrite_en_out : OUT STD_LOGIC;
+            MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        );
+    END COMPONENT;
+    --------------------------------------------------------------------
     SIGNAL PC_en : STD_LOGIC := '1';
     SIGNAL FD_en : STD_LOGIC := '1';
     SIGNAL DE_en : STD_LOGIC := '1';
