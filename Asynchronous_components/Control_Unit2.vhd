@@ -24,8 +24,8 @@ END my_Control_Unit;
 
 
 
---------------------------------------------REFERENCES--------------------------------------------------------------
+-----------------------------------------------REFERENCES--------------------------------------------------------------
 
---  1- https://www.ilovefreesoftware.com/25/windows/free-truth-table-to-logic-circuit-converter-software-windows.html
+--  1-  https://www.ilovefreesoftware.com/25/windows/free-truth-table-to-logic-circuit-converter-software-windows.html
 
 --  2 - https://imgur.com/a/24k0Zsk
