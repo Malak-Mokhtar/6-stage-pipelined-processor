@@ -107,4 +107,17 @@ BEGIN
         NF_OUT => open
     );
 
+    --Remaining Output Signals
+    DE_IN_en <= DE_IN_en_out;
+    DE_Mem_to_Reg_en <= DE_RegWrite_en_out;
+    DE_RegWrite_en <= DE_RegWrite_en_out;
+    RegWrite_en <= Internal_Reg_Write_en;
+    DE_MemWrite_en <= DE_MemWrite_en_out;
+    DE_MemRead_en <= DE_MemRead_en_out;
+    DE_Write_Addr <= DE_Write_Addr_out;
+    DE_IN_PORT <= DE_IN_PORT_out;
+    DE_Read_Data1 <= DE_Read_Data1_out;
+    DE_Read_Data2 <= DE_Read_Data2_out;
+
+
 END ARCHITECTURE;
