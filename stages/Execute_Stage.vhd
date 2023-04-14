@@ -111,7 +111,6 @@ BEGIN
     DE_IN_en <= DE_IN_en_out;
     DE_Mem_to_Reg_en <= DE_RegWrite_en_out;
     DE_RegWrite_en <= DE_RegWrite_en_out;
-    RegWrite_en <= Internal_Reg_Write_en;
     DE_MemWrite_en <= DE_MemWrite_en_out;
     DE_MemRead_en <= DE_MemRead_en_out;
     DE_Write_Addr <= DE_Write_Addr_out;
