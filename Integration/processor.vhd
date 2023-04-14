@@ -106,7 +106,7 @@ BEGIN
         clk => clk,
         pc_rst => rst,
         pc_en => PC_en, --TODO: add an input to pc_en
-        IN_PC => "0000000000000101",
+        IN_PC => IN_PC,
         Read_Address => Read_Address,
         Inst => Inst
 
