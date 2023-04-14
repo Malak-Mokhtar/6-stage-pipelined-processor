@@ -4,16 +4,16 @@ USE IEEE.std_logic_1164.ALL;
 
 USE IEEE.numeric_std.ALL;
 
-ENTITY IC IS
+ENTITY Instruction_Memory IS
     PORT (
         -- clk: IN STD_LOGIC;
         Read_Address : IN STD_LOGIC_VECTOR(15 DOWNTO 0); --input read address
 
         Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
-END IC;
+END Instruction_Memory;
 
-ARCHITECTURE arch OF IC IS
+ARCHITECTURE arch OF Instruction_Memory IS
 
     TYPE IC_type IS ARRAY (0 TO 65535) OF STD_LOGIC_VECTOR(15 DOWNTO 0);
 
