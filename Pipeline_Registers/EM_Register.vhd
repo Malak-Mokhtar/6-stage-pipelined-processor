@@ -2,7 +2,7 @@ LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
 
-ENTITY ED_Register IS
+ENTITY EM_Register IS
     PORT (
         clk, en, rst, DE_IN_en_out, DE_RegWrite_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : IN STD_LOGIC;
         DE_IN_PORT_out, ALU_Out, DE_Read_Data1_out, DE_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -12,9 +12,9 @@ ENTITY ED_Register IS
         EM_IN_PORT_out, EM_ALU_Out_out,EM_Read_Data1_out,EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         EM_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 downto 0)
     );
-END ED_Register;
+END EM_Register;
 
-ARCHITECTURE arch OF ED_Register IS
+ARCHITECTURE arch OF EM_Register IS
 
 BEGIN
     main_loop : PROCESS (clk, rst)
