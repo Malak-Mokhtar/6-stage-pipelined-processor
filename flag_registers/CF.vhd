@@ -12,7 +12,7 @@ BEGIN
     BEGIN
         IF (rst = '1') THEN
             CF_OUT <= '0';
-        ELSIF falling_edge(clk) AND DE_Carry_en_out = '1' THEN
+        ELSIF rising_edge(clk) AND DE_Carry_en_out = '1' THEN
             CF_OUT <= CF_ALU;
         END IF;
     END PROCESS;
