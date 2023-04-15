@@ -23,11 +23,11 @@ BEGIN
 
     variable counter: integer := 0;
     variable Address_var, Write_Data_var: STD_LOGIC_VECTOR(15 DOWNTO 0);
-    variable Rst_var, MemWrite_en_var, MemRead_en_var: STD_LOGIC := '0';
+    variable MemWrite_en_var, MemRead_en_var: STD_LOGIC := '0';
 
     BEGIN
         --async reset
-        IF Rst_var = '1' THEN
+        IF Rst = '1' THEN
             memory_data <= (OTHERS => (OTHERS => '0'));
 
         ELSIF falling_edge(clk) and counter = 2 THEN
@@ -44,7 +44,6 @@ BEGIN
             counter := counter + 1;
             Address_var:=Address;
             Write_Data_var:=Write_Data;
-            Rst_var:=Rst;
             MemWrite_en_var:=MemWrite_en;
             MemRead_en_var:=MemRead_en;
         ELSIF falling_edge(clk) and counter = 1 THEN
