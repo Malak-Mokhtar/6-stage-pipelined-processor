@@ -139,7 +139,8 @@ ARCHITECTURE arch OF processor IS
 
             -- OUTPUT PORTS
             MM_IN_en,
-            MM_RegWrite_en : OUT STD_LOGIC;
+            MM_RegWrite_en,
+            MM_Mem_to_Reg_en : OUT STD_LOGIC;
             MM_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             MM_IN_PORT,
             MM_ALU_Out,
@@ -151,11 +152,11 @@ ARCHITECTURE arch OF processor IS
     --MW Register
     COMPONENT MW_Register IS
         PORT (
-            clk, en, rst, MM_IN_en_out, MM_RegWrite_en_out : IN STD_LOGIC;
+            clk, en, rst, MM_IN_en_out, MM_RegWrite_en_out, MM_Mem_to_Reg_en_out : IN STD_LOGIC;
             MM_IN_PORT_out, MM_ALU_Out_out, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             MM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
 
-            MW_IN_en_out, MW_RegWrite_en_out : OUT STD_LOGIC;
+            MW_IN_en_out, MW_RegWrite_en_out, MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
             MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
         );
@@ -165,6 +166,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL FD_en : STD_LOGIC := '1';
     SIGNAL DE_en : STD_LOGIC := '1';
     SIGNAL EM_en : STD_LOGIC := '1';
+    SIGNAL MW_en : STD_LOGIC := '1';
     -------------------------------------------------------------
     --Fetch Stage
     SIGNAL Inst : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -230,6 +232,23 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_Read_Data2_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL EM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
+    --MW Register
+    --INPUT PORTS
+    SIGNAL MM_IN_en : STD_LOGIC;
+    SIGNAL MM_RegWrite_en : STD_LOGIC;
+    SIGNAL MM_Mem_to_Reg_en : STD_LOGIC;
+    SIGNAL MM_Write_Addr : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL MM_IN_PORT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MM_ALU_Out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Read_Data : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    --OUTPUT PORTS
+    SIGNAL MW_IN_en_out : STD_LOGIC;
+    SIGNAL MW_RegWrite_en_out : STD_LOGIC;
+    SIGNAL MW_Mem_to_Reg_en_out : STD_LOGIC;
+    SIGNAL MW_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_Read_Data_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
 BEGIN
 
     --Fetch Stage
@@ -379,6 +398,55 @@ BEGIN
         EM_Read_Data1_out => EM_Read_Data1_out,
         EM_Read_Data2_out => EM_Read_Data2_out,
         EM_Write_Addr_out => EM_Write_Addr_out
+    );
+    ------------------------------------------------
+    --Memory Stage
+    Internal_Memory_Stages : Memory_Stages PORT MAP(
+        --INPUT PORTS    
+        clk => clk,
+        general_rst => rst,
+        EM_IN_en_out => EM_IN_en_out,
+        EM_RegWrite_en_out => EM_RegWrite_en_out,
+        EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
+        EM_MemWrite_en_out => EM_MemWrite_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
+        EM_IN_PORT_out => EM_IN_PORT_out,
+        EM_ALU_Out_out => EM_ALU_Out_out,
+        EM_Read_Data1_out => EM_Read_Data1_out,
+        EM_Read_Data2_out => EM_Read_Data2_out,
+        EM_Write_Addr_out => EM_Write_Addr_out,
+
+        -- OUTPUT PORTS
+        MM_IN_en => MM_IN_en,
+        MM_RegWrite_en => MM_RegWrite_en,
+        MM_Mem_to_Reg_en => MM_Mem_to_Reg_en,
+        MM_Write_Addr => MM_Write_Addr,
+        MM_IN_PORT => MM_IN_PORT,
+        MM_ALU_Out => MM_ALU_Out,
+        Read_Data => Read_Data
+
+    );
+    Internal_MW_Register : MW_Register PORT MAP(
+
+        --INPUT PORTS
+        clk => clk,
+        en => MW_en,
+        rst => rst,
+        MM_IN_en_out => MM_IN_en,
+        MM_RegWrite_en_out => MM_RegWrite_en,
+        MM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en,
+        MM_IN_PORT_out => MM_IN_PORT,
+        MM_ALU_Out_out => MM_ALU_Out,
+        Read_Data => Read_Data,
+        MM_Write_Addr_out => MM_Write_Addr,
+        --OUTPUT PORTS
+        MW_IN_en_out => MW_IN_en_out,
+        MW_RegWrite_en_out => MW_RegWrite_en_out,
+        MW_Mem_to_Reg_en_out => MW_Mem_to_Reg_en_out,
+        MW_IN_PORT_out => MW_IN_PORT_out,
+        MW_ALU_Out_out => MW_ALU_Out_out,
+        MW_Read_Data_out => MW_Read_Data_out,
+        MW_Write_Addr_out => MW_Write_Addr_out
     );
 
 END ARCHITECTURE;
