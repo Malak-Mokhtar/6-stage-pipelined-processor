@@ -328,8 +328,8 @@ BEGIN
         Read_Data1 => Read_Data1,
         Read_Data2 => Read_Data2,
         Mem_to_Reg_en => Mem_to_Reg_en,
-        -- MemWrite_en => MemWrite_en,
-        MemWrite_en => MW_RegWrite_en,
+        MemWrite_en => MemWrite_en,
+        -- MemWrite_en => MW_RegWrite_en,
 
         MemRead_en => MemRead_en
     );
