@@ -9,6 +9,8 @@ ENTITY Decode_Stage IS
         FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FD_Read_Address, FD_IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        MW_RegWrite_en : IN STD_LOGIC;
         -- OUTPUT PORTS
         IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         IN_en : OUT STD_LOGIC;
@@ -55,7 +57,7 @@ ARCHITECTURE arch OF Decode_Stage IS
     END COMPONENT;
 
     -------------------SIGNALS----------------
-    SIGNAL Internal_Reg_Write_en : STD_LOGIC;
+    SIGNAL Internal_Reg_Write_en_Control_Unit : STD_LOGIC;
 
 BEGIN
 
@@ -71,7 +73,7 @@ BEGIN
         IN_en => IN_en,
         Carry_en => Carry_en,
         ALU_en => ALU_en,
-        RegWrite_en => Internal_Reg_Write_en,
+        RegWrite_en => Internal_Reg_Write_en_Control_Unit,
         Mem_to_Reg_en => Mem_to_Reg_en,
         MemWrite_en => MemWrite_en,
         MemRead_en => MemRead_en
@@ -82,10 +84,10 @@ BEGIN
     Internal_Register_File : Reg_file PORT MAP(
         clk => clk,
         rst => Reg_File_rst,
-        write_en => Internal_Reg_Write_en,
+        write_en => MW_RegWrite_en,
         Read_Address1 => FD_Inst(26 DOWNTO 24),
         Read_Address2 => FD_Inst(23 DOWNTO 21),
-        Write_Addesss => FD_Inst(20 DOWNTO 18),
+        Write_Addesss => MW_Write_Address,
         Write_Data => MW_Write_Data,
         Read_Data1 => Read_Data1,
         Read_Data2 => Read_Data2
@@ -96,5 +98,5 @@ BEGIN
     OPCODE <= FD_Inst(31 DOWNTO 27);
     FD_IN_PORT_out <= FD_IN_PORT;
     Write_address_RD <= FD_Inst(20 DOWNTO 18);
-    RegWrite_en <= Internal_Reg_Write_en;
+    RegWrite_en <= Internal_Reg_Write_en_Control_Unit;
 END ARCHITECTURE;
