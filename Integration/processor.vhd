@@ -194,6 +194,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL FD_Inst_out : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL FD_Read_Address_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL FD_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL FD_IN_PORT_out_from_Decode_Stage : STD_LOGIC_VECTOR(15 DOWNTO 0);
     --DE Register
 
     --INPUTS
@@ -268,7 +269,6 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Read_Data_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
-    SIGNAL FD_IN_PORT_out_from_Decode_Stage : STD_LOGIC_VECTOR(15 DOWNTO 0);
     --------------------------------------------------------
     --WB Stage
 
