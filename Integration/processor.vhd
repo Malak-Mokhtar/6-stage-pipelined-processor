@@ -40,6 +40,8 @@ ARCHITECTURE arch OF processor IS
             FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
             FD_Read_Address, FD_IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            MW_RegWrite_en : IN STD_LOGIC;
             -- OUTPUT PORTS
             IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             IN_en : OUT STD_LOGIC;
@@ -310,12 +312,15 @@ BEGIN
         FD_Read_Address => FD_Read_Address_out,
         FD_IN_PORT => FD_IN_PORT_out,
         MW_write_Data => Write_Data, --TODO add future MW Data *DONE*
+        MW_Write_Data => Write_Data,
+        MW_Write_Address => MW_Write_Addr,
+        MW_RegWrite_en => MW_RegWrite_en,
         --OUTPUT PORTS
         IN_PC => IN_PC,
         IN_en => IN_en,
         FD_IN_PORT_out => DE_IN_PORT_out,
         -- Write_address_RD => MW_Write_Addr,
-        Write_address_RD => MW_Write_Addr,
+        Write_address_RD => Write_address_RD,
         RegWrite_en => RegWrite_en,
         Carry_en => Carry_en,
         ALU_en => ALU_en,
