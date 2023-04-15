@@ -268,6 +268,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Read_Data_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SINGNAL FD_IN_PORT_out_from_Decode_Stage : STD_LOGIC_VECTOR(15 DOWNTO 0);
     --------------------------------------------------------
     --WB Stage
 
@@ -319,7 +320,7 @@ BEGIN
         --OUTPUT PORTS
         IN_PC => IN_PC,
         IN_en => IN_en,
-        FD_IN_PORT_out => DE_IN_PORT_out,
+        FD_IN_PORT_out => FD_IN_PORT_out_from_Decode_Stage,
         -- Write_address_RD => MW_Write_Addr,
         Write_address_RD => Write_address_RD,
         RegWrite_en => RegWrite_en,
@@ -342,7 +343,7 @@ BEGIN
 
         --INPUT PORTS
         IN_en => IN_en,
-        FD_IN_PORT_out => DE_IN_PORT_out,
+        FD_IN_PORT_out => FD_IN_PORT_out_from_Decode_Stage,
         Inst_20_to_18_Write_Addrs => Write_address_RD,
         RegWrite_en => RegWrite_en,
         Carry_en => Carry_en,
