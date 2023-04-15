@@ -33,7 +33,7 @@ BEGIN
        Read_Data => MW_Read_Data_out,
        ALU_out=> MW_ALU_Out_out,
        IN_PORT => MW_IN_PORT_out,
-       Mem_to_Reg_en=> MW_RegWrite_en_out, 
+       Mem_to_Reg_en=> MW_Mem_to_Reg_en_out, 
        IN_en => MW_IN_en_out,
        Write_Data=> Write_Data -- Forwarded back to register file
     );
