@@ -6,11 +6,15 @@ ENTITY WriteBack_Stage IS
     PORT (
         clk, general_rst : IN STD_LOGIC;
         MW_IN_en_out,
-        MW_RegWrite_en_out : IN STD_LOGIC;
+        MW_RegWrite_en_out,
+        MW_Mem_to_Reg_en_out : IN STD_LOGIC;
         MW_IN_PORT_out,
         MW_ALU_Out_out,
         MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MW_Write_Addr_out  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        Write_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MW_RegWrite_en : OUT STD_LOGIC;
+        MW_Write_Addr  : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) 
     );
 END WriteBack_Stage;
 
@@ -29,9 +33,11 @@ BEGIN
        Read_Data => MW_Read_Data_out,
        ALU_out=> MW_ALU_Out_out,
        IN_PORT => MW_IN_PORT_out,
-       Mem_to_Reg_en=> open, 
-       IN_en => MW_IN_PORT_out,
-       Write_Data=> open
+       Mem_to_Reg_en=> MW_RegWrite_en_out, 
+       IN_en => MW_IN_en_out,
+       Write_Data=> Write_Data -- Forwarded back to register file
     );
 
+    MW_RegWrite_en <= MW_RegWrite_en_out;
+    MW_Write_Addr <= MW_Write_Addr_out;
 END ARCHITECTURE;
