@@ -2,10 +2,7 @@
 // instance=/processor/Internal_Fetch_Stage/Internal_Instruction_Memory/instruction_cache
 // format=mti addressradix=d dataradix=b version=1.0 wordsperline=1
     0: 0010010100010100
-    1: 0000000000000000
-    2: 0000000000000000
-    3: 0000000000000000
-    4: 0000000000000000
+    c
     5: 0111010100010100
     6: 0000000000000000
     7: 0000000000000000
