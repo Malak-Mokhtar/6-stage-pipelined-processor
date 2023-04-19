@@ -11,7 +11,7 @@ ENTITY one_clock_delay IS
     );
 END one_clock_delay;
 
-ARCHITECTURE arch OF two_clocks_delay IS
+ARCHITECTURE arch OF one_clocks_delay IS
 
     SIGNAL data : STD_LOGIC_VECTOR(15 DOWNTO 0) := x"0000";
 
