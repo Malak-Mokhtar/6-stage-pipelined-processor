@@ -142,6 +142,7 @@ ARCHITECTURE arch OF processor IS
             EM_Read_Data1_out,
             EM_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            EM_Memory_Reset_out : IN STD_LOGIC;
 
             -- OUTPUT PORTS
             MM_IN_en,
@@ -150,7 +151,8 @@ ARCHITECTURE arch OF processor IS
             MM_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             MM_IN_PORT,
             MM_ALU_Out,
-            Read_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+            Read_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MM_Memory_Reset_out : OUT STD_LOGIC
 
         );
     END COMPONENT;
@@ -164,7 +166,11 @@ ARCHITECTURE arch OF processor IS
 
             MW_IN_en_out, MW_RegWrite_en_out, MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
             MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+            MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            MM_Memory_Reset_out : IN STD_LOGIC;
+            MW_Memory_Reset_out : OUT STD_LOGIC
+
         );
     END COMPONENT;
     --------------------------------------------------------------------
@@ -257,6 +263,8 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL EM_Memory_Reset_out : STD_LOGIC;
 
+    --MM Register
+    SIGNAL MM_Memory_Reset_out : STD_LOGIC;
     --MW Register
     --INPUT PORTS
     SIGNAL MM_IN_en : STD_LOGIC;
@@ -274,6 +282,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Read_Data_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL MW_Memory_Reset_out : STD_LOGIC;
     --------------------------------------------------------
     --WB Stage
 
@@ -285,7 +294,7 @@ BEGIN
     --Fetch Stage
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
         clk => clk,
-        pc_rst => rst,
+        pc_rst => MW_Memory_Reset_out,
         pc_en => PC_en, --TODO: add an input to pc_en
         IN_PC => IN_PC,
         In_DATA => MW_Read_Data_out,
@@ -456,6 +465,7 @@ BEGIN
         EM_Read_Data1_out => EM_Read_Data1_out,
         EM_Read_Data2_out => EM_Read_Data2_out,
         EM_Write_Addr_out => EM_Write_Addr_out,
+        EM_Memory_Reset_out => EM_Memory_Reset_out,
 
         -- OUTPUT PORTS
         MM_IN_en => MM_IN_en,
@@ -464,7 +474,8 @@ BEGIN
         MM_Write_Addr => MM_Write_Addr,
         MM_IN_PORT => MM_IN_PORT,
         MM_ALU_Out => MM_ALU_Out,
-        Read_Data => Read_Data
+        Read_Data => Read_Data,
+        MM_Memory_Reset_out => MM_Memory_Reset_out
 
     );
 
@@ -482,6 +493,7 @@ BEGIN
         MM_ALU_Out_out => MM_ALU_Out,
         Read_Data => Read_Data,
         MM_Write_Addr_out => MM_Write_Addr,
+        MM_Memory_Reset_out => MM_Memory_Reset_out,
         --OUTPUT PORTS
         MW_IN_en_out => MW_IN_en_out,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
@@ -489,7 +501,8 @@ BEGIN
         MW_IN_PORT_out => MW_IN_PORT_out,
         MW_ALU_Out_out => MW_ALU_Out_out,
         MW_Read_Data_out => MW_Read_Data_out,
-        MW_Write_Addr_out => MW_Write_Addr_out
+        MW_Write_Addr_out => MW_Write_Addr_out,
+        MW_Memory_Reset_out => MW_Memory_Reset_out
     );
     ------------------------------------------------
     --WriteBack Stage
