@@ -22,8 +22,9 @@ BEGIN
     main_loop : PROCESS (clk, Rst)
     BEGIN
         --async reset
-        IF Rst = '1' THEN
-            memory_data <= (OTHERS => (OTHERS => '0'));
+        IF Rst = '1' AND falling_edge(clk) THEN
+            -- memory_data <= (OTHERS => (OTHERS => '0'));
+            Read_Data <= memory_data(0);
 
         ELSIF falling_edge(clk) THEN
             IF MemWrite_en = '1' THEN --write data
