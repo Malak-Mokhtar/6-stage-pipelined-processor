@@ -5,7 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY Fetch_Stage IS
     PORT (
         clk, pc_rst, pc_en : IN STD_LOGIC;
-        IN_PC : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
@@ -19,7 +19,7 @@ ARCHITECTURE arch OF Fetch_Stage IS
     COMPONENT PC IS
         PORT (
             clk, rst, en : IN STD_LOGIC;
-            IN_PC : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
         );
     END COMPONENT;
@@ -40,6 +40,7 @@ BEGIN
         rst => pc_rst,
         en => pc_en,
         IN_PC => IN_PC,
+        IN_DATA => IN_DATA,
         Read_Address => Internal_Read_Address
     );
     Internal_Instruction_Memory : Instruction_Memory PORT MAP(

@@ -15,7 +15,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT Fetch_Stage IS
         PORT (
             clk, pc_rst, pc_en : IN STD_LOGIC;
-            IN_PC : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
             Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
         );
@@ -288,6 +288,7 @@ BEGIN
         pc_rst => rst,
         pc_en => PC_en, --TODO: add an input to pc_en
         IN_PC => IN_PC,
+        In_DATA => MW_Read_Data_out,
         Read_Address => Read_Address,
         Inst => Inst
 
