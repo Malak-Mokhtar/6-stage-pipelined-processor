@@ -1,16 +1,25 @@
 vsim -gui work.processor
+#basics
 add wave -position end  sim:/processor/clk
 add wave -position end  sim:/processor/rst
+add wave -position end  sim:/processor/Internal_Fetch_Stage/Internal_PC/Read_Address
+add wave -position end  sim:/processor/Internal_Decode_Stage/Internal_Register_File/register_data
+# IN PORT
 add wave -position end  sim:/processor/IN_Port
-add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data
-add wave -position end  sim:/processor/Internal_FD_Register/Inst
-add wave -position end  sim:/processor/Internal_FD_Register/FD_Inst_out
+
+#Memory
 add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/MemRead_en
-add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/Read_Data
 add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/Address
+add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/Read_Data
+add wave -position end  sim:/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data
+
+#FLAGS
 add wave -position end  sim:/processor/Internal_Execute_Stage/CF_MAP/CF_OUT
 add wave -position end  sim:/processor/Internal_Execute_Stage/ZF_MAP/ZF_OUT
 add wave -position end  sim:/processor/Internal_Execute_Stage/NF_MAP/NF_OUT
+
+add wave -position end  sim:/processor/Internal_FD_Register/Inst
+add wave -position end  sim:/processor/Internal_FD_Register/FD_Inst_out
 
 
 
