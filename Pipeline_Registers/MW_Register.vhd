@@ -10,10 +10,8 @@ ENTITY MW_Register IS
 
         MW_IN_en_out, MW_RegWrite_en_out, MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
         MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
 
-        EM_Memory_Reset_out : IN STD_LOGIC;
-        MW_Memory_Reset_out : OUT STD_LOGIC
     );
 END MW_Register;
 
@@ -42,10 +40,7 @@ BEGIN
             MW_Write_Addr_out <= MM_Write_Addr_out;
             MW_Mem_to_Reg_en_out <= MM_Mem_to_Reg_en_out;
         END IF;
-        IF falling_edge(clk) THEN
-            MW_Memory_Reset_out <= EM_Memory_Reset_out;
 
-        END IF;
     END PROCESS; -- main_loop
 
 END ARCHITECTURE;

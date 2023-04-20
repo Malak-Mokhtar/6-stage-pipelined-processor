@@ -119,7 +119,11 @@ ARCHITECTURE arch OF processor IS
 
             EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
             EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            EM_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+            EM_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            Memory_Reset_in : IN STD_LOGIC;
+            EM_Memory_Reset_out : OUT STD_LOGIC
+
         );
     END COMPONENT;
     --------------------------------------------------------------------
@@ -251,6 +255,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_Read_Data1_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL EM_Read_Data2_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL EM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL EM_Memory_Reset_out : STD_LOGIC;
 
     --MW Register
     --INPUT PORTS
@@ -419,6 +424,7 @@ BEGIN
         DE_Read_Data1_out => DE_Read_Data1,
         DE_Read_Data2_out => DE_Read_Data2,
         DE_Write_Addr_out => DE_Write_Addr,
+        Memory_Reset_in => rst,
 
         --OUTPUTS
         EM_IN_en_out => EM_IN_en_out,
@@ -430,14 +436,15 @@ BEGIN
         EM_ALU_Out_out => EM_ALU_Out_out,
         EM_Read_Data1_out => EM_Read_Data1_out,
         EM_Read_Data2_out => EM_Read_Data2_out,
-        EM_Write_Addr_out => EM_Write_Addr_out
+        EM_Write_Addr_out => EM_Write_Addr_out,
+        EM_Memory_Reset_out => EM_Memory_Reset_out
     );
     ------------------------------------------------
     --Memory Stage
     Internal_Memory_Stages : Memory_Stages PORT MAP(
         --INPUT PORTS    
         clk => clk,
-        general_rst => rst,
+        general_rst => EM_Memory_Reset_out,
         EM_IN_en_out => EM_IN_en_out,
         EM_RegWrite_en_out => EM_RegWrite_en_out,
         EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
