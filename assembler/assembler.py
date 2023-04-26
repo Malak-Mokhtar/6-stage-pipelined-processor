@@ -30,7 +30,9 @@ def conversion(assembly_instructions: list[str]):
         # form bit string
         temp_inst = ""
         instruction_line = instruction.split(" ")
-        if instruction_line[0] == "NOP":
+        if instruction_line[0] == ".org":
+            temp_inst = instruction_line[1]
+        elif instruction_line[0] == "NOP":
             # OPCODE
             temp_inst += "00000"
             # Rs1
@@ -382,10 +384,32 @@ def conversion(assembly_instructions: list[str]):
     return result
 
 
+def mem_file_writer(res: list[str], inst: list[str]):
+    f = open("Instructions.mem", "w")
+    f.write(
+        "// memory data file (do not edit the following line - required for mem load use)\n")
+    f.write(
+        "// instance=/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data\n")
+    f.write("// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
+    line_number = int(res[0], 16)
+    for i in range(1, len(res)):
+        # f.write("//"+inst[i]+"\n")
+        f.write(str(line_number)+": "+res[i]+"\n")
+        line_number += 1
+    data_file = open("Data_memory.mem", "w")
+    data_file.write(
+        "// memory data file (do not edit the following line - required for mem load use)\n")
+    data_file.write(
+        "// instance=/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data\n")
+    data_file.write(
+        "// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
+    data_file.write("0: " + bin(int(res[0], 16))[2:].zfill(16))
+
+
 def main():
     instructions = load_file()
     res = conversion(instructions)
-    test = ["",
+    test = ["0",
             "0000000000000000",
             "0000100000000000",
             "0001000000000000",
@@ -423,6 +447,8 @@ def main():
             print(test[i])
             print(res[i])
             print("FALSE")
+
+    mem_file_writer(res, instructions)
 
 
 main()

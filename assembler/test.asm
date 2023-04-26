@@ -5,7 +5,7 @@
 #         add as much NOPs as you want to avoid hazards (as a software solution, just in 
 #          phase one)
 # ---------- Don't forget to Reset before you start anything ---------- #
-.org 0
+.org BABA
 #0000000000000000
 NOP
 #0000100000000000
