@@ -71,6 +71,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("CLRC")
+        # OUT Rs2	-> different than in project document
         elif instruction_line[0] == "OUT":
             # OPCODE
             temp_inst += "00011"
@@ -97,6 +98,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("IN")
+        # MOV Rd,Rs2	-> different than in project document
         elif instruction_line[0] == "MOV":
             # getting the two registers
             registers = instruction_line[1].split(",")
@@ -246,6 +248,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst = bin(int("0x"+"F"+registers[1], 16))[6:]
             # print
             print("LDM")
+        # PUSH Rs2	-> different than in project document
         elif instruction_line[0] == "PUSH":
             # OPCODE
             temp_inst += "10001"
@@ -272,6 +275,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("POP")
+        # LDD Rd,Rs2	-> different than in project document
         elif instruction_line[0] == "LDD":
             registers = instruction_line[1].split(",")
             # OPCODE
@@ -286,6 +290,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("LDD")
+        # STD Rs1,Rs2	-> different than in project document
         elif instruction_line[0] == "STD":
             registers = instruction_line[1].split(",")
             # OPCODE
@@ -300,6 +305,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("STD")
+        # JZ Rs1	-> different than in project document
         elif instruction_line[0] == "JZ":
             # OPCODE
             temp_inst += "11000"
@@ -313,6 +319,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("JZ")
+        # JC Rs1	-> different than in project document
         elif instruction_line[0] == "JC":
             # OPCODE
             temp_inst += "11001"
@@ -326,6 +333,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("JC")
+        # JMP Rs1	-> different than in project document
         elif instruction_line[0] == "JMP":
             # OPCODE
             temp_inst += "11010"
@@ -339,6 +347,7 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("JMP")
+        # CALL Rs1	-> different than in project document
         elif instruction_line[0] == "CALL":
             # OPCODE
             temp_inst += "11011"
