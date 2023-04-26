@@ -12,7 +12,7 @@ Register_Translation = {"R0": "000",
 
 def load_file():
 
-    f = open("TestcasesPhaseOne.asm", 'r', encoding='utf-8')
+    f = open("test.asm", 'r', encoding='utf-8')
     file_lines = f.readlines()
     instructions = []
     for line in file_lines:
@@ -84,7 +84,7 @@ def conversion(assembly_instructions: list[str]):
             print("OUT")
         elif instruction_line[0] == "IN":
             # OPCODE
-            temp_inst += "00100 "
+            temp_inst += "00100"
             # Rs1(Garbage)
             temp_inst += "000"
             # Rs2(Garbage)
@@ -99,7 +99,7 @@ def conversion(assembly_instructions: list[str]):
             # getting the two registers
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "00101 "
+            temp_inst += "00101"
             # Rs1(Garbage)
             temp_inst += "000"
             # Rs2
@@ -113,7 +113,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "IADD":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01000 "
+            temp_inst += "01000"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2
@@ -131,7 +131,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "ADD":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01001 "
+            temp_inst += "01001"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2
@@ -145,7 +145,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "SUB":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01010 "
+            temp_inst += "01010"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2
@@ -159,7 +159,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "AND":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01011 "
+            temp_inst += "01011"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2
@@ -173,7 +173,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "OR":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01100 "
+            temp_inst += "01100"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2
@@ -187,7 +187,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "NOT":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01101 "
+            temp_inst += "01101"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
@@ -201,7 +201,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "INC":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01110 "
+            temp_inst += "01110"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
@@ -215,7 +215,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "DEC":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "01110 "
+            temp_inst += "01111"
             # Rs1
             temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
@@ -229,7 +229,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "LDM":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "10000 "
+            temp_inst += "10000"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2 (Garbage)
@@ -246,7 +246,7 @@ def conversion(assembly_instructions: list[str]):
             print("LDM")
         elif instruction_line[0] == "PUSH":
             # OPCODE
-            temp_inst += "10001 "
+            temp_inst += "10001"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2
@@ -259,7 +259,7 @@ def conversion(assembly_instructions: list[str]):
             print("PUSH")
         elif instruction_line[0] == "POP":
             # OPCODE
-            temp_inst += "10010 "
+            temp_inst += "10010"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2 (Garbage)
@@ -273,7 +273,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "LDD":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "10011 "
+            temp_inst += "10011"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2
@@ -287,7 +287,7 @@ def conversion(assembly_instructions: list[str]):
         elif instruction_line[0] == "STD":
             registers = instruction_line[1].split(",")
             # OPCODE
-            temp_inst += "10100 "
+            temp_inst += "10100"
             # Rs1
             temp_inst += Register_Translation[registers[0]]
             # Rs2
@@ -300,7 +300,7 @@ def conversion(assembly_instructions: list[str]):
             print("STD")
         elif instruction_line[0] == "JZ":
             # OPCODE
-            temp_inst += "11000 "
+            temp_inst += "11000"
             # Rs1
             temp_inst += Register_Translation[instruction_line[1]]
             # Rs2 (Garbage)
@@ -313,7 +313,7 @@ def conversion(assembly_instructions: list[str]):
             print("JZ")
         elif instruction_line[0] == "JC":
             # OPCODE
-            temp_inst += "11000 "
+            temp_inst += "11001"
             # Rs1
             temp_inst += Register_Translation[instruction_line[1]]
             # Rs2 (Garbage)
@@ -326,7 +326,7 @@ def conversion(assembly_instructions: list[str]):
             print("JC")
         elif instruction_line[0] == "JMP":
             # OPCODE
-            temp_inst += "11010 "
+            temp_inst += "11010"
             # Rs1
             temp_inst += Register_Translation[instruction_line[1]]
             # Rs2
@@ -339,7 +339,7 @@ def conversion(assembly_instructions: list[str]):
             print("JMP")
         elif instruction_line[0] == "CALL":
             # OPCODE
-            temp_inst += "11011 "
+            temp_inst += "11011"
             # Rs1
             temp_inst += Register_Translation[instruction_line[1]]
             # Rs2 (Garbage)
@@ -352,7 +352,7 @@ def conversion(assembly_instructions: list[str]):
             print("CALL")
         elif instruction_line[0] == "RET":
             # OPCODE
-            temp_inst += "11100 "
+            temp_inst += "11100"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2 (Garbage)
@@ -365,7 +365,7 @@ def conversion(assembly_instructions: list[str]):
             print("RET")
         elif instruction_line[0] == "RTI":
             # OPCODE
-            temp_inst += "11101 "
+            temp_inst += "11101"
             # Rs1 (Garbage)
             temp_inst += "000"
             # Rs2 (Garbage)
@@ -379,3 +379,50 @@ def conversion(assembly_instructions: list[str]):
         # add inst to result array
         result.append(temp_inst)
     print(result)
+    return result
+
+
+def main():
+    instructions = load_file()
+    res = conversion(instructions)
+    test = ["",
+            "0000000000000000",
+            "0000100000000000",
+            "0001000000000000",
+            "0110100100010000",
+            "0111000100010000",
+            "0111100100010000",
+            "0001100011000000",
+            "0010000000001000",
+            "0010100000110000",
+            "0100110000101100",
+            "0100000100010100",
+            "0000000011111111",
+            "0100000100010100",
+            "0000000000000000",
+            "0100000100010100",
+            "1010101010111010",
+            "0101010000101100",
+            "0110010000101100",
+            "0101110000101100",
+            "1000100010100000",
+            "1001000000010000",
+            "1000000000010000",
+            "1111111111111111",
+            "1001100000110000",
+            "1010010000100000",
+            "1100011100000000",
+            "1100111100000000",
+            "1101011100000000",
+            "1101101100000000",
+            "1110000000000000",
+            "1110100000000000"]
+    for i in range(0, len(res)):
+        if res[i] != test[i]:
+            print("or at index: " + str(i))
+            print(test[i])
+            print(res[i])
+            print("FALSE")
+
+
+main()
