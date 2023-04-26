@@ -16,7 +16,7 @@ def load_file():
     file_lines = f.readlines()
     instructions = []
     for line in file_lines:
-        if ('#' not in line):
+        if ('#' not in line) and line != "":
             temp1 = line.replace("\n", "")
             instructions.append(temp1)
     print(instructions)
@@ -418,6 +418,7 @@ def mem_file_writer(res: list[str], inst: list[str]):
 def main():
     instructions = load_file()
     res = conversion(instructions)
+    # this is used to compare the result from the assembler to the expected correct results for test.asm
     test = ["0",
             "0000000000000000",
             "0000100000000000",
