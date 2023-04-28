@@ -12,7 +12,7 @@ Register_Translation = {"R0": "000",
 
 def load_file():
 
-    f = open("test.asm", 'r', encoding='utf-8')
+    f = open("test2.asm", 'r', encoding='utf-8')
     file_lines = f.readlines()
     instructions = []
     for line in file_lines:
@@ -31,7 +31,7 @@ def conversion(assembly_instructions: list[str]):
         temp_inst = ""
         instruction_line = instruction.split(" ")
         if instruction_line[0] == ".org":
-            temp_inst = instruction_line[1]
+            temp_inst = "A"+instruction_line[1]
         elif instruction_line[0] == "NOP":
             # OPCODE
             temp_inst += "00000"
@@ -129,7 +129,7 @@ def conversion(assembly_instructions: list[str]):
             # add operation to results
             result.append(temp_inst)
             # to get immediate
-            temp_inst = bin(int("0x"+"F"+registers[2], 16))[6:]
+            temp_inst = bin(int("0x"+"F"+registers[2], 16))[6:].zfill(16)
             # print
             print("IADD")
         elif instruction_line[0] == "ADD":
@@ -193,7 +193,10 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01101"
             # Rs1
-            temp_inst += Register_Translation[registers[1]]
+            if (registers.size() < 2):
+                temp_inst += Register_Translation[registers[0]]
+            else:
+                temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
             temp_inst += "000"
             # Rd
@@ -207,7 +210,10 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01110"
             # Rs1
-            temp_inst += Register_Translation[registers[1]]
+            if (registers.size() < 2):
+                temp_inst += Register_Translation[registers[0]]
+            else:
+                temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
             temp_inst += "000"
             # Rd
@@ -221,7 +227,10 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01111"
             # Rs1
-            temp_inst += Register_Translation[registers[1]]
+            if (registers.size() < 2):
+                temp_inst += Register_Translation[registers[0]]
+            else:
+                temp_inst += Register_Translation[registers[1]]
             # Rs2 (Garbage)
             temp_inst += "000"
             # Rd
@@ -245,7 +254,7 @@ def conversion(assembly_instructions: list[str]):
             # add instruction
             result.append(temp_inst)
             # to get immediate
-            temp_inst = bin(int("0x"+"F"+registers[1], 16))[6:]
+            temp_inst = bin(int("0x"+"F"+registers[1], 16))[6:].zfill(16)
             # print
             print("LDM")
         # PUSH Rs2	-> different than in project document
@@ -387,6 +396,12 @@ def conversion(assembly_instructions: list[str]):
             temp_inst += "00"
             # print
             print("RTI")
+        else:
+            # to get immediate
+
+            temp_inst = bin(
+                int("0x"+"F"+instruction_line[0], 16))[6:].zfill(16)
+            print("///////////////////////////////")
         # add inst to result array
         result.append(temp_inst)
     print(result)
@@ -400,9 +415,12 @@ def mem_file_writer(res: list[str], inst: list[str]):
     f.write(
         "// instance=/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data\n")
     f.write("// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
-    line_number = int(res[0], 16)
+    line_number = int(res[0][1:], 16)
     for i in range(1, len(res)):
-        # f.write("//"+inst[i]+"\n")
+
+        if (res[i][0] == "A"):
+            line_number = int(res[i][1:], 16)
+            continue
         f.write(str(line_number)+": "+res[i]+"\n")
         line_number += 1
     data_file = open("Data_memory.mem", "w")
@@ -412,51 +430,51 @@ def mem_file_writer(res: list[str], inst: list[str]):
         "// instance=/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data\n")
     data_file.write(
         "// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
-    data_file.write("0: " + bin(int(res[0], 16))[2:].zfill(16))
+    data_file.write("0: " + bin(int(res[0][1], 16))[2:].zfill(16))
 
 
 def main():
     instructions = load_file()
     res = conversion(instructions)
     # this is used to compare the result from the assembler to the expected correct results for test.asm
-    test = ["0",
-            "0000000000000000",
-            "0000100000000000",
-            "0001000000000000",
-            "0110100100010000",
-            "0111000100010000",
-            "0111100100010000",
-            "0001100011000000",
-            "0010000000001000",
-            "0010100000110000",
-            "0100110000101100",
-            "0100000100010100",
-            "0000000011111111",
-            "0100000100010100",
-            "0000000000000000",
-            "0100000100010100",
-            "1010101010111010",
-            "0101010000101100",
-            "0110010000101100",
-            "0101110000101100",
-            "1000100010100000",
-            "1001000000010000",
-            "1000000000010000",
-            "1111111111111111",
-            "1001100000110000",
-            "1010010000100000",
-            "1100011100000000",
-            "1100111100000000",
-            "1101011100000000",
-            "1101101100000000",
-            "1110000000000000",
-            "1110100000000000"]
-    for i in range(0, len(res)):
-        if res[i] != test[i]:
-            print("or at index: " + str(i))
-            print(test[i])
-            print(res[i])
-            print("FALSE")
+    # test = ["0",
+    #         "0000000000000000",
+    #         "0000100000000000",
+    #         "0001000000000000",
+    #         "0110100100010000",
+    #         "0111000100010000",
+    #         "0111100100010000",
+    #         "0001100011000000",
+    #         "0010000000001000",
+    #         "0010100000110000",
+    #         "0100110000101100",
+    #         "0100000100010100",
+    #         "0000000011111111",
+    #         "0100000100010100",
+    #         "0000000000000000",
+    #         "0100000100010100",
+    #         "1010101010111010",
+    #         "0101010000101100",
+    #         "0110010000101100",
+    #         "0101110000101100",
+    #         "1000100010100000",
+    #         "1001000000010000",
+    #         "1000000000010000",
+    #         "1111111111111111",
+    #         "1001100000110000",
+    #         "1010010000100000",
+    #         "1100011100000000",
+    #         "1100111100000000",
+    #         "1101011100000000",
+    #         "1101101100000000",
+    #         "1110000000000000",
+    #         "1110100000000000"]
+    # for i in range(0, len(res)):
+    #     if res[i] != test[i]:
+    #         print("or at index: " + str(i))
+    #         print(test[i])
+    #         print(res[i])
+    #         print("FALSE")
 
     mem_file_writer(res, instructions)
 
