@@ -10,11 +10,25 @@ ENTITY Memory_Stages IS
         EM_RegWrite_en_out,
         EM_Mem_to_Reg_en_out,
         EM_MemWrite_en_out,
-        EM_MemRead_en_out : IN STD_LOGIC;
+        EM_MemRead_en_out,
+        -- Phase 2:
+        DE_SP_en_out,
+        DE_SP_inc_en_out,
+        EM_PC_or_addrs1_en_out,
+        EM_FLAGS_en_out,
+        EM_Interrupt_en_out,
+        EM_ZF_OUT_out,
+        EM_CF_OUT_out,
+        EM_NF_OUT_out : IN STD_LOGIC;
+        --
         EM_IN_PORT_out,
         EM_ALU_Out_out,
         EM_Read_Data1_out,
-        EM_Read_Data2_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        -- Phase 2:
+        EM_SP_before_out,
+        EM_SP_after_out, 
+        Read_Address : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        --
         EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         EM_Memory_Reset_out : IN STD_LOGIC;
 
@@ -42,6 +56,28 @@ ARCHITECTURE arch OF Memory_Stages IS
         );
     END COMPONENT;
 
+    -- Phase 2
+    -- Read address MUX
+    COMPONENT MUX_MEM_ADD IS 
+	PORT ( Read_Data1,SP_Before,SP_After: IN std_logic_vector (15 DOWNTO 0);
+			SP_en,SP_inc_en,PC_or_addr1_en : IN  std_logic;
+			Read_Addrs : OUT std_logic_vector (15 DOWNTO 0));
+    END COMPONENT;
+
+    -- Read Data MUX
+    COMPONENT MUX_MEM_DATA IS 
+	PORT ( ALU_out,Read_Address,Flags: IN std_logic_vector (15 DOWNTO 0);
+			Flags_en, Interrupt_en : IN  std_logic;
+			Read_Data : OUT std_logic_vector (15 DOWNTO 0));
+    END COMPONENT;
+
+    -- Flag concatenation and extension module
+    COMPONENT Concatenation_Extension IS 
+	PORT ( ZF_OUT, CF_OUT, NF_OUT : IN  std_logic;
+			Flags : OUT std_logic_vector (15 DOWNTO 0));
+    END COMPONENT;
+
+    ------------------
     -- Memory memory pipelined register
     COMPONENT MM_Register IS
         PORT (
@@ -62,18 +98,48 @@ ARCHITECTURE arch OF Memory_Stages IS
 
     -------------------SIGNALS----------------
     SIGNAL MM_en : STD_LOGIC := '1';
+    -- Phase 2
+    SIGNAL Read_Data1, Read_Data2, Flags_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
 
 BEGIN
 
     Data_memory_MAP : Data_Memory PORT MAP(
-        Address => EM_Read_Data1_out,
-        Write_Data => EM_Read_Data2_out,
+        Address => Read_Data1, -- Phase 2
+        Write_Data => Read_Data2,
         clk => clk,
         Rst => EM_Memory_Reset_out,
         MemWrite_en => EM_MemWrite_en_out,
         MemRead_en => EM_MemRead_en_out,
         Read_Data => Read_Data
     );
+
+    MUX_MEM_ADD_MAP : MUX_MEM_ADD PORT MAP(
+        Read_Data1 => EM_Read_Data1_out,
+        SP_Before => EM_SP_before_out,
+        SP_After => EM_SP_after_out,
+        SP_en => DE_SP_en_out,
+        SP_inc_en => DE_SP_inc_en_out,
+        PC_or_addr1_en => EM_PC_or_addrs1_en_out,
+        Read_Addrs => Read_Data1
+    );
+
+    MUX_MEM_DATA_MAP : MUX_MEM_DATA PORT MAP(
+        ALU_out => EM_ALU_Out_out,
+        Read_Address => Read_Address,
+        Flags => Flags_sig,
+        Flags_en => EM_FLAGS_en_out,
+        Interrupt_en => EM_Interrupt_en_out,
+        Read_Data => Read_Data2
+    );
+
+    Concatenation_Extension_MAP : Concatenation_Extension PORT MAP(
+        ZF_OUT => EM_ZF_OUT_out,
+        CF_OUT => EM_CF_OUT_out,
+        NF_OUT => EM_NF_OUT_out,
+        Flags => Flags_sig
+    );
+
 
     MM_Reg_MAP : MM_Register PORT MAP(
         clk => clk,
