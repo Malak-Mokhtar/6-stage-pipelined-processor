@@ -181,14 +181,6 @@ ARCHITECTURE arch OF Execute_Stage IS
 
 
     
-        
-
-
-
-
-
-
-    
 
     -------------------SIGNALS----------------
     SIGNAL ZF_SIG, NF_SIG, CF_SIG, ZF_EXCEPT_RTI_SIG, CF_EXCEPT_RTI_SIG, ZF_RTI_SIG, CF_RTI_SIG, NF_RTI_SIG,
