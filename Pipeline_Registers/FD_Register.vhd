@@ -4,7 +4,8 @@ USE ieee.numeric_std.ALL;
 
 ENTITY FD_Register IS
     PORT (
-        clk, en, rst : IN STD_LOGIC;
+        clk, en_structural, en_load_use : IN STD_LOGIC;
+        rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out, DE_Interrupt_en_out: IN STD_LOGIC;
         Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -14,11 +15,24 @@ END FD_Register;
 
 ARCHITECTURE arch OF FD_Register IS
 
+signal en: std_logic;
+signal pipelined_rst: std_logic;
+signal Zero_rst,Carry_rst,RET_rst : std_logic;
+
 BEGIN
-    main_loop : PROCESS (clk, rst)
+
+    en<= (not en_structural) or (not en_load_use);
+
+    Zero_rst <= ZF_OUT and DE_JZ_en_out;
+    Carry_rst <= CF_OUT and DE_JC_en_out;
+    RET_rst <= DE_RET_en_out or EM_RET_en_out or MM_RET_en_out;
+
+    pipelined_rst<= rst or Zero_rst or Carry_rst or RET_rst or DE_Interrupt_en_out;
+
+    main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
 
-        IF rst = '1' THEN --check on reset
+        IF pipelined_rst = '1' THEN --check on reset
             --make all outputs zero
             FD_Inst_out <= (OTHERS => '0');
             FD_Read_Address_out <= (OTHERS => '0');
