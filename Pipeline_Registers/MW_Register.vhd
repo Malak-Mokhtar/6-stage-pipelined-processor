@@ -13,7 +13,14 @@ ENTITY MW_Register IS
         MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
 
         MM_Memory_Reset_out : IN STD_LOGIC;
-        MW_Memory_Reset_out : OUT STD_LOGIC
+        MW_Memory_Reset_out : OUT STD_LOGIC;
+
+        -- phase 2
+        MM_OUT_en_out : IN STD_LOGIC;
+        MM_RTI_en_out : IN STD_LOGIC;
+
+        MW_OUT_en_out : OUT STD_LOGIC;
+        MW_RTI_en_out : OUT STD_LOGIC
 
     );
 END MW_Register;
@@ -33,6 +40,8 @@ BEGIN
             MW_Read_Data_out <= (OTHERS => '0');
             MW_Write_Addr_out <= (OTHERS => '0');
             MW_Mem_to_Reg_en_out <= '0';
+            MW_OUT_en_out <= '0';
+            MW_RTI_en_out <= '0';
 
         ELSIF falling_edge(clk) AND en = '1' THEN --check on enable and falling edge
             MW_IN_en_out <= MM_IN_en_out;
@@ -42,6 +51,8 @@ BEGIN
             MW_Read_Data_out <= Read_Data;
             MW_Write_Addr_out <= MM_Write_Addr_out;
             MW_Mem_to_Reg_en_out <= MM_Mem_to_Reg_en_out;
+            MM_OUT_en_out <= MW_OUT_en_out;
+            MM_RTI_en_out <= MW_RTI_en_out;
         END IF;
         IF falling_edge(clk) THEN
             MW_Memory_Reset_out <= MM_Memory_Reset_out;
