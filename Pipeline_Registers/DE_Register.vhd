@@ -4,7 +4,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY DE_Register IS
     PORT (
-        clk, en, rst : IN STD_LOGIC;
+        clk, en_structural, rst : IN STD_LOGIC;
         IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en : IN STD_LOGIC;
         FD_IN_PORT_out, Read_Data1, Read_Data2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -13,7 +13,40 @@ ENTITY DE_Register IS
         DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : OUT STD_LOGIC;
         DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-        DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0)
+        DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+
+        -- phase 2 update
+
+        SETC_en : IN STD_LOGIC;
+        CLRC_en : IN STD_LOGIC;
+        JZ_en : IN STD_LOGIC;
+        JC_en : IN STD_LOGIC;
+        SP_en : IN STD_LOGIC;
+        SP_inc_en : IN STD_LOGIC;
+        RET_en : IN STD_LOGIC;
+        CALL_en : IN STD_LOGIC;
+        PC_or_addrs1_en : IN STD_LOGIC;
+        FLAGS_en : IN STD_LOGIC;
+        RTI_en : IN STD_LOGIC;
+        OUT_en : IN STD_LOGIC;
+        Read_Address1 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        Read_Address2 : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        Interrupt_en : IN STD_LOGIC;
+        DE_SETC_en_out : OUT STD_LOGIC;
+        DE_CLRC_en_out : OUT STD_LOGIC;
+        DE_JZ_en_out : OUT STD_LOGIC;
+        DE_JC_en_out : OUT STD_LOGIC;
+        DE_SP_en_out : OUT STD_LOGIC;
+        DE_SP_inc_en_out : OUT STD_LOGIC;
+        DE_RET_en_out : OUT STD_LOGIC;
+        DE_CALL_en_out : OUT STD_LOGIC;
+        DE_PC_or_addrs1_en_out : OUT STD_LOGIC;
+        DE_FLAGS_en_out : OUT STD_LOGIC;
+        DE_RTI_en_out : OUT STD_LOGIC;
+        DE_OUT_en_out : OUT STD_LOGIC;
+        DE_Interrupt_en_out : OUT STD_LOGIC;
+        DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
 
     );
 END DE_Register;
@@ -38,7 +71,24 @@ BEGIN
             DE_MemWrite_en_out <= '0';
             DE_MemRead_en_out <= '0';
 
-        ELSIF falling_edge(clk) AND en = '1' THEN --check on enable and falling edge
+            --phase 2 inputs
+            SETC_en <= '0';
+            CLRC_en <= '0';
+            JZ_en <= '0';
+            JC_en <= '0';
+            SP_en <= '0';
+            SP_inc_en <= '0';
+            RET_en <= '0';
+            CALL_en <= '0';
+            PC_or_addrs1_en <= '0';
+            FLAGS_en <= '0';
+            RTI_en <= '0';
+            OUT_en <= '0';
+            Read_Address1 <= (OTHERS => '0');
+            Read_Address2 <= (OTHERS => '0');
+            Interrupt_en <= '0';
+
+        ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;
             DE_IN_PORT_out <= FD_IN_PORT_out;
             DE_Write_Addr_out <= Inst_20_to_18_Write_Addrs;
@@ -51,6 +101,23 @@ BEGIN
             DE_Mem_to_Reg_en_out <= Mem_to_Reg_en;
             DE_MemWrite_en_out <= MemWrite_en;
             DE_MemRead_en_out <= MemRead_en;
+
+            --phase 2 code
+            DE_SETC_en_out <= SETC_en;
+            DE_CLRC_en_out <= CLRC_en;
+            DE_JZ_en_out <= JZ_en;
+            DE_JC_en_out <= JC_en;
+            DE_SP_en_out <= SP_en;
+            DE_SP_inc_en_out <= SP_inc_en;
+            DE_RET_en_out <= RET_en;
+            DE_CALL_en_out <= CALL_en;
+            DE_PC_or_addrs1_en_out <= PC_or_addrs1_en;
+            DE_FLAGS_en_out <= FLAGS_en;
+            DE_RTI_en_out <= RTI_en;
+            DE_OUT_en_out <= OUT_en;
+            DE_Read_Address1 <= Read_Address1;
+            DE_Read_Address2 <= Read_Address2;
+            DE_Interrupt_en_out <= Interrupt_en;
 
         END IF;
     END PROCESS; -- main_loop
