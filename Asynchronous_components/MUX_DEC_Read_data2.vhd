@@ -21,6 +21,6 @@ begin
 Read_Data2 <= Read_Data2_RF when Immediate_en = '0' and CALL_en = '0' else
 PC_Added when Immediate_en = '0' and CALL_en = '1' else
 Imm_Value when Immediate_en = '1' and CALL_en = '0' else
-x"0000";
+(others => '0');
 
 end architecture;
