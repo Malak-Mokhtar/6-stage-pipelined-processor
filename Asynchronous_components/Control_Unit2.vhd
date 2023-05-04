@@ -41,6 +41,8 @@ BEGIN
     Interrupt_en <= '0';
     FLAGS_en <= '0';
     PC_or_addrs1_en <= '0';
+    SP_en <= '0';
+    SP_inc_en <= '0';
 
 END my_Control_Unit;
 
