@@ -72,7 +72,7 @@ ARCHITECTURE arch OF Decode_Stage IS
     END COMPONENT;
 
     --Control Unit (Edited in Phase 2)
-    COMPONENT Control_Unit2 IS
+    COMPONENT Control_Unit IS
         PORT (
             OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
@@ -134,7 +134,7 @@ BEGIN
     );
 
     -- control unit initalization (Edited in Phase 2)
-    Control_Unit_MAP : Control_Unit2 PORT MAP(
+    Control_Unit_MAP : Control_Unit PORT MAP(
         OPCODE => FD_Inst(31 DOWNTO 27),
         IN_en => IN_en,
         Carry_en => Carry_en,
