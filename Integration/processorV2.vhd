@@ -145,6 +145,61 @@ ARCHITECTURE arch OF processor IS
             --NEW INPUTS-- including MW_Read_Data_out
         );
     END COMPONENT;
+    -- Memory Stage
+    COMPONENT Memory_Stages IS
+        PORT (
+            --INPUT PORTS    
+            clk, general_rst : IN STD_LOGIC;
+            EM_IN_en_out,
+            EM_RegWrite_en_out,
+            EM_Mem_to_Reg_en_out,
+            EM_MemWrite_en_out,
+            EM_MemRead_en_out,
+            -- Phase 2:
+            DE_SP_en_out,
+            DE_SP_inc_en_out,
+            EM_PC_or_addrs1_en_out,
+            EM_FLAGS_en_out,
+            EM_Interrupt_en_out,
+            EM_ZF_OUT_out,
+            EM_CF_OUT_out,
+            EM_NF_OUT_out : IN STD_LOGIC;
+            --
+            EM_IN_PORT_out,
+            EM_ALU_Out_out,
+            EM_Read_Data1_out,
+            -- Phase 2:
+            EM_SP_before_out,
+            EM_SP_after_out,
+            Read_Address : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            --
+            EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            EM_Memory_Reset_out : IN STD_LOGIC;
+
+            -- OUTPUT PORTS
+            MM_IN_en,
+            MM_RegWrite_en,
+            MM_Mem_to_Reg_en : OUT STD_LOGIC;
+            MM_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            MM_IN_PORT,
+            MM_ALU_Out,
+            Read_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MM_Memory_Reset_out : OUT STD_LOGIC;
+            -- Phase 2 Inputs:
+            EM_RTI_en_out,
+            EM_OUT_en_out,
+            EM_RET_en_out,
+            EM_CALL_en_out : IN STD_LOGIC;
+
+            -- Phase 2 Outputs
+            MM_RET_en_out,
+            MM_CALL_en_out,
+            MM_PC_or_addrs1_en_out,
+            MM_RTI_en_out,
+            MM_OUT_en_out : OUT STD_LOGIC
+
+        );
+    END COMPONENT;
     -----------------------------------------------------------------
     -- Fetch Decode Register 
     COMPONENT FD_Register IS
@@ -398,6 +453,20 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_OUT_en_out : STD_LOGIC;
     SIGNAL EM_Interrupt_en_out : STD_LOGIC;
 
+    -- Memory Stage 
+    SIGNAL EM_PC_or_addrs1_en_out : STD_LOGIC;
+    SIGNAL MM_IN_en : STD_LOGIC;
+    SIGNAL MM_RegWrite_en : STD_LOGIC;
+    SIGNAL MM_Mem_to_Reg_en : STD_LOGIC;
+    SIGNAL MM_Write_Addr : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL MM_IN_PORT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Read_Data : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MM_Memory_Reset_out : STD_LOGIC;
+    SIGNAL MM_CALL_en_out : STD_LOGIC;
+    SIGNAL MM_PC_or_addrs1_en_out : STD_LOGIC;
+    SIGNAL MM_RTI_en_out : STD_LOGIC;
+    SIGNAL MM_OUT_en_out : STD_LOGIC;
+
 BEGIN
     --Internal Fetch Stage
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
@@ -648,5 +717,49 @@ BEGIN
         EM_RTI_en_out => EM_RTI_en_out,
         EM_OUT_en_out => EM_OUT_en_out,
         EM_Interrupt_en_out => EM_Interrupt_en_out
+    );
+
+    --Memory Stage
+    Internal_Memory_Stages : Memory_Stages PORT MAP(
+        clk => clk,
+        general_rst => general_rst,
+        EM_IN_en_out => EM_IN_en_out,
+        EM_RegWrite_en_out => EM_RegWrite_en_out,
+        EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
+        EM_MemWrite_en_out => EM_MemWrite_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
+        DE_SP_en_out => DE_SP_en_out,
+        DE_SP_inc_en_out => DE_SP_inc_en_out,
+        EM_PC_or_addrs1_en_out => EM_PC_or_addrs1_en_out,
+        EM_FLAGS_en_out => EM_FLAGS_en_out,
+        EM_Interrupt_en_out => EM_Interrupt_en_out,
+        EM_ZF_OUT_out => EM_ZF_OUT_out,
+        EM_CF_OUT_out => EM_CF_OUT_out,
+        EM_NF_OUT_out => EM_NF_OUT_out,
+        EM_IN_PORT_out => EM_IN_PORT_out,
+        EM_ALU_Out_out => EM_ALU_Out_out,
+        EM_Read_Data1_out => EM_Read_Data1_out,
+        EM_SP_before_out => EM_SP_before_out,
+        EM_SP_after_out => EM_SP_after_out,
+        Read_Address => Read_Address,
+        EM_Write_Addr_out => EM_Write_Addr_out,
+        EM_Memory_Reset_out => EM_Memory_Reset_out,
+        MM_IN_en => MM_IN_en,
+        MM_RegWrite_en => MM_RegWrite_en,
+        MM_Mem_to_Reg_en => MM_Mem_to_Reg_en,
+        MM_Write_Addr => MM_Write_Addr,
+        MM_IN_PORT => MM_IN_PORT,
+        MM_ALU_Out => MM_ALU_Out,
+        Read_Data => Read_Data,
+        MM_Memory_Reset_out => MM_Memory_Reset_out,
+        EM_RTI_en_out => EM_RTI_en_out,
+        EM_OUT_en_out => EM_OUT_en_out,
+        EM_RET_en_out => EM_RET_en_out,
+        EM_CALL_en_out => EM_CALL_en_out,
+        MM_RET_en_out => MM_RET_en_out,
+        MM_CALL_en_out => MM_CALL_en_out,
+        MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out,
+        MM_RTI_en_out => MM_RTI_en_out,
+        MM_OUT_en_out => MM_OUT_en_out
     );
 END ARCHITECTURE;

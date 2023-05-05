@@ -26,7 +26,7 @@ ENTITY Memory_Stages IS
         EM_Read_Data1_out,
         -- Phase 2:
         EM_SP_before_out,
-        EM_SP_after_out, 
+        EM_SP_after_out,
         Read_Address : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         --
         EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -40,7 +40,19 @@ ENTITY Memory_Stages IS
         MM_IN_PORT,
         MM_ALU_Out,
         Read_Data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MM_Memory_Reset_out : OUT STD_LOGIC
+        MM_Memory_Reset_out : OUT STD_LOGIC;
+        -- Phase 2 Inputs:
+        EM_RTI_en_out,
+        EM_OUT_en_out,
+        EM_RET_en_out,
+        EM_CALL_en_out : IN STD_LOGIC;
+
+        -- Phase 2 Outputs
+        MM_RET_en_out,
+        MM_CALL_en_out,
+        MM_PC_or_addrs1_en_out,
+        MM_RTI_en_out,
+        MM_OUT_en_out : OUT STD_LOGIC
 
     );
 END Memory_Stages;
@@ -58,23 +70,26 @@ ARCHITECTURE arch OF Memory_Stages IS
 
     -- Phase 2
     -- Read address MUX
-    COMPONENT MUX_MEM_ADD IS 
-	PORT ( Read_Data1,SP_Before,SP_After: IN std_logic_vector (15 DOWNTO 0);
-			SP_en,SP_inc_en,PC_or_addr1_en : IN  std_logic;
-			Read_Addrs : OUT std_logic_vector (15 DOWNTO 0));
+    COMPONENT MUX_MEM_ADD IS
+        PORT (
+            Read_Data1, SP_Before, SP_After : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
+            SP_en, SP_inc_en, PC_or_addr1_en : IN STD_LOGIC;
+            Read_Addrs : OUT STD_LOGIC_VECTOR (15 DOWNTO 0));
     END COMPONENT;
 
     -- Read Data MUX
-    COMPONENT MUX_MEM_DATA IS 
-	PORT ( ALU_out,Read_Address,Flags: IN std_logic_vector (15 DOWNTO 0);
-			Flags_en, Interrupt_en : IN  std_logic;
-			Read_Data : OUT std_logic_vector (15 DOWNTO 0));
+    COMPONENT MUX_MEM_DATA IS
+        PORT (
+            ALU_out, Read_Address, Flags : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
+            Flags_en, Interrupt_en : IN STD_LOGIC;
+            Read_Data : OUT STD_LOGIC_VECTOR (15 DOWNTO 0));
     END COMPONENT;
 
     -- Flag concatenation and extension module
-    COMPONENT Concatenation_Extension IS 
-	PORT ( ZF_OUT, CF_OUT, NF_OUT : IN  std_logic;
-			Flags : OUT std_logic_vector (15 DOWNTO 0));
+    COMPONENT Concatenation_Extension IS
+        PORT (
+            ZF_OUT, CF_OUT, NF_OUT : IN STD_LOGIC;
+            Flags : OUT STD_LOGIC_VECTOR (15 DOWNTO 0));
     END COMPONENT;
 
     ------------------
@@ -86,13 +101,25 @@ ARCHITECTURE arch OF Memory_Stages IS
             EM_IN_PORT_out, EM_ALU_Out_out : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
             EM_Write_Addr_out : IN STD_LOGIC_VECTOR (2 DOWNTO 0);
             EM_RegWrite_en_out, EM_Mem_to_Reg_en_out : IN STD_LOGIC;
-
+            -- Phase 2 Inputs:
+            EM_RTI_en_out,
+            EM_OUT_en_out,
+            EM_RET_en_out,
+            EM_CALL_en_out,
+            EM_PC_or_addrs1_en_out : IN STD_LOGIC;
             MM_IN_en_out : OUT STD_LOGIC;
             MM_IN_PORT_out, MM_ALU_Out_out : OUT STD_LOGIC_VECTOR (15 DOWNTO 0);
             MM_Write_Addr_out : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
             MM_RegWrite_en_out, MM_Mem_to_Reg_en_out : OUT STD_LOGIC;
             EM_Memory_Reset_out : IN STD_LOGIC;
-            MM_Memory_Reset_out : OUT STD_LOGIC
+            MM_Memory_Reset_out : OUT STD_LOGIC;
+
+            -- Phase 2 Outputs
+            MM_RET_en_out,
+            MM_CALL_en_out,
+            MM_PC_or_addrs1_en_out,
+            MM_RTI_en_out,
+            MM_OUT_en_out : OUT STD_LOGIC
         );
     END COMPONENT;
 
@@ -100,8 +127,6 @@ ARCHITECTURE arch OF Memory_Stages IS
     SIGNAL MM_en : STD_LOGIC := '1';
     -- Phase 2
     SIGNAL Read_Data1, Read_Data2, Flags_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
-
-
 BEGIN
 
     Data_memory_MAP : Data_Memory PORT MAP(
@@ -139,8 +164,6 @@ BEGIN
         NF_OUT => EM_NF_OUT_out,
         Flags => Flags_sig
     );
-
-
     MM_Reg_MAP : MM_Register PORT MAP(
         clk => clk,
         en => MM_en,
@@ -151,15 +174,24 @@ BEGIN
         EM_Write_Addr_out => EM_Write_Addr_out,
         EM_RegWrite_en_out => EM_RegWrite_en_out,
         EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
+        EM_RTI_en_out => EM_RTI_en_out,
+        EM_OUT_en_out => EM_OUT_en_out,
+        EM_RET_en_out => EM_RET_en_out,
+        EM_CALL_en_out => EM_CALL_en_out,
+        EM_PC_or_addrs1_en_out => EM_PC_or_addrs1_en_out,
         MM_IN_en_out => MM_IN_en,
         MM_IN_PORT_out => MM_IN_PORT,
         MM_ALU_Out_out => MM_ALU_Out,
         MM_Write_Addr_out => MM_Write_Addr,
         MM_RegWrite_en_out => MM_RegWrite_en,
         MM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en,
-
         EM_Memory_Reset_out => EM_Memory_Reset_out,
-        MM_Memory_Reset_out => MM_Memory_Reset_out
+        MM_Memory_Reset_out => MM_Memory_Reset_out,
+        MM_RET_en_out => MM_RET_en_out,
+        MM_CALL_en_out => MM_CALL_en_out,
+        MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out,
+        MM_RTI_en_out => MM_RTI_en_out,
+        MM_OUT_en_out => MM_OUT_en_out
 
     );
 

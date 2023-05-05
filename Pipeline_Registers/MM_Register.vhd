@@ -15,8 +15,6 @@ ENTITY MM_Register IS
         EM_RET_en_out,
         EM_CALL_en_out,
         EM_PC_or_addrs1_en_out : IN STD_LOGIC;
-
-
         MM_IN_en_out : OUT STD_LOGIC;
         MM_IN_PORT_out, MM_ALU_Out_out : OUT STD_LOGIC_VECTOR (15 DOWNTO 0);
         MM_Write_Addr_out : OUT STD_LOGIC_VECTOR (2 DOWNTO 0);
@@ -29,7 +27,7 @@ ENTITY MM_Register IS
         MM_CALL_en_out,
         MM_PC_or_addrs1_en_out,
         MM_RTI_en_out,
-        MM_OUT_en_out: OUT STD_LOGIC;
+        MM_OUT_en_out : OUT STD_LOGIC
     );
 END MM_Register;
 
