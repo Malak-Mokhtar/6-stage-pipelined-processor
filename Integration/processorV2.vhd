@@ -200,6 +200,34 @@ ARCHITECTURE arch OF processor IS
 
         );
     END COMPONENT;
+
+    -- WriteBack Stage
+
+    COMPONENT WriteBack_Stage IS
+        PORT (
+            -- Inputs:
+            clk, general_rst : IN STD_LOGIC;
+            MW_IN_en_out,
+            MW_RegWrite_en_out,
+            MW_Mem_to_Reg_en_out,
+            -- Phase 2
+            MW_OUT_en_OUT : IN STD_LOGIC;
+            --
+            MW_IN_PORT_out,
+            MW_ALU_Out_out,
+            MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            -- Outputs:
+            Write_Data,
+            --Phase 2:
+            OUT_Port : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            --
+            MW_RegWrite_en : OUT STD_LOGIC;
+            MW_Write_Addr : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
+        );
+    END COMPONENT;
+
     -----------------------------------------------------------------
     -- Fetch Decode Register 
     COMPONENT FD_Register IS
@@ -306,6 +334,30 @@ ARCHITECTURE arch OF processor IS
             EM_RTI_en_out,
             EM_OUT_en_out,
             EM_Interrupt_en_out : OUT STD_LOGIC
+        );
+    END COMPONENT;
+
+    -- MW Reegister
+    COMPONENT MW_Register IS
+        PORT (
+            clk, en, rst, MM_IN_en_out, MM_RegWrite_en_out, MM_Mem_to_Reg_en_out : IN STD_LOGIC;
+            MM_IN_PORT_out, MM_ALU_Out_out, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            MW_IN_en_out, MW_RegWrite_en_out, MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
+            MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            MM_Memory_Reset_out : IN STD_LOGIC;
+            MW_Memory_Reset_out : OUT STD_LOGIC;
+
+            -- phase 2
+            MM_OUT_en_out : IN STD_LOGIC;
+            MM_RTI_en_out : IN STD_LOGIC;
+
+            MW_OUT_en_out : OUT STD_LOGIC;
+            MW_RTI_en_out : OUT STD_LOGIC
+
         );
     END COMPONENT;
     ----------------------------------------------------------------------------  
@@ -467,6 +519,21 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MM_RTI_en_out : STD_LOGIC;
     SIGNAL MM_OUT_en_out : STD_LOGIC;
 
+    -- MW Register
+    SIGNAL MM_IN_en_out : STD_LOGIC;
+    SIGNAL MM_Mem_to_Reg_en_out : STD_LOGIC;
+    SIGNAL MM_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MM_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_IN_en_out : STD_LOGIC;
+    SIGNAL MW_Mem_to_Reg_en_out : STD_LOGIC;
+    SIGNAL MW_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL MW_Memory_Reset_out : STD_LOGIC;
+    SIGNAL MW_OUT_en_out : STD_LOGIC;
+
+    -- WB Stage
+    SIGNAL MW_Write_Addr : STD_LOGIC_VECTOR(2 DOWNTO 0);
+
 BEGIN
     --Internal Fetch Stage
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
@@ -621,7 +688,7 @@ BEGIN
     Internal_Execute_Stage : Execute_Stage PORT MAP(
         clk => clk,
         Reg_File_rst => Reg_File_rst,
-        general_rst => general_rst,
+        general_rst => rst,
         DE_Carry_en_out => DE_Carry_en_out,
         DE_ALU_en_out => DE_ALU_en_out,
         DE_MemWrite_en_out => DE_MemWrite_en_out,
@@ -722,7 +789,7 @@ BEGIN
     --Memory Stage
     Internal_Memory_Stages : Memory_Stages PORT MAP(
         clk => clk,
-        general_rst => general_rst,
+        general_rst => rst,
         EM_IN_en_out => EM_IN_en_out,
         EM_RegWrite_en_out => EM_RegWrite_en_out,
         EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
@@ -761,5 +828,48 @@ BEGIN
         MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out,
         MM_RTI_en_out => MM_RTI_en_out,
         MM_OUT_en_out => MM_OUT_en_out
+    );
+    --MW Register
+    Internal_MW_Register : MW_Register PORT MAP(
+        clk => clk,
+        en => en,
+        rst => rst,
+        MM_IN_en_out => MM_IN_en_out,
+        MM_RegWrite_en_out => MM_RegWrite_en_out,
+        MM_Mem_to_Reg_en_out => MM_Mem_to_Reg_en_out,
+        MM_IN_PORT_out => MM_IN_PORT_out,
+        MM_ALU_Out_out => MM_ALU_Out_out,
+        Read_Data => Read_Data,
+        MM_Write_Addr_out => MM_Write_Addr_out,
+        MW_IN_en_out => MW_IN_en_out,
+        MW_RegWrite_en_out => MW_RegWrite_en_out,
+        MW_Mem_to_Reg_en_out => MW_Mem_to_Reg_en_out,
+        MW_IN_PORT_out => MW_IN_PORT_out,
+        MW_ALU_Out_out => MW_ALU_Out_out,
+        MW_Read_Data_out => MW_Read_Data_out,
+        MW_Write_Addr_out => MW_Write_Addr_out,
+        MM_Memory_Reset_out => MM_Memory_Reset_out,
+        MW_Memory_Reset_out => MW_Memory_Reset_out,
+        MM_OUT_en_out => MM_OUT_en_out,
+        MM_RTI_en_out => MM_RTI_en_out,
+        MW_OUT_en_out => MW_OUT_en_out,
+        MW_RTI_en_out => MW_RTI_en_out
+    );
+    --WriteBack Stage
+    Internal_WriteBack_Stage : WriteBack_Stage PORT MAP(
+        clk => clk,
+        general_rst => general_rst,
+        MW_IN_en_out => MW_IN_en_out,
+        MW_RegWrite_en_out => MW_RegWrite_en_out,
+        MW_Mem_to_Reg_en_out => MW_Mem_to_Reg_en_out,
+        MW_OUT_en_OUT => MW_OUT_en_OUT,
+        MW_IN_PORT_out => MW_IN_PORT_out,
+        MW_ALU_Out_out => MW_ALU_Out_out,
+        MW_Read_Data_out => MW_Read_Data_out,
+        MW_Write_Addr_out => MW_Write_Addr_out,
+        Write_Data => Write_Data,
+        OUT_Port => OUT_Port,
+        MW_RegWrite_en => MW_RegWrite_en,
+        MW_Write_Addr => MW_Write_Addr
     );
 END ARCHITECTURE;
