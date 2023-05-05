@@ -30,28 +30,22 @@ ENTITY Execute_Stage IS
         DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
 
-        --new: MW_Read_Data_out, MM_ALU_OUT, EM_ALU_OUT, 
-        --Write_data,DE_Read_Address2, EM_Write_Addr_out, 
-        --MM_Write_Addr_out, MW_Write_Addr_out
-
+       
 
 
         -- OUTPUT PORTS
         en_structural,
-        SP_before,
-        SP_after,
         ZF_OUT,
         CF_OUT,
         NF_OUT,         
         DE_Carry_en,
         DE_MemWrite_en,
-        DE_MemRead_en: OUT STD_LOGIC;
+        DE_MemRead_en: OUT STD_LOGIC;   
         ALU_Out,
         DE_Read_Data1_final,
-        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-
-        --NEW INPUTS-- including MW_Read_Data_out
-
+        DE_Read_Data2_final,
+        SP_before,
+        SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     
 
 
@@ -342,9 +336,6 @@ BEGIN
     --Remaining Output Signals
     DE_Read_Data1_final <= DE_Read_Data1_final_out_sig;
     DE_Read_Data2_final <= DE_Read_Data2_final_out_sig;
-    ZF_out <= ZF_out;
-    CF_out <= CF_out;
-    NF_out <= NF_out;   
     DE_Carry_en <= DE_Carry_en_out;
     DE_MemWrite_en <= DE_MemWrite_en_out;
     DE_MemRead_en <= DE_MemRead_en_out;
