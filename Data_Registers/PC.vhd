@@ -4,7 +4,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY PC IS
     PORT (
-        clk, rst, JMP_en, CALL_en, MW_RTI_en_out, MW_RET_en_out, PC_disable, en_load_use, en_structural, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT: IN STD_LOGIC;
+        clk, rst, JMP_en, CALL_en, MW_RTI_en_out, MW_RET_en_out, PC_disable, en_load_use, en_structural, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT : IN STD_LOGIC;
         IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
@@ -12,11 +12,11 @@ END PC;
 
 ARCHITECTURE arch OF PC IS
 
-signal PC_final_en, branch: std_logic;
+    SIGNAL PC_final_en, branch : STD_LOGIC;
 
 BEGIN
-branch <= ( (DE_JZ_en_out) and (ZF_OUT) ) or ( (DE_JC_en_out) and (CF_OUT));
-PC_final_en <= JMP_en nor CALL_en nor MW_RTI_en_out nor MW_RET_en_out nor PC_disable nor en_load_use nor en_structural nor branch;
+    branch <= ((DE_JZ_en_out) AND (ZF_OUT)) OR ((DE_JC_en_out) AND (CF_OUT));
+    PC_final_en <= ((JMP_en NOR CALL_en) NOR (MW_RTI_en_out NOR MW_RET_en_out)) NOR ((PC_disable NOR en_load_use) NOR (en_structural NOR branch));
 
     main_loop : PROCESS (clk)
     BEGIN

@@ -57,36 +57,33 @@ BEGIN
     main_loop : PROCESS (clk, rst)
     BEGIN
         IF rst = '1' THEN --check on reset
-            --make all outputs zero
             DE_IN_en_out <= '0';
-            DE_IN_PORT_out <= (OTHERS => '0');
-            DE_Write_Addr_out <= (OTHERS => '0');
             DE_RegWrite_en_out <= '0';
             DE_Carry_en_out <= '0';
             DE_ALU_en_out <= '0';
-            DE_OPCODE_out <= (OTHERS => '0');
-            DE_Read_Data1_out <= (OTHERS => '0');
-            DE_Read_Data2_out <= (OTHERS => '0');
             DE_Mem_to_Reg_en_out <= '0';
             DE_MemWrite_en_out <= '0';
             DE_MemRead_en_out <= '0';
-
-            --phase 2 inputs
-            SETC_en <= '0';
-            CLRC_en <= '0';
-            JZ_en <= '0';
-            JC_en <= '0';
-            SP_en <= '0';
-            SP_inc_en <= '0';
-            RET_en <= '0';
-            CALL_en <= '0';
-            PC_or_addrs1_en <= '0';
-            FLAGS_en <= '0';
-            RTI_en <= '0';
-            OUT_en <= '0';
-            Read_Address1 <= (OTHERS => '0');
-            Read_Address2 <= (OTHERS => '0');
-            Interrupt_en <= '0';
+            DE_IN_PORT_out <= (OTHERS => '0');
+            DE_Read_Data1_out <= (OTHERS => '0');
+            DE_Read_Data2_out <= (OTHERS => '0');
+            DE_Write_Addr_out <= (OTHERS => '0');
+            DE_OPCODE_out <= (OTHERS => '0');
+            DE_SETC_en_out <= '0';
+            DE_CLRC_en_out <= '0';
+            DE_JZ_en_out <= '0';
+            DE_JC_en_out <= '0';
+            DE_SP_en_out <= '0';
+            DE_SP_inc_en_out <= '0';
+            DE_RET_en_out <= '0';
+            DE_CALL_en_out <= '0';
+            DE_PC_or_addrs1_en_out <= '0';
+            DE_FLAGS_en_out <= '0';
+            DE_RTI_en_out <= '0';
+            DE_OUT_en_out <= '0';
+            DE_Interrupt_en_out <= '0';
+            DE_Read_Address1 <= (OTHERS => '0');
+            DE_Read_Address2 <= (OTHERS => '0');
 
         ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;

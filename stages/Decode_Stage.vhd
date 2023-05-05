@@ -120,9 +120,9 @@ ARCHITECTURE arch OF Decode_Stage IS
     -------------------SIGNALS----------------
     -- Phase 2:
     SIGNAL Immediate_en_sig, CALL_en_sig, JMP_en_sig : STD_LOGIC;
-    SIGNAL Add_Value_sig : STD_LOGIC;
-    SIGNAL PC_Added_sig : STD_LOGIC;
-    SIGNAL Read_Data1_sig, Read_Data2_sig : STD_LOGIC;
+    SIGNAL Add_Value_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL PC_Added_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Read_Data1_sig, Read_Data2_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
 

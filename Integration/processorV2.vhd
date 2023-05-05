@@ -130,8 +130,6 @@ ARCHITECTURE arch OF processor IS
 
             -- OUTPUT PORTS
             en_structural,
-            SP_before,
-            SP_after,
             ZF_OUT,
             CF_OUT,
             NF_OUT,
@@ -140,8 +138,9 @@ ARCHITECTURE arch OF processor IS
             DE_MemRead_en : OUT STD_LOGIC;
             ALU_Out,
             DE_Read_Data1_final,
-            DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-
+            DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            SP_before,
+            SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
             --NEW INPUTS-- including MW_Read_Data_out
         );
     END COMPONENT;
