@@ -580,7 +580,7 @@ BEGIN
     Internal_Decode_Stage : Decode_Stage PORT MAP(
         clk => clk,
         Reg_File_rst => rst,
-        FD_Inst => FD_Inst,
+        FD_Inst => FD_Inst_out,
         FD_Read_Address => FD_Read_Address,
         FD_IN_PORT => FD_IN_PORT,
         DE_Read_Data1_out => DE_Read_Data1_out,
