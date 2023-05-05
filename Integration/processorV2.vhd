@@ -96,6 +96,55 @@ ARCHITECTURE arch OF processor IS
 
         );
     END COMPONENT;
+
+    -- Execute Stage
+    COMPONENT Execute_Stage IS
+        PORT (
+            --INPUT PORTS    
+            clk, Reg_File_rst, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
+            DE_Carry_en_out,
+            DE_ALU_en_out,
+            DE_MemWrite_en_out,
+            DE_MemRead_en_out,
+            EM_MemWrite_en_out,
+            EM_MemRead_en_out,
+            DE_JZ_en_out,
+            DE_SETC_en_out,
+            DE_CLRC_en_out,
+            DE_JC_en_out,
+            MW_RTI_en_out,
+            EM_RegWrite_en_out,
+            MM_RegWrite_en_out,
+            MW_RegWrite_en_out,
+            DE_SP_en_out,
+            DE_SP_inc_en_out : IN STD_LOGIC;
+            DE_Read_Data1_out,
+            DE_Read_Data2_out, MW_Read_Data_out,
+            MM_ALU_OUT, EM_ALU_OUT, Write_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            DE_Read_Address1,
+            DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+            --new: MW_Read_Data_out, MM_ALU_OUT, EM_ALU_OUT, 
+            --Write_data,DE_Read_Address2, EM_Write_Addr_out, 
+            --MM_Write_Addr_out, MW_Write_Addr_out
+
+            -- OUTPUT PORTS
+            en_structural,
+            SP_before,
+            SP_after,
+            ZF_OUT,
+            CF_OUT,
+            NF_OUT,
+            DE_Carry_en,
+            DE_MemWrite_en,
+            DE_MemRead_en : OUT STD_LOGIC;
+            ALU_Out,
+            DE_Read_Data1_final,
+            DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+
+            --NEW INPUTS-- including MW_Read_Data_out
+        );
+    END COMPONENT;
     -----------------------------------------------------------------
     -- Fetch Decode Register 
     COMPONENT FD_Register IS
@@ -155,6 +204,53 @@ ARCHITECTURE arch OF processor IS
             DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
             DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
 
+        );
+    END COMPONENT;
+
+    -- EM Register
+    COMPONENT EM_Register IS
+        PORT (
+            clk, en, rst, DE_IN_en_out, DE_RegWrite_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : IN STD_LOGIC;
+            DE_IN_PORT_out, ALU_Out,
+            DE_Read_Data1_final_out, DE_Read_Data2_final_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0); -- Edited in Phase 2
+            DE_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            -- Phase 2 Inputs:
+            SP_before,
+            SP_after : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            en_structural,
+            DE_RTI_en_out,
+            DE_RET_en_out,
+            DE_CALL_en_out,
+            DE_PC_or_addrs1_out,
+            DE_FLAGS_en_out,
+            ZF_OUT,
+            CF_OUT,
+            NF_OUT,
+            DE_Carry_en_out,
+            DE_OUT_en_out,
+            DE_Interrupt_en_out : IN STD_LOGIC;
+
+            EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
+            EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            EM_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+            Memory_Reset_in : IN STD_LOGIC;
+            EM_Memory_Reset_out : OUT STD_LOGIC;
+
+            -- Phase 2 Outputs:
+            EM_SP_before_out,
+            EM_SP_after_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            EM_RET_en_out,
+            EM_CALL_en_out,
+            EM_PC_or_addrs1_out,
+            EM_FLAGS_en_out,
+            EM_ZF_OUT_out,
+            EM_CF_OUT_out,
+            EM_NF_OUT_out,
+            EM_Carry_en_out,
+            EM_RTI_en_out,
+            EM_OUT_en_out,
+            EM_Interrupt_en_out : OUT STD_LOGIC
         );
     END COMPONENT;
     ----------------------------------------------------------------------------  
@@ -246,6 +342,61 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_OUT_en_out : STD_LOGIC;
     SIGNAL DE_Read_Address1 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DE_Read_Address2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+    --Execute stage
+    -- Input signals
+    SIGNAL Reg_File_rst : STD_LOGIC;
+    SIGNAL general_rst : STD_LOGIC;
+    SIGNAL EM_MemWrite_en_out : STD_LOGIC;
+    SIGNAL EM_MemRead_en_out : STD_LOGIC;
+    SIGNAL EM_RegWrite_en_out : STD_LOGIC;
+    SIGNAL MM_RegWrite_en_out : STD_LOGIC;
+    SIGNAL MW_RegWrite_en_out : STD_LOGIC;
+    SIGNAL MM_ALU_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_ALU_OUT : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Write_data : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL MM_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
+
+    -- Output signals
+    SIGNAL SP_before : STD_LOGIC;
+    SIGNAL SP_after : STD_LOGIC;
+    SIGNAL NF_OUT : STD_LOGIC;
+    SIGNAL DE_Carry_en : STD_LOGIC;
+    SIGNAL DE_MemWrite_en : STD_LOGIC;
+    SIGNAL DE_MemRead_en : STD_LOGIC;
+    SIGNAL ALU_Out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_Read_Data1_final : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_Read_Data2_final : STD_LOGIC_VECTOR(15 DOWNTO 0);
+
+    -- EM Register
+    -- Input signals
+    SIGNAL en : STD_LOGIC;
+    SIGNAL DE_Read_Data1_final_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL DE_Read_Data2_final_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Memory_Reset_in : STD_LOGIC;
+
+    -- Output signals
+    SIGNAL EM_IN_en_out : STD_LOGIC;
+    SIGNAL EM_Mem_to_Reg_en_out : STD_LOGIC;
+    SIGNAL EM_IN_PORT_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Read_Data1_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Read_Data2_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_Memory_Reset_out : STD_LOGIC;
+    SIGNAL EM_SP_before_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_SP_after_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL EM_CALL_en_out : STD_LOGIC;
+    SIGNAL EM_PC_or_addrs1_out : STD_LOGIC;
+    SIGNAL EM_FLAGS_en_out : STD_LOGIC;
+    SIGNAL EM_ZF_OUT_out : STD_LOGIC;
+    SIGNAL EM_CF_OUT_out : STD_LOGIC;
+    SIGNAL EM_NF_OUT_out : STD_LOGIC;
+    SIGNAL EM_Carry_en_out : STD_LOGIC;
+    SIGNAL EM_RTI_en_out : STD_LOGIC;
+    SIGNAL EM_OUT_en_out : STD_LOGIC;
+    SIGNAL EM_Interrupt_en_out : STD_LOGIC;
 
 BEGIN
     --Internal Fetch Stage
@@ -397,4 +548,105 @@ BEGIN
         DE_Read_Address2 => DE_Read_Address2
     );
 
+    -- Internal Execute Stage
+    Internal_Execute_Stage : Execute_Stage PORT MAP(
+        clk => clk,
+        Reg_File_rst => Reg_File_rst,
+        general_rst => general_rst,
+        DE_Carry_en_out => DE_Carry_en_out,
+        DE_ALU_en_out => DE_ALU_en_out,
+        DE_MemWrite_en_out => DE_MemWrite_en_out,
+        DE_MemRead_en_out => DE_MemRead_en_out,
+        EM_MemWrite_en_out => EM_MemWrite_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
+        DE_JZ_en_out => DE_JZ_en_out,
+        DE_SETC_en_out => DE_SETC_en_out,
+        DE_CLRC_en_out => DE_CLRC_en_out,
+        DE_JC_en_out => DE_JC_en_out,
+        MW_RTI_en_out => MW_RTI_en_out,
+        EM_RegWrite_en_out => EM_RegWrite_en_out,
+        MM_RegWrite_en_out => MM_RegWrite_en_out,
+        MW_RegWrite_en_out => MW_RegWrite_en_out,
+        DE_SP_en_out => DE_SP_en_out,
+        DE_SP_inc_en_out => DE_SP_inc_en_out,
+        DE_Read_Data1_out => DE_Read_Data1_out,
+        DE_Read_Data2_out => DE_Read_Data2_out,
+        MW_Read_Data_out => MW_Read_Data_out,
+        MM_ALU_OUT => MM_ALU_OUT,
+        EM_ALU_OUT => EM_ALU_OUT,
+        Write_data => Write_data,
+        DE_Read_Address1 => DE_Read_Address1,
+        DE_Read_Address2 => DE_Read_Address2,
+        EM_Write_Addr_out => EM_Write_Addr_out,
+        MM_Write_Addr_out => MM_Write_Addr_out,
+        MW_Write_Addr_out => MW_Write_Addr_out,
+        DE_OPCODE_out => DE_OPCODE_out,
+        en_structural => en_structural,
+        SP_before => SP_before,
+        SP_after => SP_after,
+        ZF_OUT => ZF_OUT,
+        CF_OUT => CF_OUT,
+        NF_OUT => NF_OUT,
+        DE_Carry_en => DE_Carry_en,
+        DE_MemWrite_en => DE_MemWrite_en,
+        DE_MemRead_en => DE_MemRead_en,
+        ALU_Out => ALU_Out,
+        DE_Read_Data1_final => DE_Read_Data1_final,
+        DE_Read_Data2_final => DE_Read_Data2_final
+    );
+
+    Internal_EM_Register : EM_Register PORT MAP(
+        clk => clk,
+        en => en,
+        rst => rst,
+        DE_IN_en_out => DE_IN_en_out,
+        DE_RegWrite_en_out => DE_RegWrite_en_out,
+        DE_Mem_to_Reg_en_out => DE_Mem_to_Reg_en_out,
+        DE_MemWrite_en_out => DE_MemWrite_en_out,
+        DE_MemRead_en_out => DE_MemRead_en_out,
+        DE_IN_PORT_out => DE_IN_PORT_out,
+        ALU_Out => ALU_Out,
+        DE_Read_Data1_final_out => DE_Read_Data1_final_out,
+        DE_Read_Data2_final_out => DE_Read_Data2_final_out,
+        DE_Write_Addr_out => DE_Write_Addr_out,
+        SP_before => SP_before,
+        SP_after => SP_after,
+        en_structural => en_structural,
+        DE_RTI_en_out => DE_RTI_en_out,
+        DE_RET_en_out => DE_RET_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
+        DE_PC_or_addrs1_out => DE_PC_or_addrs1_en_out,
+        DE_FLAGS_en_out => DE_FLAGS_en_out,
+        ZF_OUT => ZF_OUT,
+        CF_OUT => CF_OUT,
+        NF_OUT => NF_OUT,
+        DE_Carry_en_out => DE_Carry_en_out,
+        DE_OUT_en_out => DE_OUT_en_out,
+        DE_Interrupt_en_out => DE_Interrupt_en_out,
+        Memory_Reset_in => Memory_Reset_in,
+        EM_IN_en_out => EM_IN_en_out,
+        EM_RegWrite_en_out => EM_RegWrite_en_out,
+        EM_Mem_to_Reg_en_out => EM_Mem_to_Reg_en_out,
+        EM_MemWrite_en_out => EM_MemWrite_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
+        EM_IN_PORT_out => EM_IN_PORT_out,
+        EM_ALU_Out_out => EM_ALU_Out_out,
+        EM_Read_Data1_out => EM_Read_Data1_out,
+        EM_Read_Data2_out => EM_Read_Data2_out,
+        EM_Write_Addr_out => EM_Write_Addr_out,
+        EM_Memory_Reset_out => EM_Memory_Reset_out,
+        EM_SP_before_out => EM_SP_before_out,
+        EM_SP_after_out => EM_SP_after_out,
+        EM_RET_en_out => EM_RET_en_out,
+        EM_CALL_en_out => EM_CALL_en_out,
+        EM_PC_or_addrs1_out => EM_PC_or_addrs1_out,
+        EM_FLAGS_en_out => EM_FLAGS_en_out,
+        EM_ZF_OUT_out => EM_ZF_OUT_out,
+        EM_CF_OUT_out => EM_CF_OUT_out,
+        EM_NF_OUT_out => EM_NF_OUT_out,
+        EM_Carry_en_out => EM_Carry_en_out,
+        EM_RTI_en_out => EM_RTI_en_out,
+        EM_OUT_en_out => EM_OUT_en_out,
+        EM_Interrupt_en_out => EM_Interrupt_en_out
+    );
 END ARCHITECTURE;
