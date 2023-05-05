@@ -51,8 +51,8 @@ BEGIN
             MW_Read_Data_out <= Read_Data;
             MW_Write_Addr_out <= MM_Write_Addr_out;
             MW_Mem_to_Reg_en_out <= MM_Mem_to_Reg_en_out;
-            MM_OUT_en_out <= MW_OUT_en_out;
-            MM_RTI_en_out <= MW_RTI_en_out;
+            MW_OUT_en_out <= MM_OUT_en_out;
+            MW_RTI_en_out <= MM_RTI_en_out;
         END IF;
         IF falling_edge(clk) THEN
             MW_Memory_Reset_out <= MM_Memory_Reset_out;
