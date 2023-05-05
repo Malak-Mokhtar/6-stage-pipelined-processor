@@ -467,8 +467,8 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MW_Write_Addr_out : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
     -- Output signals
-    SIGNAL SP_before : STD_LOGIC;
-    SIGNAL SP_after : STD_LOGIC;
+    SIGNAL SP_before : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL SP_after : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL NF_OUT : STD_LOGIC;
     SIGNAL DE_Carry_en : STD_LOGIC;
     SIGNAL DE_MemWrite_en : STD_LOGIC;
