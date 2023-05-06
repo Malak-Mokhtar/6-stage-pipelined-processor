@@ -16,9 +16,10 @@ ENTITY Execute_Stage IS
         DE_SETC_en_out,
         DE_CLRC_en_out,
         DE_JC_en_out,
-        MW_RTI_en_out,
+        MW_RTI_en_out, --Should be passed from outside, !!!FOR MARK!!!!
         EM_RegWrite_en_out,
         MM_RegWrite_en_out,
+        MW_FLAGS_en_out,
         MW_RegWrite_en_out,
         DE_SP_en_out,
         DE_SP_inc_en_out : IN STD_LOGIC;
@@ -37,10 +38,12 @@ ENTITY Execute_Stage IS
         en_structural,
         ZF_OUT,
         CF_OUT,
-        NF_OUT,         
+        NF_OUT,
+            
         DE_Carry_en,
         DE_MemWrite_en,
-        DE_MemRead_en: OUT STD_LOGIC;   
+        DE_MemRead_en,
+        DE_RTI_en_out: OUT STD_LOGIC;   
         ALU_Out,
         DE_Read_Data1_final,
         DE_Read_Data2_final,
@@ -83,38 +86,38 @@ ARCHITECTURE arch OF Execute_Stage IS
 
 
     component MUX_ZF IS 
-	PORT ( ZF_EXCEPT_RTI,ZF_RTI,RTI_en : IN  std_logic;
+	PORT ( ZF_EXCEPT_RTI,ZF_RTI,FLAGS_en : IN  std_logic;
 			ZF_selected : OUT std_logic);
     END component;
 
     component MUX_CF IS 
-	PORT ( CF_EXCEPT_RTI,CF_RTI,RTI_en : IN  std_logic;
+	PORT ( CF_EXCEPT_RTI,CF_RTI,FLAGS_en : IN  std_logic;
 			CF_selected : OUT std_logic);
     END component;
 
 
     component MUX_NF IS 
-	PORT ( NF_ALU,NF_RTI,RTI_en : IN  std_logic;
+	PORT ( NF_ALU,NF_RTI,FLAGS_en : IN  std_logic;
 			NF_selected : OUT std_logic);
     END component;
 
 
     component ZF IS
     PORT (
-        ZF_Selected, clk, rst, DE_ALU_en_out, MW_RTI_en_out, DE_JZ_en_out : IN STD_LOGIC;
+        ZF_Selected, clk, rst, DE_ALU_en_out, MW_FLAGS_en_out, DE_JZ_en_out : IN STD_LOGIC;
         ZF_OUT : OUT STD_LOGIC);
     END component;
 
     component CF IS
     PORT (
-        CF_Selected, clk, rst, DE_Carry_en_out, MW_RTI_en_out : IN STD_LOGIC;
+        CF_Selected, clk, rst, DE_Carry_en_out, MW_FLAGS_en_out : IN STD_LOGIC;
         CF_OUT : OUT STD_LOGIC);
     END component;
 
 
     component NF IS
     PORT (
-        NF_Selected, clk, rst, DE_ALU_en_out, MW_RTI_en_out : IN STD_LOGIC;
+        NF_Selected, clk, rst, DE_ALU_en_out, MW_FLAGS_en_out : IN STD_LOGIC;
         NF_OUT : OUT STD_LOGIC);
     end component;
 
@@ -218,28 +221,28 @@ BEGIN
     MUX_ZF_MAP: MUX_ZF port map (
         ZF_EXCEPT_RTI => ZF_EXCEPT_RTI_SIG,
         ZF_RTI => ZF_RTI_SIG,
-        RTI_en => MW_RTI_en_out,
+        FLAGS_en => MW_FLAGS_en_out,
         ZF_selected => ZF_selected_SIG
     );
 
     MUX_CF_MAP: MUX_CF port map(
         CF_EXCEPT_RTI => CF_EXCEPT_RTI_SIG,
         CF_RTI => CF_RTI_SIG,
-        RTI_en => MW_RTI_en_out,
+        FLAGS_en => MW_FLAGS_en_out,
         CF_selected => CF_selected_SIG
     );
 
     MUX_NF_MAP: MUX_NF port map(
         NF_ALU => NF_SIG,
         NF_RTI => NF_RTI_SIG,
-        RTI_en => MW_RTI_en_out,
+        FLAGS_en => MW_FLAGS_en_out,
         NF_selected => NF_selected_SIG
     );
     
     ZF_MAP: ZF port map(
         ZF_Selected => ZF_selected_SIG,
         DE_JZ_en_out => DE_JZ_en_out,
-        MW_RTI_en_out => MW_RTI_en_out,
+        MW_FLAGS_en_out => MW_FLAGS_en_out,
         DE_ALU_en_out => DE_ALU_en_out,
         ZF_OUT => ZF_OUT,
         clk => clk,
@@ -249,7 +252,7 @@ BEGIN
     NF_MAP: NF port map(
         NF_Selected => NF_selected_SIG,
         DE_ALU_en_out => DE_ALU_en_out,
-        MW_RTI_en_out => MW_RTI_en_out,
+        MW_FLAGS_en_out => MW_FLAGS_en_out,
         NF_OUT => NF_OUT,
         clk => clk,
         rst => general_rst
@@ -258,7 +261,7 @@ BEGIN
     CF_MAP: CF port map(
         CF_Selected => CF_selected_SIG,
         DE_Carry_en_out => DE_Carry_en_out,
-        MW_RTI_en_out => MW_RTI_en_out,
+        MW_FLAGS_en_out => MW_FLAGS_en_out,
         clk => clk,
         rst =>general_rst,
         CF_out => CF_out
@@ -341,7 +344,7 @@ BEGIN
     DE_MemRead_en <= DE_MemRead_en_out;
     SP_after <= SP_after_sig;
     SP_before <= SP_before_sig;
-
+    DE_RTI_en_out <= MW_RTI_en_out;
 
 
     
