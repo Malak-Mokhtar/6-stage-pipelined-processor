@@ -338,24 +338,39 @@ ARCHITECTURE arch OF processor IS
 
     -- MW Reegister
     COMPONENT MW_Register IS
-        PORT (
-            clk, en, rst, MM_IN_en_out, MM_RegWrite_en_out, MM_Mem_to_Reg_en_out : IN STD_LOGIC;
-            MM_IN_PORT_out, MM_ALU_Out_out, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            MM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+    PORT (
+        clk, en, rst, 
+        MM_IN_en_out, 
+        MM_RegWrite_en_out, 
+        MM_Mem_to_Reg_en_out : IN STD_LOGIC;
+        MM_IN_PORT_out, 
+        MM_ALU_Out_out, 
+        Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
 
-            MW_IN_en_out, MW_RegWrite_en_out, MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
-            MW_IN_PORT_out, MW_ALU_Out_out, MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        MW_IN_en_out, 
+        MW_RegWrite_en_out, 
+        MW_Mem_to_Reg_en_out : OUT STD_LOGIC;
+        MW_IN_PORT_out, 
+        MW_ALU_Out_out, 
+        MW_Read_Data_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MW_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
 
-            MM_Memory_Reset_out : IN STD_LOGIC;
-            MW_Memory_Reset_out : OUT STD_LOGIC;
+        MM_Memory_Reset_out : IN STD_LOGIC;
+        MW_Memory_Reset_out : OUT STD_LOGIC;
 
-            -- phase 2
-            MM_OUT_en_out : IN STD_LOGIC;
-            MM_RTI_en_out : IN STD_LOGIC;
+        -- phase 2
+        MM_OUT_en_out : IN STD_LOGIC;
+        MM_RTI_en_out : IN STD_LOGIC;
+        MM_RET_en_out,
+        MM_CALL_en_out,
+        MM_PC_or_addrs1_en_out : IN STD_LOGIC;
 
-            MW_OUT_en_out : OUT STD_LOGIC;
-            MW_RTI_en_out : OUT STD_LOGIC
+        MW_OUT_en_out : OUT STD_LOGIC;
+        MW_RTI_en_out : OUT STD_LOGIC;
+        MW_RET_en_out,
+        MW_CALL_en_out,
+        MW_PC_or_addrs1_en_out : OUT STD_LOGIC
 
         );
     END COMPONENT;
@@ -529,6 +544,8 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MW_ALU_Out_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL MW_Memory_Reset_out : STD_LOGIC;
     SIGNAL MW_OUT_en_out : STD_LOGIC;
+    --
+    SIGNAL MW_CALL_en_out : STD_LOGIC;
 
     -- WB Stage
     SIGNAL MW_Write_Addr : STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -572,7 +589,7 @@ BEGIN
         Read_Address => Read_Address,
         IN_PORT => IN_PORT,
         FD_Inst_out => FD_Inst_out,
-        FD_Read_Address_out => FD_Read_Address_out,
+        FD_Read_Address_out => FD_Read_Address, --
         FD_IN_PORT_out => FD_IN_PORT_out
     );
 
@@ -851,8 +868,14 @@ BEGIN
         MW_Memory_Reset_out => MW_Memory_Reset_out,
         MM_OUT_en_out => MM_OUT_en_out,
         MM_RTI_en_out => MM_RTI_en_out,
+        MM_RET_en_out => MM_RET_en_out,
+        MM_CALL_en_out => MM_CALL_en_out,
+        MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out ,
         MW_OUT_en_out => MW_OUT_en_out,
-        MW_RTI_en_out => MW_RTI_en_out
+        MW_RTI_en_out => MW_RTI_en_out,
+        MW_RET_en_out => MW_RET_en_out,
+        MW_CALL_en_out => MW_CALL_en_out,
+        MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out
     );
     --WriteBack Stage
     Internal_WriteBack_Stage : WriteBack_Stage PORT MAP(
