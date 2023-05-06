@@ -695,7 +695,7 @@ BEGIN
         DE_FLAGS_en_out => DE_FLAGS_en_out,
         DE_RTI_en_out => DE_RTI_en_out,
         DE_OUT_en_out => DE_OUT_en_out,
-        DE_Interrupt_en_out => DE_Interrupt_en_out,
+        DE_Interrupt_en_out => Interrupt_en,
         DE_Read_Address1 => DE_Read_Address1,
         DE_Read_Address2 => DE_Read_Address2
     );
