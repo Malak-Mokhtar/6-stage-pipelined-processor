@@ -12,4 +12,4 @@ ARCHITECTURE when_else_mux OF MUX_NF is
 		
     NF_selected <= 	NF_ALU when FLAGS_en = '0'
 	else	NF_RTI; 
-END when_else_mux;
+END when_else_mux; --T3BT

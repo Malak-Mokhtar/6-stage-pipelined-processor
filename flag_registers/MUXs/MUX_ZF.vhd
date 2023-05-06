@@ -12,4 +12,4 @@ ARCHITECTURE when_else_mux OF MUX_ZF is
 		
     ZF_selected <= 	ZF_EXCEPT_RTI when FLAGS_en = '0'
 	else	ZF_RTI; 
-END when_else_mux;
+END when_else_mux; --T3BT

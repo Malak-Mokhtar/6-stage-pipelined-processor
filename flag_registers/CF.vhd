@@ -16,4 +16,4 @@ BEGIN
             CF_OUT <= CF_Selected;
         END IF;
     END PROCESS;
-END my_CF;
+END my_CF; --T3BT
