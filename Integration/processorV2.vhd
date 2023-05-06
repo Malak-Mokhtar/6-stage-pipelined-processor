@@ -584,7 +584,7 @@ BEGIN
         DE_RET_en_out => DE_RET_en_out,
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
-        DE_Interrupt_en_out => DE_Interrupt_en_out,
+        DE_Interrupt_en_out => Interrupt_en,
         Inst => Inst,
         Read_Address => Read_Address,
         IN_PORT => IN_PORT,
