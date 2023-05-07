@@ -54,7 +54,8 @@ ENTITY Decode_Stage IS
         Immediate_en : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
-        PC_or_addrs1_en : OUT STD_LOGIC
+        PC_or_addrs1_en : OUT STD_LOGIC;
+        DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0) 
 
     );
 END Decode_Stage;
@@ -216,5 +217,7 @@ BEGIN
     CALL_en <= CALL_en_sig;
     JMP_en <= JMP_en_sig;
     Immediate_en <= Immediate_en_sig;
-
+    DE_Read_Address1 <= FD_Inst(26 DOWNTO 24);
+    DE_Read_Address2 <= FD_Inst(23 DOWNTO 21);
+    
 END ARCHITECTURE;
