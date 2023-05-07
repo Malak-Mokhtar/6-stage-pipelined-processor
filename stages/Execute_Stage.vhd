@@ -294,6 +294,7 @@ BEGIN
         SP_after => SP_after_sig,
         SP_before => SP_before_sig
     );
+    
     --Remaining Output Signals
     DE_Read_Data1_final <= DE_Read_Data1_final_out_sig;
     DE_Read_Data2_final <= DE_Read_Data2_final_out_sig;
