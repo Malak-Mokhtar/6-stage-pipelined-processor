@@ -126,7 +126,7 @@ ARCHITECTURE arch OF Memory_Stages IS
     END COMPONENT;
 
     -------------------SIGNALS----------------
-    SIGNAL MM_en : STD_LOGIC := '1';
+    SIGNAL MM_en : STD_LOGIC := '0';
     -- Phase 2
     SIGNAL Read_Data1, Read_Data2, Flags_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
 BEGIN

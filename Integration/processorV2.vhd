@@ -42,62 +42,60 @@ ARCHITECTURE arch OF processor IS
     -- Decode Stage
     COMPONENT Decode_Stage IS
         PORT (
-        --INPUT PORTS    
-        clk, Reg_File_rst : IN STD_LOGIC;
-        FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        FD_Read_Address,
-        FD_IN_PORT,
-        --Phase 2:
-        DE_Read_Data1_out,
-        MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        --
-        MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-        MW_RegWrite_en,
-        -- Phase 2:
-        MW_RET_en_out,
-        DE_JZ_en_out,
-        DE_JC_en_out,
-        MW_PC_or_addrs1_en_out,
-        MW_RTI_en_out,
-        ZF_OUT,
-        CF_OUT : IN STD_LOGIC;
+            --INPUT PORTS    
+            clk, Reg_File_rst : IN STD_LOGIC;
+            FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+            FD_Read_Address,
+            FD_IN_PORT,
+            --Phase 2:
+            DE_Read_Data1_out,
+            MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            --
+            MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+            MW_RegWrite_en,
+            -- Phase 2:
+            MW_RET_en_out,
+            DE_JZ_en_out,
+            DE_JC_en_out,
+            MW_PC_or_addrs1_en_out,
+            MW_RTI_en_out,
+            ZF_OUT,
+            CF_OUT : IN STD_LOGIC;
 
-        -- OUTPUT PORTS
-        IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        IN_en : OUT STD_LOGIC;
-        FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Write_address_RD : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-        RegWrite_en : OUT STD_LOGIC;
-        Carry_en : OUT STD_LOGIC;
-        ALU_en : OUT STD_LOGIC;
-        OPCODE : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
-        Read_Data1 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Read_Data2 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Mem_to_Reg_en : OUT STD_LOGIC;
-        MemWrite_en : OUT STD_LOGIC;
-        MemRead_en : OUT STD_LOGIC;
-        -- Phase 2:
-        SETC_en,
-        CLRC_en,
-        JZ_en,
-        JC_en,
-        SP_en,
-        SP_inc_en,
-        RET_en,
-        OUT_en,
-        RTI_en,
-        CALL_en,
-        JMP_en,
-        Immediate_en : OUT STD_LOGIC;
-        Interrupt_en : OUT STD_LOGIC;
-        FLAGS_en : OUT STD_LOGIC;
-        PC_or_addrs1_en : OUT STD_LOGIC;
-        DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0) 
-
-
+            -- OUTPUT PORTS
+            IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            IN_en : OUT STD_LOGIC;
+            FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Write_address_RD : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+            RegWrite_en : OUT STD_LOGIC;
+            Carry_en : OUT STD_LOGIC;
+            ALU_en : OUT STD_LOGIC;
+            OPCODE : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
+            Read_Data1 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Read_Data2 : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            Mem_to_Reg_en : OUT STD_LOGIC;
+            MemWrite_en : OUT STD_LOGIC;
+            MemRead_en : OUT STD_LOGIC;
+            -- Phase 2:
+            SETC_en,
+            CLRC_en,
+            JZ_en,
+            JC_en,
+            SP_en,
+            SP_inc_en,
+            RET_en,
+            OUT_en,
+            RTI_en,
+            CALL_en,
+            JMP_en,
+            Immediate_en : OUT STD_LOGIC;
+            Interrupt_en : OUT STD_LOGIC;
+            FLAGS_en : OUT STD_LOGIC;
+            PC_or_addrs1_en : OUT STD_LOGIC;
+            DE_Read_Address1, DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
         );
-    END COMPONENT;  
+    END COMPONENT;
 
     -- Execute Stage
     COMPONENT Execute_Stage IS
@@ -441,8 +439,8 @@ ARCHITECTURE arch OF processor IS
     SIGNAL Immediate_en : STD_LOGIC;
     SIGNAL PC_or_addrs1_en : STD_LOGIC;
     SIGNAL FLAGS_en : STD_LOGIC;
-    SIGNAL DE_Read_Address1 : STD_LOGIC_VECTOR(2 downto 0);
-    SIGNAL DE_Read_Address2 : STD_LOGIC_VECTOR(2 downto 0);
+    SIGNAL DE_Read_Address1 : STD_LOGIC_VECTOR(2 DOWNTO 0);
+    SIGNAL DE_Read_Address2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
 
     -- Decode Execute Register
     SIGNAL Inst_20_to_18_Write_Addrs : STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -611,8 +609,8 @@ BEGIN
         FD_IN_PORT => FD_IN_PORT,
         DE_Read_Data1_out => DE_Read_Data1_out,
         MW_Read_Data_out => MW_Read_Data_out,
-        MW_Write_Data => MW_Write_Data,
-        MW_Write_Address => MW_Write_Address,
+        MW_Write_Data => Write_Data,
+        MW_Write_Address => MW_Write_Addr,
         MW_RegWrite_en => MW_RegWrite_en,
         MW_RET_en_out => MW_RET_en_out,
         DE_JZ_en_out => DE_JZ_en_out,
@@ -666,8 +664,8 @@ BEGIN
         FD_IN_PORT_out => FD_IN_PORT_out,
         Read_Data1 => Read_Data1,
         Read_Data2 => Read_Data2,
-        Inst_20_to_18_Write_Addrs => Inst_20_to_18_Write_Addrs,
-        Inst_31_to_27_OPCODE => Inst_31_to_27_OPCODE,
+        Inst_20_to_18_Write_Addrs => FD_Inst_out(20 DOWNTO 18),
+        Inst_31_to_27_OPCODE => FD_Inst_out(31 DOWNTO 27),
         SETC_en => SETC_en,
         CLRC_en => CLRC_en,
         JZ_en => JZ_en,
@@ -762,7 +760,7 @@ BEGIN
 
     Internal_EM_Register : EM_Register PORT MAP(
         clk => clk,
-        en => en,
+        en => en_structural,
         rst => rst,
         DE_IN_en_out => DE_IN_en_out,
         DE_RegWrite_en_out => DE_RegWrite_en_out,
@@ -862,7 +860,7 @@ BEGIN
     --MW Register
     Internal_MW_Register : MW_Register PORT MAP(
         clk => clk,
-        en => en,
+        en => en_structural,
         rst => rst,
         MM_FLAGS_en_out => MM_FLAGS_en_out,
         MM_IN_en_out => MM_IN_en_out,
@@ -871,7 +869,7 @@ BEGIN
         MM_IN_PORT_out => MM_IN_PORT_out,
         MM_ALU_Out_out => MM_ALU_Out_out,
         Read_Data => Read_Data,
-        MM_Write_Addr_out => MM_Write_Addr_out,
+        MM_Write_Addr_out => MM_Write_Addr,
         MW_IN_en_out => MW_IN_en_out,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
         MW_Mem_to_Reg_en_out => MW_Mem_to_Reg_en_out,

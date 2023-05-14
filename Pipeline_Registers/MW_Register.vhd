@@ -63,7 +63,7 @@ BEGIN
             MW_PC_or_addrs1_en_out <= '0';
             MW_FLAGS_en_out <= '0';
 
-        ELSIF falling_edge(clk) AND en = '1' THEN --check on enable and falling edge
+        ELSIF falling_edge(clk) AND ((NOT en) = '1') THEN --check on enable and falling edge
             MW_IN_en_out <= MM_IN_en_out;
             MW_RegWrite_en_out <= MM_RegWrite_en_out;
             MW_IN_PORT_out <= MM_IN_PORT_out;
