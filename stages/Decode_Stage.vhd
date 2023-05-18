@@ -14,7 +14,7 @@ ENTITY Decode_Stage IS
         MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         --
         MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        MW_Write_Address, DE_Write_Addr_out, EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         MW_RegWrite_en,
         -- Phase 2:
         MW_RET_en_out,
@@ -25,7 +25,9 @@ ENTITY Decode_Stage IS
         MW_PC_or_addrs1_en_out,
         MW_RTI_en_out,
         ZF_OUT,
-        CF_OUT : IN STD_LOGIC;
+        CF_OUT,
+        DE_MemRead_en_out,
+        EM_MemRead_en_out : IN STD_LOGIC;
 
         -- OUTPUT PORTS
         IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -53,7 +55,8 @@ ENTITY Decode_Stage IS
         RTI_en,
         CALL_en,
         JMP_en,
-        Immediate_en : OUT STD_LOGIC;
+        Immediate_en,
+        en_load_use : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         PC_disable : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
@@ -66,6 +69,18 @@ END Decode_Stage;
 ARCHITECTURE arch OF Decode_Stage IS
 
     -------------------COMPONENTS----------------
+
+    -- loaduse
+
+    component loaduse IS
+    PORT( Read_Address1, Read_Address2, DE_Write_Addr_out, EM_Write_Addr_out: IN std_logic_vector(2 DOWNTO 0);
+    DE_MemRead_en_out,EM_MemRead_en_out: IN std_logic;
+    en_load_use: out std_logic
+    );
+    END component;
+
+
+
     -- adder for PC (Edited in Phase 2)
     COMPONENT adder IS
         PORT (
@@ -129,6 +144,18 @@ ARCHITECTURE arch OF Decode_Stage IS
 
 BEGIN
 
+
+
+    loaduse_map : loaduse port map
+    (
+    Read_Address1 => FD_Inst(26 DOWNTO 24),
+    Read_Address2 => FD_Inst(23 DOWNTO 21),
+    DE_Write_Addr_out => DE_Write_Addr_out,
+    EM_Write_Addr_out => EM_Write_Addr_out,
+    DE_MemRead_en_out => DE_MemRead_en_out,
+    EM_MemRead_en_out => DE_MemRead_en_out,
+    en_load_use => en_load_use
+    );
     --adder initialization (Edited in Phase 2)
     Adder_MAP : adder PORT MAP(
         FD_Read_Address_out => FD_Read_Address,
