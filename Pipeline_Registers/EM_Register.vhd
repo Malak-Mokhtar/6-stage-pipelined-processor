@@ -85,7 +85,7 @@ BEGIN
             EM_OUT_en_out <= '0';
             EM_Interrupt_en_out <= '0';
 
-        ELSIF falling_edge(clk) AND ((NOT en) = '1') THEN --check on enable and falling edge
+        ELSIF falling_edge(clk) AND (en = '1') THEN --check on enable and falling edge
             EM_Write_Addr_out <= DE_Write_Addr_out;
             EM_IN_en_out <= DE_IN_en_out;
             EM_RegWrite_en_out <= DE_RegWrite_en_out;

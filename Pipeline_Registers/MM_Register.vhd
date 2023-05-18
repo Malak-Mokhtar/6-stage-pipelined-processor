@@ -51,7 +51,7 @@ BEGIN
             MM_RTI_en_out <= '0';
             MM_OUT_en_out <= '0';
             MM_FLAGS_en_out <= '0';
-        ELSIF falling_edge(clk) AND ((NOT en) = '1') THEN --check on enable and falling edge
+        ELSIF falling_edge(clk) AND ( en = '1') THEN --check on enable and falling edge
             MM_IN_en_out <= EM_IN_en_out;
             MM_IN_PORT_out <= EM_IN_PORT_out;
             MM_ALU_Out_out <= EM_ALU_Out_out;

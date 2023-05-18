@@ -108,7 +108,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT Execute_Stage IS
         PORT (
             --INPUT PORTS    
-            clk, Reg_File_rst, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
+            clk, general_rst : IN STD_LOGIC;
             DE_Carry_en_out,
             DE_ALU_en_out,
             DE_MemWrite_en_out,
@@ -240,19 +240,20 @@ ARCHITECTURE arch OF processor IS
     -----------------------------------------------------------------
     -- Fetch Decode Register 
     COMPONENT FD_Register IS
-        PORT (
-            clk, en_structural, en_load_use : IN STD_LOGIC;
-            rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out, DE_Interrupt_en_out : IN STD_LOGIC;
-            Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-            Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-            FD_Read_Address_out, FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-        );
+    PORT (
+        clk, en_structural, en_load_use : IN STD_LOGIC;
+        rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out, DE_Interrupt_en_out,
+        DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out: IN STD_LOGIC;
+        Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        FD_Read_Address_out, FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+    );
     END COMPONENT;
     --Decode Execute Register
     COMPONENT DE_Register IS
     PORT (
-        clk, en_structural, rst : IN STD_LOGIC;
+        clk, en_structural, en_load_use, rst : IN STD_LOGIC;
         IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable : IN STD_LOGIC;
         FD_IN_PORT_out, Read_Data1, Read_Data2: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -389,6 +390,7 @@ ARCHITECTURE arch OF processor IS
         );
     END COMPONENT;
     ----------------------------------------------------------------------------  
+    SIGNAL en : STD_LOGIC;
     -- Fetch Stage Signals
     SIGNAL pc_rst : STD_LOGIC;
     SIGNAL JMP_en : STD_LOGIC;
@@ -483,7 +485,6 @@ ARCHITECTURE arch OF processor IS
 
     --Execute stage
     -- Input signals
-    SIGNAL Reg_File_rst : STD_LOGIC;
     SIGNAL general_rst : STD_LOGIC;
     SIGNAL EM_MemWrite_en_out : STD_LOGIC;
     SIGNAL EM_MemRead_en_out : STD_LOGIC;
@@ -510,7 +511,6 @@ ARCHITECTURE arch OF processor IS
 
     -- EM Register
     -- Input signals
-    SIGNAL en : STD_LOGIC;
     SIGNAL DE_Read_Data1_final_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL DE_Read_Data2_final_out : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Memory_Reset_in : STD_LOGIC;
@@ -572,6 +572,7 @@ ARCHITECTURE arch OF processor IS
    
 
 BEGIN
+    en <= '1';
     --Internal Fetch Stage
     -- en_load_use <= '0'; -- to be deleted once load use component is added
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
@@ -607,6 +608,11 @@ BEGIN
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
         DE_Interrupt_en_out => Interrupt_en,
+        DE_RTI_en_out => DE_RTI_en_out,
+        EM_RTI_en_out => EM_RTI_en_out,
+        MM_RTI_en_out => MM_RTI_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
+        DE_JMP_en_out => DE_JMP_en_out,
         Inst => Inst,
         Read_Address => Read_Address,
         IN_PORT => IN_PORT,
@@ -677,6 +683,7 @@ BEGIN
     Internal_DE_Register : DE_Register PORT MAP(
         clk => clk,
         en_structural => en_structural,
+        en_load_use => en_load_use,
         rst => rst,
         IN_en => IN_en,
         RegWrite_en => RegWrite_en,
@@ -741,7 +748,6 @@ BEGIN
     -- Internal Execute Stage
     Internal_Execute_Stage : Execute_Stage PORT MAP(
         clk => clk,
-        Reg_File_rst => Reg_File_rst,
         general_rst => rst,
         DE_Carry_en_out => DE_Carry_en_out,
         DE_ALU_en_out => DE_ALU_en_out,
@@ -788,7 +794,7 @@ BEGIN
 
     Internal_EM_Register : EM_Register PORT MAP(
         clk => clk,
-        en => en_structural,
+        en => en,
         rst => rst,
         DE_IN_en_out => DE_IN_en_out,
         DE_RegWrite_en_out => DE_RegWrite_en_out,
@@ -888,7 +894,7 @@ BEGIN
     --MW Register
     Internal_MW_Register : MW_Register PORT MAP(
         clk => clk,
-        en => en_structural,
+        en => en,
         rst => rst,
         MM_FLAGS_en_out => MM_FLAGS_en_out,
         MM_IN_en_out => MM_IN_en,

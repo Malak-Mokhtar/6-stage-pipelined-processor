@@ -5,7 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY Execute_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, Reg_File_rst, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
+        clk, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
         DE_Carry_en_out,
         DE_ALU_en_out,
         DE_MemWrite_en_out,

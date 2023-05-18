@@ -4,7 +4,7 @@ USE ieee.numeric_std.ALL;
 
 ENTITY DE_Register IS
     PORT (
-        clk, en_structural, rst : IN STD_LOGIC;
+        clk, en_structural, en_load_use, rst : IN STD_LOGIC;
         IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable : IN STD_LOGIC;
         FD_IN_PORT_out, Read_Data1, Read_Data2: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -54,11 +54,12 @@ ENTITY DE_Register IS
 END DE_Register;
 
 ARCHITECTURE arch OF DE_Register IS
-
+signal pipelined_rst: std_logic;
 BEGIN
+    pipelined_rst<= rst OR (NOT en_load_use);
     main_loop : PROCESS (clk, rst)
     BEGIN
-        IF rst = '1' THEN --check on reset
+        IF pipelined_rst = '1' THEN --check on reset
             DE_IN_en_out <= '0';
             DE_RegWrite_en_out <= '0';
             DE_Carry_en_out <= '0';
