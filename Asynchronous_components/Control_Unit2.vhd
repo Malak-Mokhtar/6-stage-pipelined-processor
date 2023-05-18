@@ -6,7 +6,7 @@ ENTITY Control_Unit IS
     PORT (
         OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
-        RET_en, OUT_en, RTI_en : OUT STD_LOGIC;
+        RET_en, OUT_en, RTI_en, PC_disable : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC
@@ -21,14 +21,13 @@ BEGIN
     In_en <= NOT OPCODE(4) AND NOT OPCODE(3) AND OPCODE(2) and (not OPCODE(0));
     Carry_en <= ((not OPCODE(4) and OPCODE(1)) and (not OPCODE(0))) or (not OPCODE(4) and (OPCODE(2) and OPCODE(1))) or ( ( not OPCODE(4) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) ) or (( not OPCODE(4) and OPCODE(3)) and ( not OPCODE(2)  and  not OPCODE(1) ) ) or (( OPCODE(3) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) );
     ALU_en <= (not OPCODE(4)) AND OPCODE(3);
-    RegWrite_en <= OPCODE(1) OR (NOT OPCODE(4) AND OPCODE(2));
     MemRead_en <= ((OPCODE(4) and OPCODE(3)) AND OPCODE(2)) OR ((OPCODE(4) AND OPCODE(1)) AND (not OPCODE(3)));
     Mem_to_Reg_en <= OPCODE(4) AND ((NOT OPCODE(3)) AND OPCODE(1));
-    MemWrite_en <= ((NOT OPCODE(3) AND OPCODE(2)) AND (NOT OPCODE(0))) OR ((OPCODE(4) AND (NOT OPCODE(3))) AND ((NOT OPCODE(1)) AND OPCODE(0))) OR ((OPCODE(4) AND OPCODE(3)) AND
-    (OPCODE(1) AND OPCODE(0)));
-
+    
     ---------
-
+    RegWrite_en <= (((NOT OPCODE(3)) AND (OPCODE(2))) AND OPCODE(0)) OR ((OPCODE(4) AND (NOT OPCODE(3))) AND (OPCODE(1) AND OPCODE(0))) OR (((NOT OPCODE(4))) AND OPCODE(3)) OR (((OPCODE(4) AND NOT OPCODE(3))) AND (((NOT OPCODE(2)) AND NOT OPCODE(1)) AND NOT OPCODE(0)));
+    MemWrite_en <= ((((OPCODE(4) AND (NOT OPCODE(3))) AND (NOT OPCODE(2))) AND (NOT OPCODE(1))) AND OPCODE(0)) OR (((OPCODE(4) AND (NOT OPCODE(3))) AND (OPCODE(2) AND (NOT OPCODE(1)))) AND (NOT OPCODE(0))) OR (((((OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2))) AND OPCODE(1))) AND OPCODE(0));
+    --------
     SETC_en <= (NOT OPCODE(4)) AND (NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (NOT OPCODE(1)) AND OPCODE(0);
     CLRC_en <= (NOT OPCODE(4)) AND (NOT OPCODE(3)) AND (NOT OPCODE(0)) AND OPCODE(1);
     JZ_en <= OPCODE(4) AND OPCODE(3) AND (NOT OPCODE(2)) AND (NOT OPCODE(1)) AND (NOT OPCODE(0));
@@ -44,6 +43,10 @@ BEGIN
     PC_or_addrs1_en <= '0';
     SP_en <= '0';
     SP_inc_en <= '0';
+
+    ------ To be removed when interrupt is handled
+    PC_disable <= '0';
+
 
 END my_Control_Unit;
 

@@ -53,6 +53,7 @@ ENTITY Decode_Stage IS
         JMP_en,
         Immediate_en : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
+        PC_disable : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
         DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0) 
@@ -74,15 +75,15 @@ ARCHITECTURE arch OF Decode_Stage IS
 
     --Control Unit (Edited in Phase 2)
     COMPONENT Control_Unit IS
-        PORT (
-            OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-            IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
-            RET_en, OUT_en, RTI_en : OUT STD_LOGIC;
-            Interrupt_en : OUT STD_LOGIC;
-            FLAGS_en : OUT STD_LOGIC;
-            PC_or_addrs1_en : OUT STD_LOGIC
+    PORT (
+        OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
+        RET_en, OUT_en, RTI_en, PC_disable : OUT STD_LOGIC;
+        Interrupt_en : OUT STD_LOGIC;
+        FLAGS_en : OUT STD_LOGIC;
+        PC_or_addrs1_en : OUT STD_LOGIC
 
-        );
+    );
     END COMPONENT;
 
     --Register File
@@ -120,7 +121,7 @@ ARCHITECTURE arch OF Decode_Stage IS
 
     -------------------SIGNALS----------------
     -- Phase 2:
-    SIGNAL Immediate_en_sig, CALL_en_sig, JMP_en_sig : STD_LOGIC;
+    SIGNAL Immediate_en_sig, CALL_en_sig, JMP_en_sig: STD_LOGIC;
     SIGNAL Add_Value_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL PC_Added_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Read_Data1_sig, Read_Data2_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -156,6 +157,7 @@ BEGIN
         RET_en => RET_en,
         OUT_en => OUT_en,
         RTI_en => RTI_en,
+        PC_disable => PC_disable,
         Interrupt_en => Interrupt_en,
         FLAGS_en => FLAGS_en,
         PC_or_addrs1_en => PC_or_addrs1_en

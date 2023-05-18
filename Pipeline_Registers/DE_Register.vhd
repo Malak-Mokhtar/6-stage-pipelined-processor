@@ -5,13 +5,13 @@ USE ieee.numeric_std.ALL;
 ENTITY DE_Register IS
     PORT (
         clk, en_structural, rst : IN STD_LOGIC;
-        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en : IN STD_LOGIC;
-        FD_IN_PORT_out, Read_Data1, Read_Data2 : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable : IN STD_LOGIC;
+        FD_IN_PORT_out, Read_Data1, Read_Data2: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out : OUT STD_LOGIC;
-        DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out, DE_PC_disable_out : OUT STD_LOGIC;
+        DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
 
@@ -84,6 +84,7 @@ BEGIN
             DE_Interrupt_en_out <= '0';
             DE_Read_Address1 <= (OTHERS => '0');
             DE_Read_Address2 <= (OTHERS => '0');
+            DE_PC_disable_out <= '0';
 
         ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;
@@ -115,6 +116,7 @@ BEGIN
             DE_Read_Address1 <= Read_Address1;
             DE_Read_Address2 <= Read_Address2;
             DE_Interrupt_en_out <= Interrupt_en;
+            DE_PC_disable_out <= PC_disable;
 
         END IF;
     END PROCESS; -- main_loop
