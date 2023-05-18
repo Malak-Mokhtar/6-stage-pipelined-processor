@@ -43,7 +43,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT Decode_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, Reg_File_rst : IN STD_LOGIC;
+        clk, rst : IN STD_LOGIC;
         FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FD_Read_Address,
         FD_IN_PORT,
@@ -52,7 +52,7 @@ ARCHITECTURE arch OF processor IS
         MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         --
         MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        MW_Write_Address : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        MW_Write_Address, DE_Write_Addr_out,EM_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         MW_RegWrite_en,
         -- Phase 2:
         MW_RET_en_out,
@@ -63,7 +63,9 @@ ARCHITECTURE arch OF processor IS
         MW_PC_or_addrs1_en_out,
         MW_RTI_en_out,
         ZF_OUT,
-        CF_OUT : IN STD_LOGIC;
+        CF_OUT,
+        DE_MemRead_en_out,
+        EM_MemRead_en_out : IN STD_LOGIC;
 
         -- OUTPUT PORTS
         IN_PC : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -91,7 +93,8 @@ ARCHITECTURE arch OF processor IS
         RTI_en,
         CALL_en,
         JMP_en,
-        Immediate_en : OUT STD_LOGIC;
+        Immediate_en,
+        en_load_use : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         PC_disable : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
@@ -566,9 +569,11 @@ ARCHITECTURE arch OF processor IS
 
     SIGNAL MW_FLAGS_en_out, MM_FLAGS_en_out : STD_LOGIC;
 
+   
+
 BEGIN
     --Internal Fetch Stage
-    en_load_use <= '0'; -- to be deleted once load use component is added
+    -- en_load_use <= '0'; -- to be deleted once load use component is added
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
         clk => clk,
         pc_rst => rst,
@@ -613,7 +618,7 @@ BEGIN
     --Internal Decode Stage
     Internal_Decode_Stage : Decode_Stage PORT MAP(
         clk => clk,
-        Reg_File_rst => rst,
+        rst => rst,
         FD_Inst => FD_Inst_out,
         FD_Read_Address => FD_Read_Address,
         FD_IN_PORT => FD_IN_PORT,
@@ -632,6 +637,10 @@ BEGIN
         ZF_OUT => ZF_OUT,
         CF_OUT => CF_OUT,
         IN_PC => IN_PC,
+        DE_Write_Addr_out => DE_Write_Addr_out,
+        EM_Write_Addr_out => EM_Write_Addr_out,
+        DE_MemRead_en_out => DE_MemRead_en_out,
+        EM_MemRead_en_out => EM_MemRead_en_out,
         IN_en => IN_en,
         FD_IN_PORT_out => FD_IN_PORT_out,
         Write_address_RD => Write_address_RD,
@@ -660,7 +669,8 @@ BEGIN
         DE_Read_Address1 => Read_Address1,
         DE_Read_Address2 => Read_Address2,
         PC_disable => PC_disable,
-        FLAGS_en => FLAGS_en
+        FLAGS_en => FLAGS_en,
+        en_load_use => en_load_use
     );
 
     --Internal DE Register
