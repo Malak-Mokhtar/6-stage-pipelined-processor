@@ -5,7 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY Decode_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, Reg_File_rst : IN STD_LOGIC;
+        clk, rst : IN STD_LOGIC;
         FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FD_Read_Address,
         FD_IN_PORT,
@@ -168,7 +168,7 @@ BEGIN
     --Register File Initialization (Edited in phase 2)
     Internal_Register_File : Reg_file PORT MAP(
         clk => clk,
-        rst => Reg_File_rst,
+        rst => rst,
         write_en => MW_RegWrite_en,
         Read_Address1 => FD_Inst(26 DOWNTO 24),
         Read_Address2 => FD_Inst(23 DOWNTO 21),
