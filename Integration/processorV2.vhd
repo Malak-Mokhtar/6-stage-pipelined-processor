@@ -14,29 +14,29 @@ END processor;
 ARCHITECTURE arch OF processor IS
     -- Fetch Stage Component
     COMPONENT Fetch_Stage IS
-        PORT (
-            -- Inputs:
-            clk,
-            pc_rst,
-            -- Phase 2:
-            JMP_en,
-            CALL_en,
-            MW_RTI_en_out,
-            MW_RET_en_out,
-            PC_disable,
-            en_load_use,
-            en_structural,
-            DE_JZ_en_out,
-            ZF_OUT,
-            DE_JC_en_out,
-            CF_OUT : IN STD_LOGIC;
-            --
-            IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-
-            -- Outputs:
-            Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
-        );
+    PORT (
+        -- Inputs:
+        clk,
+        pc_rst,
+        -- Phase 2:
+        DE_JMP_en_out,
+        DE_CALL_en_out,
+        MW_RTI_en_out,
+        MW_RET_en_out,
+        DE_PC_disable_out,
+        en_load_use ,
+        en_structural ,
+        DE_JZ_en_out ,
+        ZF_OUT,
+        DE_JC_en_out,
+        CF_OUT : IN STD_LOGIC;
+        --
+        IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        
+        -- Outputs:
+        Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+    );
     END COMPONENT;
 
     -- Decode Stage
@@ -58,6 +58,8 @@ ARCHITECTURE arch OF processor IS
         MW_RET_en_out,
         DE_JZ_en_out,
         DE_JC_en_out,
+        DE_CALL_en_out,
+        DE_JMP_en_out,
         MW_PC_or_addrs1_en_out,
         MW_RTI_en_out,
         ZF_OUT,
@@ -268,6 +270,7 @@ ARCHITECTURE arch OF processor IS
         SP_inc_en : IN STD_LOGIC;
         RET_en : IN STD_LOGIC;
         CALL_en : IN STD_LOGIC;
+        JMP_en : IN STD_LOGIC;
         PC_or_addrs1_en : IN STD_LOGIC;
         FLAGS_en : IN STD_LOGIC;
         RTI_en : IN STD_LOGIC;
@@ -283,6 +286,7 @@ ARCHITECTURE arch OF processor IS
         DE_SP_inc_en_out : OUT STD_LOGIC;
         DE_RET_en_out : OUT STD_LOGIC;
         DE_CALL_en_out : OUT STD_LOGIC;
+        DE_JMP_en_out : OUT STD_LOGIC;
         DE_PC_or_addrs1_en_out : OUT STD_LOGIC;
         DE_FLAGS_en_out : OUT STD_LOGIC;
         DE_RTI_en_out : OUT STD_LOGIC;
@@ -466,6 +470,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_SP_en_out : STD_LOGIC;
     SIGNAL DE_SP_inc_en_out : STD_LOGIC;
     SIGNAL DE_CALL_en_out : STD_LOGIC;
+    SIGNAL DE_JMP_en_out : STD_LOGIC;
     SIGNAL DE_PC_or_addrs1_en_out : STD_LOGIC;
     SIGNAL DE_FLAGS_en_out : STD_LOGIC;
     SIGNAL DE_RTI_en_out : STD_LOGIC;
@@ -567,11 +572,11 @@ BEGIN
     Internal_Fetch_Stage : Fetch_Stage PORT MAP(
         clk => clk,
         pc_rst => rst,
-        JMP_en => JMP_en,
-        CALL_en => CALL_en,
+        DE_JMP_en_out => DE_JMP_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
         MW_RTI_en_out => MW_RTI_en_out,
         MW_RET_en_out => MW_RET_en_out,
-        PC_disable => DE_PC_disable_out,
+        DE_PC_disable_out => DE_PC_disable_out,
         en_load_use => en_load_use,
         en_structural => en_structural,
         DE_JZ_en_out => DE_JZ_en_out,
@@ -620,6 +625,8 @@ BEGIN
         MW_RET_en_out => MW_RET_en_out,
         DE_JZ_en_out => DE_JZ_en_out,
         DE_JC_en_out => DE_JC_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
+        DE_JMP_en_out => DE_JMP_en_out,
         MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out,
         MW_RTI_en_out => MW_RTI_en_out,
         ZF_OUT => ZF_OUT,
@@ -682,6 +689,7 @@ BEGIN
         SP_inc_en => SP_inc_en,
         RET_en => RET_en,
         CALL_en => CALL_en,
+        JMP_en => JMP_en,
         PC_or_addrs1_en => PC_or_addrs1_en,
         FLAGS_en => FLAGS_en,
         RTI_en => RTI_en,
@@ -709,6 +717,7 @@ BEGIN
         DE_SP_inc_en_out => DE_SP_inc_en_out,
         DE_RET_en_out => DE_RET_en_out,
         DE_CALL_en_out => DE_CALL_en_out,
+        DE_JMP_en_out => DE_JMP_en_out,
         DE_PC_or_addrs1_en_out => DE_PC_or_addrs1_en_out,
         DE_FLAGS_en_out => DE_FLAGS_en_out,
         DE_RTI_en_out => DE_RTI_en_out,

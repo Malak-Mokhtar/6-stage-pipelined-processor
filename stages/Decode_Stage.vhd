@@ -20,6 +20,8 @@ ENTITY Decode_Stage IS
         MW_RET_en_out,
         DE_JZ_en_out,
         DE_JC_en_out,
+        DE_CALL_en_out,
+        DE_JMP_en_out,
         MW_PC_or_addrs1_en_out,
         MW_RTI_en_out,
         ZF_OUT,
@@ -98,11 +100,10 @@ ARCHITECTURE arch OF Decode_Stage IS
 
     -- Phase 2:
     -- MUX 4X1 to choose PC
-    COMPONENT MUX_DEC_PC IS
-        PORT (
-            PC_Added, DE_Read_Data1_out, Read_Data1, MW_Read_Data_out : IN STD_LOGIC_VECTOR (15 DOWNTO 0);
-            MW_RET_en_out, JMP_en, CALL_en, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT, MW_PC_or_addrs1_en_out, MW_RTI_en_out : IN STD_LOGIC;
-            IN_PC : OUT STD_LOGIC_VECTOR (15 DOWNTO 0));
+    COMPONENT MUX_DEC_PC IS 
+	PORT ( PC_Added,DE_Read_Data1_out,Read_Data1,MW_Read_Data_out: IN std_logic_vector (15 DOWNTO 0);
+			MW_RET_en_out,DE_JMP_en_out,DE_CALL_en_out,DE_JZ_en_out,ZF_OUT,DE_JC_en_out, CF_OUT,MW_PC_or_addrs1_en_out,MW_RTI_en_out : IN  std_logic;
+			IN_PC : OUT std_logic_vector (15 DOWNTO 0));
     END COMPONENT;
 
     -- MUX 2X1 to choose Add value
@@ -121,7 +122,7 @@ ARCHITECTURE arch OF Decode_Stage IS
 
     -------------------SIGNALS----------------
     -- Phase 2:
-    SIGNAL Immediate_en_sig, CALL_en_sig, JMP_en_sig: STD_LOGIC;
+    SIGNAL Immediate_en_sig, CALL_en_sig: STD_LOGIC;
     SIGNAL Add_Value_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL PC_Added_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
     SIGNAL Read_Data1_sig, Read_Data2_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -149,7 +150,7 @@ BEGIN
         CLRC_en => CLRC_en,
         JZ_en => JZ_en,
         JC_en => JC_en,
-        JMP_en => JMP_en_sig,
+        JMP_en => JMP_en,
         CALL_en => CALL_en_sig,
         Immediate_en => Immediate_en_sig,
         SP_en => SP_en,
@@ -204,8 +205,8 @@ BEGIN
         Read_Data1 => Read_Data1_sig,
         MW_Read_Data_out => MW_Read_Data_out,
         MW_RET_en_out => MW_RET_en_out,
-        JMP_en => JMP_en_sig,
-        CALL_en => CALL_en_sig,
+        DE_JMP_en_out => DE_JMP_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
         DE_JZ_en_out => DE_JZ_en_out,
         ZF_OUT => ZF_OUT,
         DE_JC_en_out => DE_JC_en_out,
@@ -217,7 +218,6 @@ BEGIN
 
     Read_Data1 <= Read_Data1_sig;
     CALL_en <= CALL_en_sig;
-    JMP_en <= JMP_en_sig;
     Immediate_en <= Immediate_en_sig;
     DE_Read_Address1 <= FD_Inst(26 DOWNTO 24);
     DE_Read_Address2 <= FD_Inst(23 DOWNTO 21);

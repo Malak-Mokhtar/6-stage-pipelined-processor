@@ -8,11 +8,11 @@ ENTITY Fetch_Stage IS
         clk,
         pc_rst,
         -- Phase 2:
-        JMP_en,
-        CALL_en,
+        DE_JMP_en_out,
+        DE_CALL_en_out,
         MW_RTI_en_out,
         MW_RET_en_out,
-        PC_disable,
+        DE_PC_disable_out,
         en_load_use ,
         en_structural ,
         DE_JZ_en_out ,
@@ -35,7 +35,7 @@ ARCHITECTURE arch OF Fetch_Stage IS
     --PC component (Edited in Phase 2)
     COMPONENT PC IS
     PORT (
-        clk, rst, JMP_en, CALL_en, MW_RTI_en_out, MW_RET_en_out, PC_disable, en_load_use, en_structural, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT: IN STD_LOGIC;
+        clk, rst, DE_JMP_en_out, DE_CALL_en_out, MW_RTI_en_out, MW_RET_en_out, DE_PC_disable_out, en_load_use, en_structural, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT : IN STD_LOGIC;
         IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
@@ -55,11 +55,11 @@ BEGIN
     Internal_PC : PC PORT MAP(
         clk => clk,
         rst => pc_rst,
-        JMP_en => JMP_en,
-        CALL_en => CALL_en,
+        DE_JMP_en_out => DE_JMP_en_out,
+        DE_CALL_en_out => DE_CALL_en_out,
         MW_RTI_en_out => MW_RTI_en_out,
         MW_RET_en_out => MW_RET_en_out ,
-        PC_disable => PC_disable ,
+        DE_PC_disable_out => DE_PC_disable_out ,
         en_load_use => en_load_use ,
         en_structural => en_structural ,
         DE_JZ_en_out => DE_JZ_en_out ,

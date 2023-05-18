@@ -25,6 +25,7 @@ ENTITY DE_Register IS
         SP_inc_en : IN STD_LOGIC;
         RET_en : IN STD_LOGIC;
         CALL_en : IN STD_LOGIC;
+        JMP_en : IN STD_LOGIC;
         PC_or_addrs1_en : IN STD_LOGIC;
         FLAGS_en : IN STD_LOGIC;
         RTI_en : IN STD_LOGIC;
@@ -40,6 +41,7 @@ ENTITY DE_Register IS
         DE_SP_inc_en_out : OUT STD_LOGIC;
         DE_RET_en_out : OUT STD_LOGIC;
         DE_CALL_en_out : OUT STD_LOGIC;
+        DE_JMP_en_out : OUT STD_LOGIC;
         DE_PC_or_addrs1_en_out : OUT STD_LOGIC;
         DE_FLAGS_en_out : OUT STD_LOGIC;
         DE_RTI_en_out : OUT STD_LOGIC;
@@ -77,6 +79,7 @@ BEGIN
             DE_SP_inc_en_out <= '0';
             DE_RET_en_out <= '0';
             DE_CALL_en_out <= '0';
+            DE_JMP_en_out <= '0';
             DE_PC_or_addrs1_en_out <= '0';
             DE_FLAGS_en_out <= '0';
             DE_RTI_en_out <= '0';
@@ -109,6 +112,7 @@ BEGIN
             DE_SP_inc_en_out <= SP_inc_en;
             DE_RET_en_out <= RET_en;
             DE_CALL_en_out <= CALL_en;
+            DE_JMP_en_out <= JMP_en;
             DE_PC_or_addrs1_en_out <= PC_or_addrs1_en;
             DE_FLAGS_en_out <= FLAGS_en;
             DE_RTI_en_out <= RTI_en;
