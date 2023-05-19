@@ -17,7 +17,7 @@ BEGIN
     main_loop : PROCESS (clk, Rst)
     BEGIN
         IF rst = '1' THEN
-            data_signal <= (OTHERS => '0');
+            data_signal <= "0000001111111111";
         ELSIF rising_edge(clk) AND en = '1' THEN
             data_signal <= data;
 

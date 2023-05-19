@@ -618,7 +618,7 @@ BEGIN
         IN_PORT => IN_PORT,
         FD_Inst_out => FD_Inst_out,
         FD_Read_Address_out => FD_Read_Address, --
-        FD_IN_PORT_out => FD_IN_PORT_out
+        FD_IN_PORT_out => FD_IN_PORT
     );
 
     --Internal Decode Stage
@@ -806,8 +806,8 @@ BEGIN
         DE_MemRead_en_out => DE_MemRead_en_out,
         DE_IN_PORT_out => DE_IN_PORT_out,
         ALU_Out => ALU_Out,
-        DE_Read_Data1_final_out => DE_Read_Data1_final_out,
-        DE_Read_Data2_final_out => DE_Read_Data2_final_out,
+        DE_Read_Data1_final_out => DE_Read_Data1_final,
+        DE_Read_Data2_final_out => DE_Read_Data2_final,
         DE_Write_Addr_out => DE_Write_Addr_out,
         SP_before => SP_before,
         SP_after => SP_after,
