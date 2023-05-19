@@ -10,7 +10,7 @@ ENTITY Decode_Stage IS
         FD_Read_Address,
         FD_IN_PORT,
         --Phase 2:
-        DE_Read_Data1_out,
+        DE_Read_Data1_final_out,
         MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         --
         MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -116,7 +116,7 @@ ARCHITECTURE arch OF Decode_Stage IS
     -- Phase 2:
     -- MUX 4X1 to choose PC
     COMPONENT MUX_DEC_PC IS 
-	PORT ( PC_Added,DE_Read_Data1_out,Read_Data1,MW_Read_Data_out: IN std_logic_vector (15 DOWNTO 0);
+	PORT ( PC_Added,DE_Read_Data1_final_out,MW_Read_Data_out: IN std_logic_vector (15 DOWNTO 0);
 			MW_RET_en_out,DE_JMP_en_out,DE_CALL_en_out,DE_JZ_en_out,ZF_OUT,DE_JC_en_out, CF_OUT,MW_PC_or_addrs1_en_out,MW_RTI_en_out : IN  std_logic;
 			IN_PC : OUT std_logic_vector (15 DOWNTO 0));
     END COMPONENT;
@@ -228,8 +228,7 @@ BEGIN
 
     MUX_DEC_PC_MAP : MUX_DEC_PC PORT MAP(
         PC_Added => PC_Added_sig,
-        DE_Read_Data1_out => DE_Read_Data1_out,
-        Read_Data1 => Read_Data1_sig,
+        DE_Read_Data1_final_out => DE_Read_Data1_final_out,
         MW_Read_Data_out => MW_Read_Data_out,
         MW_RET_en_out => MW_RET_en_out,
         DE_JMP_en_out => DE_JMP_en_out,

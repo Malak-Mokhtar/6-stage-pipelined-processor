@@ -7,7 +7,7 @@ entity Data_forwarding is
 
 
 PORT(DE_Read_Address1, DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out: IN std_logic_vector(2 downto 0);
-EM_RegWrite_en_out, MM_RegWrite_en_out, MW_RegWrite_en_out: IN std_logic;
+EM_RegWrite_en_out, MM_RegWrite_en_out, MW_RegWrite_en_out, DE_Immediate_en_out: IN std_logic;
 Read_data2_sel, Read_data1_sel: out std_logic_vector(1 downto 0));
 
 
@@ -57,8 +57,8 @@ Read_data1_sel(0) <= ((not sig1) and sig2) OR sig4;
 Read_data1_sel(1) <=  sig1 OR sig4;
 
 
-Read_data2_sel(0) <= ((not sig5) and sig6) OR sig8;
-Read_data2_sel(1) <=  sig5 OR sig8;
+Read_data2_sel(0) <= (((not sig5) and sig6) OR sig8) and (not DE_Immediate_en_out);
+Read_data2_sel(1) <=  (sig5 OR sig8) and (not DE_Immediate_en_out);
 
 
 

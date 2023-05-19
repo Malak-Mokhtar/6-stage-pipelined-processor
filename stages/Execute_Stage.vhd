@@ -21,6 +21,7 @@ ENTITY Execute_Stage IS
         MM_RegWrite_en_out,
         MW_FLAGS_en_out,
         MW_RegWrite_en_out,
+        DE_Immediate_en_out,
         DE_SP_en_out,
         DE_SP_inc_en_out : IN STD_LOGIC;
         DE_Read_Data1_out,
@@ -115,7 +116,7 @@ ARCHITECTURE arch OF Execute_Stage IS
     COMPONENT Data_forwarding IS
         PORT (
             DE_Read_Address1, DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-            EM_RegWrite_en_out, MM_RegWrite_en_out, MW_RegWrite_en_out : IN STD_LOGIC;
+            EM_RegWrite_en_out, MM_RegWrite_en_out, MW_RegWrite_en_out, DE_Immediate_en_out : IN STD_LOGIC;
             Read_data2_sel, Read_data1_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0));
     END COMPONENT;
 
@@ -256,6 +257,7 @@ BEGIN
         MW_Write_Addr_out => MW_Write_Addr_out,
         EM_RegWrite_en_out => EM_RegWrite_en_out,
         MM_RegWrite_en_out => MM_RegWrite_en_out,
+        DE_Immediate_en_out => DE_Immediate_en_out,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
         Read_data1_sel => Read_data1_sel_sig,
         Read_data2_sel => Read_data2_sel_sig

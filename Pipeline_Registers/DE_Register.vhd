@@ -5,7 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY DE_Register IS
     PORT (
         clk, en_structural, en_load_use, rst : IN STD_LOGIC;
-        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable : IN STD_LOGIC;
+        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable, Immediate_en : IN STD_LOGIC;
         FD_IN_PORT_out, Read_Data1, Read_Data2: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -47,6 +47,7 @@ ENTITY DE_Register IS
         DE_RTI_en_out : OUT STD_LOGIC;
         DE_OUT_en_out : OUT STD_LOGIC;
         DE_Interrupt_en_out : OUT STD_LOGIC;
+        DE_Immediate_en_out : OUT STD_LOGIC;
         DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
 
@@ -56,7 +57,7 @@ END DE_Register;
 ARCHITECTURE arch OF DE_Register IS
 signal pipelined_rst: std_logic;
 BEGIN
-    pipelined_rst<= rst OR (NOT en_load_use);
+    pipelined_rst<= rst OR en_load_use;
     main_loop : PROCESS (clk, rst)
     BEGIN
         IF pipelined_rst = '1' THEN --check on reset
@@ -89,6 +90,7 @@ BEGIN
             DE_Read_Address1 <= (OTHERS => '0');
             DE_Read_Address2 <= (OTHERS => '0');
             DE_PC_disable_out <= '0';
+            DE_Immediate_en_out <= '0';
 
         ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;
@@ -122,7 +124,8 @@ BEGIN
             DE_Read_Address2 <= Read_Address2;
             DE_Interrupt_en_out <= Interrupt_en;
             DE_PC_disable_out <= PC_disable;
-
+            DE_Immediate_en_out <= Immediate_en;
+            
         END IF;
     END PROCESS; -- main_loop
 

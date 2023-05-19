@@ -22,7 +22,7 @@ signal Zero_rst,Carry_rst,RET_rst, RTI_rst : std_logic;
 
 BEGIN
 
-    en<= (not en_structural) OR (not en_load_use);
+    en<= (not en_structural) OR en_load_use;
 
     Zero_rst <= ZF_OUT and DE_JZ_en_out;
     Carry_rst <= CF_OUT and DE_JC_en_out;

@@ -39,8 +39,8 @@ ARCHITECTURE arch OF WriteBack_Stage IS
     -- Phase 2:
     -- Sign Extend
     COMPONENT Sign_Extend IS 
-	PORT ( OUT_en : IN  std_logic;
-			OUT_en_extended : OUT std_logic_vector (15 DOWNTO 0));
+	PORT ( MW_OUT_en_out : IN  std_logic;
+			MW_OUT_en_out_extended : OUT std_logic_vector (15 DOWNTO 0));
     END COMPONENT;
 
     -- AND GATE
@@ -51,7 +51,7 @@ ARCHITECTURE arch OF WriteBack_Stage IS
 
     -- Signals:
     -- Phase 2:
-    SIGNAL OUT_en_extended: std_logic_vector (15 DOWNTO 0);
+    SIGNAL MW_OUT_en_out_extended: std_logic_vector (15 DOWNTO 0);
 
 BEGIN
 
@@ -68,12 +68,12 @@ BEGIN
     MW_Write_Addr <= MW_Write_Addr_out;
 
     Sign_Extend_MAP : Sign_Extend PORT MAP(
-        OUT_en => MW_OUT_en_OUT,
-        OUT_en_extended => OUT_en_extended
+        MW_OUT_en_OUT => MW_OUT_en_OUT,
+        MW_OUT_en_out_extended => MW_OUT_en_out_extended
     );
 
     OUT_AND_GATE_MAP: OUT_AND_GATE PORT MAP(
-        OUT_en_extended => OUT_en_extended,
+        OUT_en_extended => MW_OUT_en_out_extended,
         MW_ALU_Out_out => MW_ALU_Out_out,
         OUT_Port => OUT_Port
     );

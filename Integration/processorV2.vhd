@@ -48,7 +48,7 @@ ARCHITECTURE arch OF processor IS
         FD_Read_Address,
         FD_IN_PORT,
         --Phase 2:
-        DE_Read_Data1_out,
+        DE_Read_Data1_final_out,
         MW_Read_Data_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         --
         MW_Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -106,52 +106,51 @@ ARCHITECTURE arch OF processor IS
 
     -- Execute Stage
     COMPONENT Execute_Stage IS
-        PORT (
-            --INPUT PORTS    
-            clk, general_rst : IN STD_LOGIC;
-            DE_Carry_en_out,
-            DE_ALU_en_out,
-            DE_MemWrite_en_out,
-            DE_MemRead_en_out,
-            EM_MemWrite_en_out,
-            EM_MemRead_en_out,
-            DE_JZ_en_out,
-            DE_SETC_en_out,
-            DE_CLRC_en_out,
-            MW_FLAGS_en_out,
-            DE_JC_en_out,
-            MW_RTI_en_out,
-            EM_RegWrite_en_out,
-            MM_RegWrite_en_out,
-            MW_RegWrite_en_out,
-            DE_SP_en_out,
-            DE_SP_inc_en_out : IN STD_LOGIC;
-            DE_Read_Data1_out,
-            DE_Read_Data2_out, MW_Read_Data_out,
-            MM_ALU_OUT, EM_ALU_OUT, Write_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            DE_Read_Address1,
-            DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
-            DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
-            --new: MW_Read_Data_out, MM_ALU_OUT, EM_ALU_OUT, 
-            --Write_data,DE_Read_Address2, EM_Write_Addr_out, 
-            --MM_Write_Addr_out, MW_Write_Addr_out
+    PORT (
+        --INPUT PORTS    
+        clk, general_rst : IN STD_LOGIC;
+        DE_Carry_en_out,
+        DE_ALU_en_out,
+        DE_MemWrite_en_out,
+        DE_MemRead_en_out,
+        EM_MemWrite_en_out,
+        EM_MemRead_en_out,
+        DE_JZ_en_out,
+        DE_SETC_en_out,
+        DE_CLRC_en_out,
+        DE_JC_en_out,
+        MW_RTI_en_out, --Should be passed from outside, !!!FOR MARK!!!!
+        EM_RegWrite_en_out,
+        MM_RegWrite_en_out,
+        MW_FLAGS_en_out,
+        MW_RegWrite_en_out,
+        DE_Immediate_en_out,
+        DE_SP_en_out,
+        DE_SP_inc_en_out : IN STD_LOGIC;
+        DE_Read_Data1_out,
+        DE_Read_Data2_out, MW_Read_Data_out,
+        MM_ALU_OUT, EM_ALU_OUT, Write_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        DE_Read_Address1,
+        DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
+        DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-            -- OUTPUT PORTS
-            en_structural,
-            ZF_OUT,
-            CF_OUT,
-            NF_OUT,
-            DE_Carry_en,
-            DE_MemWrite_en,
-            DE_RTI_en_out,
-            DE_MemRead_en : OUT STD_LOGIC;
-            ALU_Out,
-            DE_Read_Data1_final,
-            DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-            SP_before,
-            SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-            --NEW INPUTS-- including MW_Read_Data_out
-        );
+        -- OUTPUT PORTS
+        en_structural,
+        ZF_OUT,
+        CF_OUT,
+        NF_OUT,
+
+        DE_Carry_en,
+        DE_MemWrite_en,
+        DE_MemRead_en,
+        DE_RTI_en_out : OUT STD_LOGIC;
+        ALU_Out,
+        DE_Read_Data1_final,
+        DE_Read_Data2_final,
+        SP_before,
+        SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+
+    );
     END COMPONENT;
     -- Memory Stage
     COMPONENT Memory_Stages IS
@@ -254,7 +253,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT DE_Register IS
     PORT (
         clk, en_structural, en_load_use, rst : IN STD_LOGIC;
-        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable : IN STD_LOGIC;
+        IN_en, RegWrite_en, Carry_en, ALU_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, PC_disable, Immediate_en : IN STD_LOGIC;
         FD_IN_PORT_out, Read_Data1, Read_Data2: IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -296,6 +295,7 @@ ARCHITECTURE arch OF processor IS
         DE_RTI_en_out : OUT STD_LOGIC;
         DE_OUT_en_out : OUT STD_LOGIC;
         DE_Interrupt_en_out : OUT STD_LOGIC;
+        DE_Immediate_en_out : OUT STD_LOGIC;
         DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
 
@@ -481,7 +481,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_RTI_en_out : STD_LOGIC;
     SIGNAL DE_OUT_en_out : STD_LOGIC;
     SIGNAL DE_PC_disable_out : STD_LOGIC;
-
+    SIGNAL DE_Immediate_en_out: STD_LOGIC;
 
     --Execute stage
     -- Input signals
@@ -628,7 +628,7 @@ BEGIN
         FD_Inst => FD_Inst_out,
         FD_Read_Address => FD_Read_Address,
         FD_IN_PORT => FD_IN_PORT,
-        DE_Read_Data1_out => DE_Read_Data1_out,
+        DE_Read_Data1_final_out => DE_Read_Data1_final_out,
         MW_Read_Data_out => MW_Read_Data_out,
         MW_Write_Data => Write_Data,
         MW_Write_Address => MW_Write_Addr,
@@ -693,6 +693,7 @@ BEGIN
         MemWrite_en => MemWrite_en,
         MemRead_en => MemRead_en,
         PC_disable => PC_disable,
+        Immediate_en => Immediate_en,
         FD_IN_PORT_out => FD_IN_PORT_out,
         Read_Data1 => Read_Data1,
         Read_Data2 => Read_Data2,
@@ -740,6 +741,7 @@ BEGIN
         DE_RTI_en_out => DE_RTI_en_out,
         DE_OUT_en_out => DE_OUT_en_out,
         DE_Interrupt_en_out => Interrupt_en,
+        DE_Immediate_en_out => DE_Immediate_en_out,
         DE_Read_Address1 => DE_Read_Address1,
         DE_Read_Address2 => DE_Read_Address2,
         DE_PC_disable_out => DE_PC_disable_out
@@ -763,6 +765,7 @@ BEGIN
         EM_RegWrite_en_out => EM_RegWrite_en_out,
         MM_RegWrite_en_out => MM_RegWrite_en,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
+        DE_Immediate_en_out => DE_Immediate_en_out,
         DE_SP_en_out => DE_SP_en_out,
         DE_SP_inc_en_out => DE_SP_inc_en_out,
         DE_Read_Data1_out => DE_Read_Data1_out,

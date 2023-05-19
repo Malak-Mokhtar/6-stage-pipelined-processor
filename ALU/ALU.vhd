@@ -85,7 +85,7 @@ else '0';
 
 
 ALU_OUT <= result when ALU_en = '1' else
-(others => '0');
+Read_Data2;
 
 ZF_ALU <= not or_result when ALU_en = '1' else
 '0';

@@ -23,7 +23,7 @@ BEGIN
         IF rst = '1' THEN
             -- async reset
             Read_Address <= IN_DATA;
-        ELSIF falling_edge(clk) AND PC_final_en = '1' THEN
+        ELSIF rising_edge(clk) AND PC_final_en = '1' THEN
             -- change PC on rising edge
             Read_Address <= IN_PC;
         END IF;
