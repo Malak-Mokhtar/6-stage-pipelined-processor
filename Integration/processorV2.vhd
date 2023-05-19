@@ -607,7 +607,7 @@ BEGIN
         DE_RET_en_out => DE_RET_en_out,
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
-        DE_Interrupt_en_out => Interrupt_en,
+        DE_Interrupt_en_out => DE_Interrupt_en_out,
         DE_RTI_en_out => DE_RTI_en_out,
         EM_RTI_en_out => EM_RTI_en_out,
         MM_RTI_en_out => MM_RTI_en_out,
@@ -628,7 +628,7 @@ BEGIN
         FD_Inst => FD_Inst_out,
         FD_Read_Address => FD_Read_Address,
         FD_IN_PORT => FD_IN_PORT,
-        DE_Read_Data1_final_out => DE_Read_Data1_final_out,
+        DE_Read_Data1_final_out => DE_Read_Data1_final,
         MW_Read_Data_out => MW_Read_Data_out,
         MW_Write_Data => Write_Data,
         MW_Write_Address => MW_Write_Addr,
@@ -676,7 +676,8 @@ BEGIN
         DE_Read_Address2 => Read_Address2,
         PC_disable => PC_disable,
         FLAGS_en => FLAGS_en,
-        en_load_use => en_load_use
+        en_load_use => en_load_use,
+        Interrupt_en => Interrupt_en
     );
 
     --Internal DE Register
@@ -740,7 +741,7 @@ BEGIN
         DE_FLAGS_en_out => DE_FLAGS_en_out,
         DE_RTI_en_out => DE_RTI_en_out,
         DE_OUT_en_out => DE_OUT_en_out,
-        DE_Interrupt_en_out => Interrupt_en,
+        DE_Interrupt_en_out => DE_Interrupt_en_out,
         DE_Immediate_en_out => DE_Immediate_en_out,
         DE_Read_Address1 => DE_Read_Address1,
         DE_Read_Address2 => DE_Read_Address2,

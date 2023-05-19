@@ -16,8 +16,8 @@ ARCHITECTURE arch OF PC IS
 
 BEGIN
     branch <= ((DE_JZ_en_out) AND (ZF_OUT)) OR ((DE_JC_en_out) AND (CF_OUT));
-    PC_final_en <= ((DE_JMP_en_out NOR DE_CALL_en_out) NOR (MW_RTI_en_out NOR MW_RET_en_out)) NOR ((DE_PC_disable_out NOR en_load_use) NOR (en_structural NOR branch));
-
+    -- PC_final_en <= (((NOT DE_JMP_en_out) NOR (NOT DE_CALL_en_out)) NOR (MW_RTI_en_out NOR MW_RET_en_out)) NOR ((DE_PC_disable_out NOR en_load_use) NOR (en_structural NOR branch));
+    PC_final_en <= ((DE_JMP_en_out OR DE_CALL_en_out) OR MW_RTI_en_out) OR ((MW_RET_en_out OR (NOT en_load_use))  OR branch) OR ((NOT DE_PC_disable_out) OR (NOT en_structural));
     main_loop : PROCESS (clk)
     BEGIN
         IF rst = '1' THEN

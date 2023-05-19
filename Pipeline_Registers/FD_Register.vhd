@@ -33,7 +33,6 @@ BEGIN
 
     main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
-
         IF pipelined_rst = '1' THEN --check on reset
             --make all outputs zero
             FD_Inst_out <= (OTHERS => '0');
