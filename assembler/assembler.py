@@ -210,7 +210,7 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01110"
             # Rs1
-            if (registers.size() < 2):
+            if (len(registers) < 2):
                 temp_inst += Register_Translation[registers[0]]
             else:
                 temp_inst += Register_Translation[registers[1]]
@@ -227,7 +227,7 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01111"
             # Rs1
-            if (registers.size() < 2):
+            if (len(registers) < 2):
                 temp_inst += Register_Translation[registers[0]]
             else:
                 temp_inst += Register_Translation[registers[1]]

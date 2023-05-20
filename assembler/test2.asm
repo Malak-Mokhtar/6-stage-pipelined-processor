@@ -1,7 +1,5 @@
 ﻿#########################################################
 #        All numbers are in hex format   				#
-#########################################################
-#########################################################
 #        We always start by reset signal 				#
 #########################################################
 #         This is a commented line
@@ -11,18 +9,27 @@
 100
 .org 1
 20
-.org 20
-SETC
-NOT R1,R2
-INC R2,R3
-IADD R3,R2,100
-RTI
+#test case 1
 .org 100
+INC R0
+INC R0
+LDM R2, 09
+DEC R0
+ADD R3,R2,R0
+IADD R4,R2,FF00
 IN R1
-INC R1
+MOV R4,R1
+OR R5,R4,R2
+OUT R4
+#test case 3, load use test
 PUSH R1
-POP R2
-LDM R3,30
-JMP R3
-.org 30
-NOT R4
+POP R7
+AND R1,R5,R7
+OR R2,R1,R7
+#test case 4, structural hazard with data hazard
+STD R0,R4
+LDD R6,R0
+STD R3,R6
+SUB R5,R6,R3
+NOP
+NOP
