@@ -430,7 +430,8 @@ def mem_file_writer(res: list[str], inst: list[str]):
         "// instance=/processor/Internal_Memory_Stages/Data_memory_MAP/memory_data\n")
     data_file.write(
         "// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
-    data_file.write("0: " + bin(int(res[0][1], 16))[2:].zfill(16))
+    # data_file.write(res[0][1]+": " + bin(int(res[0][1], 16))[2:].zfill(16))
+    data_file.write(res[0][1]+": " + res[1])
 
 
 def main():
