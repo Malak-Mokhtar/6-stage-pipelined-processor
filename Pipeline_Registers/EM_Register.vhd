@@ -24,7 +24,8 @@ ENTITY EM_Register IS
         DE_OUT_en_out,
         DE_Interrupt_en_out,
         DE_SP_en_out,
-        DE_SP_inc_en_out : IN STD_LOGIC;
+        DE_SP_inc_en_out,
+        DE_en_load_use_out : IN STD_LOGIC;
 
         EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
         EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -48,7 +49,8 @@ ENTITY EM_Register IS
         EM_Carry_en_out,
         EM_RTI_en_out,
         EM_OUT_en_out,
-        EM_Interrupt_en_out : OUT STD_LOGIC
+        EM_Interrupt_en_out,
+        EM_en_load_use_out : OUT STD_LOGIC
     );
 END EM_Register;
 
@@ -90,6 +92,7 @@ BEGIN
             EM_Interrupt_en_out <= '0';
             EM_SP_en_out <= '0';
             EM_SP_inc_en_out <= '0';
+            EM_en_load_use_out <= '0';
 
         ELSIF (falling_edge(clk) AND (en = '1')) and en_structural = '0' THEN --check on enable and falling edge
             EM_Write_Addr_out <= DE_Write_Addr_out;
@@ -117,6 +120,7 @@ BEGIN
             EM_Interrupt_en_out <= DE_Interrupt_en_out;
             EM_SP_en_out <= DE_SP_en_out;
             EM_SP_inc_en_out <= DE_SP_inc_en_out;
+            EM_en_load_use_out <= DE_en_load_use_out;
         END IF;
         IF falling_edge(clk) THEN
             EM_Memory_Reset_out <= Memory_Reset_in;

@@ -23,10 +23,11 @@ ENTITY Execute_Stage IS
         MW_RegWrite_en_out,
         DE_Immediate_en_out,
         DE_SP_en_out,
-        DE_SP_inc_en_out : IN STD_LOGIC;
+        DE_SP_inc_en_out,
+        EM_en_load_use_out : IN STD_LOGIC;
         DE_Read_Data1_out,
         DE_Read_Data2_out, MW_Read_Data_out,
-        MM_ALU_OUT, EM_ALU_OUT, Write_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MM_ALU_OUT, EM_ALU_OUT, Write_data, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Read_Address1,
         DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -155,11 +156,20 @@ ARCHITECTURE arch OF Execute_Stage IS
         sp_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
     );
     END COMPONENT;
+
+    COMPONENT MUX_ALU_OP1B is
+    PORT(
+        MM_ALU_Out_out, Read_Data : IN std_logic_vector(15 downto 0);
+        MM_ALU_or_Mem_Out_out: OUT std_logic_vector (15 downto 0);
+        EM_en_load_use_out: in std_logic
+    );
+    END COMPONENT;
+
     -------------------SIGNALS----------------
     SIGNAL ZF_SIG, NF_SIG, CF_SIG, ZF_EXCEPT_RTI_SIG, CF_EXCEPT_RTI_SIG, ZF_RTI_SIG, CF_RTI_SIG, NF_RTI_SIG,
     ZF_selected_SIG, CF_selected_SIG, NF_selected_SIG : STD_LOGIC;
 
-    SIGNAL DE_Read_Data1_final_out_sig, DE_Read_Data2_final_out_sig, SP_before_sig, SP_after_sig : STD_LOGIC_VECTOR (15 DOWNTO 0);
+    SIGNAL DE_Read_Data1_final_out_sig, DE_Read_Data2_final_out_sig, SP_before_sig, SP_after_sig, MM_ALU_or_Mem_Out_out : STD_LOGIC_VECTOR (15 DOWNTO 0);
 
     SIGNAL Read_data1_sel_sig, Read_data2_sel_sig : STD_LOGIC_VECTOR (1 DOWNTO 0);
 
@@ -234,7 +244,7 @@ BEGIN
     );
     MUX_ALU_OP1_MAP : MUX_ALU_OP1 PORT MAP(
         DE_Read_Data1_out => DE_Read_Data1_out,
-        MM_ALU_Out_out => MM_ALU_Out,
+        MM_ALU_Out_out => MM_ALU_or_Mem_Out_out,
         EM_ALU_out => EM_ALU_out,
         Write_data => Write_data,
         DE_Read_Data1_final_out => DE_Read_Data1_final_out_sig,
@@ -243,7 +253,7 @@ BEGIN
 
     MUX_ALU_OP2_MAP : MUX_ALU_OP2 PORT MAP(
         DE_Read_Data2_out => DE_Read_Data2_out,
-        MM_ALU_Out_out => MM_ALU_Out,
+        MM_ALU_Out_out => MM_ALU_or_Mem_Out_out,
         EM_ALU_out => EM_ALU_out,
         Write_data => Write_data,
         DE_Read_Data2_final_out => DE_Read_Data2_final_out_sig,
@@ -300,6 +310,13 @@ BEGIN
         SP_after => SP_after_sig,
         SP_before => SP_before_sig
     );
+
+    MUX_ALU_OP1B_MAP : MUX_ALU_OP1B PORT MAP (
+            MM_ALU_Out_out => MM_ALU_Out,
+            Read_Data => Read_Data,
+            MM_ALU_or_Mem_Out_out => MM_ALU_or_Mem_Out_out,
+            EM_en_load_use_out => EM_en_load_use_out
+    );
     
     --Remaining Output Signals
     DE_Read_Data1_final <= DE_Read_Data1_final_out_sig;
@@ -310,4 +327,6 @@ BEGIN
     SP_after <= SP_after_sig;
     SP_before <= SP_before_sig;
     DE_RTI_en_out <= MW_RTI_en_out;
+
+
 END ARCHITECTURE;

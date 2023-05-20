@@ -10,7 +10,7 @@ ENTITY DE_Register IS
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out, DE_PC_disable_out : OUT STD_LOGIC;
+        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out, DE_PC_disable_out, DE_en_load_use_out : OUT STD_LOGIC;
         DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -58,9 +58,9 @@ ARCHITECTURE arch OF DE_Register IS
 signal pipelined_rst: std_logic;
 BEGIN
     pipelined_rst<= rst OR en_load_use;
-    main_loop : PROCESS (clk, rst)
+    main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
-        IF pipelined_rst = '1' and rising_edge(clk) THEN --check on reset
+        IF (pipelined_rst = '1' and falling_edge(clk)) THEN --check on reset
             DE_IN_en_out <= '0';
             DE_RegWrite_en_out <= '0';
             DE_Carry_en_out <= '0';
@@ -91,6 +91,7 @@ BEGIN
             DE_Read_Address2 <= (OTHERS => '0');
             DE_PC_disable_out <= '0';
             DE_Immediate_en_out <= '0';
+            DE_en_load_use_out <= en_load_use;
 
         ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;
@@ -125,6 +126,7 @@ BEGIN
             DE_Interrupt_en_out <= Interrupt_en;
             DE_PC_disable_out <= PC_disable;
             DE_Immediate_en_out <= Immediate_en;
+            DE_en_load_use_out <= en_load_use;
             
         END IF;
     END PROCESS; -- main_loop

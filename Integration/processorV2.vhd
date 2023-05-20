@@ -104,11 +104,10 @@ ARCHITECTURE arch OF processor IS
     );
     END COMPONENT;
 
-    -- Execute Stage
     COMPONENT Execute_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, general_rst : IN STD_LOGIC;
+        clk, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
         DE_Carry_en_out,
         DE_ALU_en_out,
         DE_MemWrite_en_out,
@@ -126,10 +125,11 @@ ARCHITECTURE arch OF processor IS
         MW_RegWrite_en_out,
         DE_Immediate_en_out,
         DE_SP_en_out,
-        DE_SP_inc_en_out : IN STD_LOGIC;
+        DE_SP_inc_en_out,
+        EM_en_load_use_out : IN STD_LOGIC;
         DE_Read_Data1_out,
         DE_Read_Data2_out, MW_Read_Data_out,
-        MM_ALU_OUT, EM_ALU_OUT, Write_data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MM_ALU_OUT, EM_ALU_OUT, Write_data, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Read_Address1,
         DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -152,6 +152,7 @@ ARCHITECTURE arch OF processor IS
 
     );
     END COMPONENT;
+
     -- Memory Stage
     COMPONENT Memory_Stages IS
     PORT (
@@ -258,7 +259,7 @@ ARCHITECTURE arch OF processor IS
         Inst_20_to_18_Write_Addrs : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         Inst_31_to_27_OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
 
-        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out, DE_PC_disable_out : OUT STD_LOGIC;
+        DE_IN_en_out, DE_RegWrite_en_out, DE_Carry_en_out, DE_ALU_en_out, DE_Mem_to_Reg_en_out, DE_MemWrite_en_out, DE_MemRead_en_out, DE_PC_disable_out, DE_en_load_use_out : OUT STD_LOGIC;
         DE_IN_PORT_out, DE_Read_Data1_out, DE_Read_Data2_out: OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Write_Addr_out : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -325,7 +326,8 @@ ARCHITECTURE arch OF processor IS
         DE_OUT_en_out,
         DE_Interrupt_en_out,
         DE_SP_en_out,
-        DE_SP_inc_en_out : IN STD_LOGIC;
+        DE_SP_inc_en_out,
+        DE_en_load_use_out : IN STD_LOGIC;
 
         EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
         EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -349,7 +351,8 @@ ARCHITECTURE arch OF processor IS
         EM_Carry_en_out,
         EM_RTI_en_out,
         EM_OUT_en_out,
-        EM_Interrupt_en_out : OUT STD_LOGIC
+        EM_Interrupt_en_out,
+        EM_en_load_use_out : OUT STD_LOGIC
     );
     END COMPONENT;
 
@@ -486,6 +489,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_OUT_en_out : STD_LOGIC;
     SIGNAL DE_PC_disable_out : STD_LOGIC;
     SIGNAL DE_Immediate_en_out: STD_LOGIC;
+    SIGNAL DE_en_load_use_out : STD_LOGIC;
 
     --Execute stage
     -- Input signals
@@ -541,6 +545,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_RTI_en_out : STD_LOGIC;
     SIGNAL EM_OUT_en_out : STD_LOGIC;
     SIGNAL EM_Interrupt_en_out : STD_LOGIC;
+    SIGNAL EM_en_load_use_out : STD_LOGIC;
     
     -- Memory Stage 
     SIGNAL EM_PC_or_addrs1_en_out : STD_LOGIC;
@@ -751,7 +756,8 @@ BEGIN
         DE_Immediate_en_out => DE_Immediate_en_out,
         DE_Read_Address1 => DE_Read_Address1,
         DE_Read_Address2 => DE_Read_Address2,
-        DE_PC_disable_out => DE_PC_disable_out
+        DE_PC_disable_out => DE_PC_disable_out,
+        DE_en_load_use_out => DE_en_load_use_out
     );
 
     -- Internal Execute Stage
@@ -799,7 +805,9 @@ BEGIN
         ALU_Out => ALU_Out,
         DE_Read_Data1_final => DE_Read_Data1_final,
         DE_Read_Data2_final => DE_Read_Data2_final,
-        MW_FLAGS_en_out => MW_FLAGS_en_out
+        MW_FLAGS_en_out => MW_FLAGS_en_out,
+        Read_Data => Read_Data,
+        EM_en_load_use_out => EM_en_load_use_out
     );
 
     Internal_EM_Register : EM_Register PORT MAP(
@@ -824,6 +832,7 @@ BEGIN
         DE_CALL_en_out => DE_CALL_en_out,
         DE_PC_or_addrs1_out => DE_PC_or_addrs1_en_out,
         DE_FLAGS_en_out => DE_FLAGS_en_out,
+        DE_en_load_use_out => DE_en_load_use_out,
         ZF_OUT => ZF_OUT,
         CF_OUT => CF_OUT,
         NF_OUT => NF_OUT,
@@ -858,7 +867,8 @@ BEGIN
         EM_OUT_en_out => EM_OUT_en_out,
         EM_Interrupt_en_out => EM_Interrupt_en_out,
         EM_SP_en_out => EM_SP_en_out,
-        EM_SP_inc_en_out => EM_SP_inc_en_out
+        EM_SP_inc_en_out => EM_SP_inc_en_out,
+        EM_en_load_use_out => EM_en_load_use_out
     );
 
     --Memory Stage
