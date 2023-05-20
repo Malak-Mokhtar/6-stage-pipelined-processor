@@ -125,10 +125,26 @@ ARCHITECTURE arch OF Memory_Stages IS
         );
     END COMPONENT;
 
+    COMPONENT Stack_Pointer IS
+        PORT (
+            clk, rst, en : IN STD_LOGIC;
+            data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+            out_data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        );
+    END COMPONENT;
+
+    COMPONENT SP_ALU IS
+    PORT (
+        clk,SP_en, inc_en : IN STD_LOGIC;
+        sp_before : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        sp_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+    );
+    END COMPONENT;
+
     -------------------SIGNALS----------------
     SIGNAL MM_en : STD_LOGIC := '1';
     -- Phase 2
-    SIGNAL Read_Data1, Read_Data2, Flags_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL Read_Data1, Read_Data2, Flags_sig,  SP_before_sig, SP_after_sig : STD_LOGIC_VECTOR(15 DOWNTO 0);
 BEGIN
 
     Data_memory_MAP : Data_Memory PORT MAP(
@@ -197,6 +213,22 @@ BEGIN
         EM_FLAGS_en_out => EM_FLAGS_en_out,
         MM_FLAGS_en_out => MM_FLAGS_en_out
 
+    );
+
+    Stack_Pointer_MAP : Stack_Pointer PORT MAP(
+        clk => clk,
+        rst => general_rst,
+        en => EM_SP_en_out,
+        data => SP_after_sig,
+        out_data => SP_before_sig
+    );
+
+    SP_ALU_MAP : SP_ALU PORT MAP(
+        clk => clk,
+        SP_en => EM_SP_en_out,
+        inc_en => EM_SP_inc_en_out,
+        SP_after => SP_after_sig,
+        SP_before => SP_before_sig
     );
 
 END ARCHITECTURE;

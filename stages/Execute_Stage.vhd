@@ -22,8 +22,6 @@ ENTITY Execute_Stage IS
         MW_FLAGS_en_out,
         MW_RegWrite_en_out,
         DE_Immediate_en_out,
-        DE_SP_en_out,
-        DE_SP_inc_en_out,
         EM_en_load_use_out, EM_IN_en_out : IN STD_LOGIC;
         DE_Read_Data1_out,
         DE_Read_Data2_out, MW_Read_Data_out,
@@ -44,9 +42,7 @@ ENTITY Execute_Stage IS
         DE_RTI_en_out : OUT STD_LOGIC;
         ALU_Out,
         DE_Read_Data1_final,
-        DE_Read_Data2_final,
-        SP_before,
-        SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
 
     );
 END Execute_Stage;
@@ -141,21 +137,7 @@ ARCHITECTURE arch OF Execute_Stage IS
 
     END COMPONENT;
 
-    COMPONENT Stack_Pointer IS
-        PORT (
-            clk, rst, en : IN STD_LOGIC;
-            data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            out_data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-        );
-    END COMPONENT;
-
-    COMPONENT SP_ALU IS
-    PORT (
-        clk,SP_en, inc_en : IN STD_LOGIC;
-        sp_before : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        sp_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-    );
-    END COMPONENT;
+    
 
     COMPONENT MUX_ALU_OP1B is
     PORT(
@@ -177,7 +159,7 @@ ARCHITECTURE arch OF Execute_Stage IS
     SIGNAL ZF_SIG, NF_SIG, CF_SIG, ZF_EXCEPT_RTI_SIG, CF_EXCEPT_RTI_SIG, ZF_RTI_SIG, CF_RTI_SIG, NF_RTI_SIG,
     ZF_selected_SIG, CF_selected_SIG, NF_selected_SIG : STD_LOGIC;
 
-    SIGNAL DE_Read_Data1_final_out_sig, DE_Read_Data2_final_out_sig, SP_before_sig, SP_after_sig, MM_ALU_or_Mem_Out_out, EM_ALU_or_IN_out : STD_LOGIC_VECTOR (15 DOWNTO 0);
+    SIGNAL DE_Read_Data1_final_out_sig, DE_Read_Data2_final_out_sig, MM_ALU_or_Mem_Out_out, EM_ALU_or_IN_out : STD_LOGIC_VECTOR (15 DOWNTO 0);
 
     SIGNAL Read_data1_sel_sig, Read_data2_sel_sig : STD_LOGIC_VECTOR (1 DOWNTO 0);
 
@@ -303,21 +285,6 @@ BEGIN
         NF_ALU => NF_SIG
     );
 
-    Stack_Pointer_MAP : Stack_Pointer PORT MAP(
-        clk => clk,
-        rst => general_rst,
-        en => DE_SP_en_out,
-        data => SP_after_sig,
-        out_data => SP_before_sig
-    );
-
-    SP_ALU_MAP : SP_ALU PORT MAP(
-        clk => clk,
-        SP_en => DE_SP_en_out,
-        inc_en => DE_SP_inc_en_out,
-        SP_after => SP_after_sig,
-        SP_before => SP_before_sig
-    );
 
     MUX_ALU_OP1B_MAP : MUX_ALU_OP1B PORT MAP (
             MM_ALU_Out_out => MM_ALU_Out,
@@ -339,8 +306,6 @@ BEGIN
     DE_Carry_en <= DE_Carry_en_out;
     DE_MemWrite_en <= DE_MemWrite_en_out;
     DE_MemRead_en <= DE_MemRead_en_out;
-    SP_after <= SP_after_sig;
-    SP_before <= SP_before_sig;
     DE_RTI_en_out <= MW_RTI_en_out;
 
 

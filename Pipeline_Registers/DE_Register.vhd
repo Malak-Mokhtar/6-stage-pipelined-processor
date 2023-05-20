@@ -57,7 +57,7 @@ END DE_Register;
 ARCHITECTURE arch OF DE_Register IS
 signal pipelined_rst: std_logic;
 BEGIN
-    pipelined_rst<= rst OR en_load_use;
+    pipelined_rst<= (rst OR en_load_use) and not en_structural;
     main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
         IF (pipelined_rst = '1' and falling_edge(clk)) THEN --check on reset

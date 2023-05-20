@@ -124,8 +124,6 @@ ARCHITECTURE arch OF processor IS
         MW_FLAGS_en_out,
         MW_RegWrite_en_out,
         DE_Immediate_en_out,
-        DE_SP_en_out,
-        DE_SP_inc_en_out,
         EM_en_load_use_out, EM_IN_en_out : IN STD_LOGIC;
         DE_Read_Data1_out,
         DE_Read_Data2_out, MW_Read_Data_out,
@@ -146,9 +144,7 @@ ARCHITECTURE arch OF processor IS
         DE_RTI_en_out : OUT STD_LOGIC;
         ALU_Out,
         DE_Read_Data1_final,
-        DE_Read_Data2_final,
-        SP_before,
-        SP_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
 
     );
     END COMPONENT;
@@ -311,8 +307,6 @@ ARCHITECTURE arch OF processor IS
         DE_Read_Data1_final_out, DE_Read_Data2_final_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0); -- Edited in Phase 2
         DE_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         -- Phase 2 Inputs:
-        SP_before,
-        SP_after : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         en_structural,
         DE_RTI_en_out,
         DE_RET_en_out,
@@ -337,8 +331,6 @@ ARCHITECTURE arch OF processor IS
         EM_Memory_Reset_out : OUT STD_LOGIC;
 
         -- Phase 2 Outputs:
-        EM_SP_before_out,
-        EM_SP_after_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         EM_SP_en_out,
         EM_SP_inc_en_out,
         EM_RET_en_out,
@@ -779,8 +771,6 @@ BEGIN
         MM_RegWrite_en_out => MM_RegWrite_en,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
         DE_Immediate_en_out => DE_Immediate_en_out,
-        DE_SP_en_out => DE_SP_en_out,
-        DE_SP_inc_en_out => DE_SP_inc_en_out,
         DE_Read_Data1_out => DE_Read_Data1_out,
         DE_Read_Data2_out => DE_Read_Data2_out,
         MW_Read_Data_out => MW_Read_Data_out,
@@ -794,8 +784,6 @@ BEGIN
         MW_Write_Addr_out => MW_Write_Addr_out,
         DE_OPCODE_out => DE_OPCODE_out,
         en_structural => en_structural,
-        SP_before => SP_before,
-        SP_after => SP_after,
         ZF_OUT => ZF_OUT,
         CF_OUT => CF_OUT,
         NF_OUT => NF_OUT,
@@ -827,8 +815,6 @@ BEGIN
         DE_Read_Data1_final_out => DE_Read_Data1_final,
         DE_Read_Data2_final_out => DE_Read_Data2_final,
         DE_Write_Addr_out => DE_Write_Addr_out,
-        SP_before => SP_before,
-        SP_after => SP_after,
         en_structural => en_structural,
         DE_RTI_en_out => DE_RTI_en_out,
         DE_RET_en_out => DE_RET_en_out,
@@ -856,8 +842,6 @@ BEGIN
         EM_Read_Data2_out => EM_Read_Data2_out,
         EM_Write_Addr_out => EM_Write_Addr_out,
         EM_Memory_Reset_out => EM_Memory_Reset_out,
-        EM_SP_before_out => EM_SP_before_out,
-        EM_SP_after_out => EM_SP_after_out,
         EM_RET_en_out => EM_RET_en_out,
         EM_CALL_en_out => EM_CALL_en_out,
         EM_PC_or_addrs1_out => EM_PC_or_addrs1_out,

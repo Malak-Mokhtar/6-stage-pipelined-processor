@@ -9,8 +9,6 @@ ENTITY EM_Register IS
         DE_Read_Data1_final_out, DE_Read_Data2_final_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0); -- Edited in Phase 2
         DE_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         -- Phase 2 Inputs:
-        SP_before,
-        SP_after : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         en_structural,
         DE_RTI_en_out,
         DE_RET_en_out,
@@ -35,8 +33,6 @@ ENTITY EM_Register IS
         EM_Memory_Reset_out : OUT STD_LOGIC;
 
         -- Phase 2 Outputs:
-        EM_SP_before_out,
-        EM_SP_after_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
         EM_SP_en_out,
         EM_SP_inc_en_out,
         EM_RET_en_out,
@@ -77,8 +73,6 @@ BEGIN
             EM_ALU_Out_out <= (OTHERS => '0');
             EM_Read_Data1_out <= (OTHERS => '0');
             EM_Read_Data2_out <= (OTHERS => '0');
-            EM_SP_before_out <= (OTHERS => '0');
-            EM_SP_after_out <= (OTHERS => '0');
             EM_RET_en_out <= '0';
             EM_CALL_en_out <= '0';
             EM_PC_or_addrs1_out <= '0';
@@ -105,8 +99,6 @@ BEGIN
             EM_ALU_Out_out <= ALU_Out;
             EM_Read_Data1_out <= DE_Read_Data1_final_out;
             EM_Read_Data2_out <= DE_Read_Data2_final_out;
-            EM_SP_before_out <= SP_before;
-            EM_SP_after_out <= SP_after;
             EM_RET_en_out <= DE_RET_en_out;
             EM_CALL_en_out <= DE_CALL_en_out;
             EM_PC_or_addrs1_out <= DE_PC_or_addrs1_out;
