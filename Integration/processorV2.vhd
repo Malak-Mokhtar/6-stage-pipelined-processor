@@ -107,7 +107,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT Execute_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, general_rst : IN STD_LOGIC; -- WHY Reg_File_rst??
+        clk, general_rst : IN STD_LOGIC;
         DE_Carry_en_out,
         DE_ALU_en_out,
         DE_MemWrite_en_out,
@@ -126,10 +126,10 @@ ARCHITECTURE arch OF processor IS
         DE_Immediate_en_out,
         DE_SP_en_out,
         DE_SP_inc_en_out,
-        EM_en_load_use_out : IN STD_LOGIC;
+        EM_en_load_use_out, EM_IN_en_out : IN STD_LOGIC;
         DE_Read_Data1_out,
         DE_Read_Data2_out, MW_Read_Data_out,
-        MM_ALU_OUT, EM_ALU_OUT, Write_data, Read_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MM_ALU_OUT, EM_ALU_OUT, Write_data, Read_Data, EM_IN_PORT_out : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         DE_Read_Address1,
         DE_Read_Address2, EM_Write_Addr_out, MM_Write_Addr_out, MW_Write_Addr_out : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         DE_OPCODE_out : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
@@ -807,7 +807,10 @@ BEGIN
         DE_Read_Data2_final => DE_Read_Data2_final,
         MW_FLAGS_en_out => MW_FLAGS_en_out,
         Read_Data => Read_Data,
-        EM_en_load_use_out => EM_en_load_use_out
+        EM_en_load_use_out => EM_en_load_use_out,
+        EM_IN_PORT_out => EM_IN_PORT_out,
+        EM_IN_en_out => EM_IN_en_out
+
     );
 
     Internal_EM_Register : EM_Register PORT MAP(
