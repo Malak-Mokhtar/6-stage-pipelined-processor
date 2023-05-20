@@ -243,12 +243,13 @@ def conversion(assembly_instructions: list[str]):
             registers = instruction_line[1].split(",")
             # OPCODE
             temp_inst += "10000"
-            # Rs1 (Garbage)
-            temp_inst += "000"
+            # Rs1 
+            temp_inst += Register_Translation[registers[0]]
             # Rs2 (Garbage)
             temp_inst += "000"
-            # Rd
-            temp_inst += Register_Translation[registers[0]]
+            # Rd (Garbage)
+            temp_inst += "000"
+
             # Default Garbage
             temp_inst += "00"
             # add instruction
