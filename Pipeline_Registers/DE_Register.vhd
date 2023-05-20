@@ -60,7 +60,7 @@ BEGIN
     pipelined_rst<= rst OR en_load_use;
     main_loop : PROCESS (clk, rst)
     BEGIN
-        IF pipelined_rst = '1' THEN --check on reset
+        IF pipelined_rst = '1' and rising_edge(clk) THEN --check on reset
             DE_IN_en_out <= '0';
             DE_RegWrite_en_out <= '0';
             DE_Carry_en_out <= '0';

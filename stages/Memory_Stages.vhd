@@ -12,8 +12,8 @@ ENTITY Memory_Stages IS
         EM_MemWrite_en_out,
         EM_MemRead_en_out,
         -- Phase 2:
-        DE_SP_en_out,
-        DE_SP_inc_en_out,
+        EM_SP_en_out,
+        EM_SP_inc_en_out,
         EM_PC_or_addrs1_en_out,
         EM_FLAGS_en_out,
         EM_Interrupt_en_out,
@@ -145,8 +145,8 @@ BEGIN
         Read_Data1 => EM_Read_Data1_out,
         SP_Before => EM_SP_before_out,
         SP_After => EM_SP_after_out,
-        SP_en => DE_SP_en_out,
-        SP_inc_en => DE_SP_inc_en_out,
+        SP_en => EM_SP_en_out,
+        SP_inc_en => EM_SP_inc_en_out,
         PC_or_addr1_en => EM_PC_or_addrs1_en_out,
         Read_Addrs => Read_Data1
     );

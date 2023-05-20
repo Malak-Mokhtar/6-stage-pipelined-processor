@@ -18,7 +18,7 @@ BEGIN
     BEGIN
         IF rst = '1' THEN
             data_signal <= "0000001111111111";
-        ELSIF rising_edge(clk) AND en = '1' THEN
+        ELSIF falling_edge(clk) AND en = '1' THEN
             data_signal <= data;
 
         END IF;

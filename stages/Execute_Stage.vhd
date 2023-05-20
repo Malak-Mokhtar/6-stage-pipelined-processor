@@ -120,11 +120,11 @@ ARCHITECTURE arch OF Execute_Stage IS
             Read_data2_sel, Read_data1_sel : OUT STD_LOGIC_VECTOR(1 DOWNTO 0));
     END COMPONENT;
 
-    COMPONENT Structural_HDU IS
-        PORT (
-            DE_MemRead_en_out, EM_MemRead_en_out, DE_MemWrite_en_out, EM_MemWrite_en_out : IN STD_LOGIC;
-            en_structural : OUT STD_LOGIC);
+    COMPONENT Structural_HDU IS 
+	PORT ( clk,rst,DE_MemRead_en_out,EM_MemRead_en_out,DE_MemWrite_en_out,EM_MemWrite_en_out : IN  std_logic;
+			en_structural : OUT std_logic);
     END COMPONENT;
+
     COMPONENT MUX_ALU_OP1 IS
         PORT (
             DE_Read_Data1_out, MM_ALU_Out_out, EM_ALU_out, Write_Data : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -147,12 +147,13 @@ ARCHITECTURE arch OF Execute_Stage IS
             out_data : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
         );
     END COMPONENT;
+
     COMPONENT SP_ALU IS
-        PORT (
-            SP_en, inc_en : IN STD_LOGIC;
-            sp_before : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-            sp_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-        );
+    PORT (
+        clk,SP_en, inc_en : IN STD_LOGIC;
+        sp_before : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
+        sp_after : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+    );
     END COMPONENT;
     -------------------SIGNALS----------------
     SIGNAL ZF_SIG, NF_SIG, CF_SIG, ZF_EXCEPT_RTI_SIG, CF_EXCEPT_RTI_SIG, ZF_RTI_SIG, CF_RTI_SIG, NF_RTI_SIG,
@@ -264,6 +265,8 @@ BEGIN
     );
 
     Structural_HDU_MAP : Structural_HDU PORT MAP(
+        clk => clk,
+        rst => general_rst,
         DE_MemRead_en_out => DE_MemRead_en_out,
         EM_MemRead_en_out => EM_MemRead_en_out,
         DE_MemWrite_en_out => DE_MemWrite_en_out,
@@ -291,6 +294,7 @@ BEGIN
     );
 
     SP_ALU_MAP : SP_ALU PORT MAP(
+        clk => clk,
         SP_en => DE_SP_en_out,
         inc_en => DE_SP_inc_en_out,
         SP_after => SP_after_sig,

@@ -4,7 +4,7 @@ use ieee.numeric_std.all;
 
 ENTITY loaduse IS
 PORT( Read_Address1, Read_Address2, DE_Write_Addr_out, EM_Write_Addr_out: IN std_logic_vector(2 DOWNTO 0);
-DE_MemRead_en_out,EM_MemRead_en_out: IN std_logic;
+DE_MemRead_en_out,EM_MemRead_en_out, R1_en, R2_en : IN std_logic;
 en_load_use: out std_logic
 );
 END loaduse;
@@ -39,7 +39,7 @@ my_xor_gate4 : XOR_gate port map(Read_Address2, EM_Write_Addr_out, xor4);
 
 
 
-en_load_use <= (((not xor1) and DE_MemRead_en_out) or ((not xor2) and DE_MemRead_en_out)) or (((not xor3) and EM_MemRead_en_out ) or ((not xor4) and EM_MemRead_en_out));
+en_load_use <= ((not xor1 and DE_MemRead_en_out) and R1_en) or ((not xor2 and DE_MemRead_en_out) and R2_en) or ((not xor3 and EM_MemRead_en_out) and R1_en) or ((not xor4 and EM_MemRead_en_out) and R2_en);
 
 
 

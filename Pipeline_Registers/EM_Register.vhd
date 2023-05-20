@@ -22,7 +22,9 @@ ENTITY EM_Register IS
         NF_OUT,
         DE_Carry_en_out,
         DE_OUT_en_out,
-        DE_Interrupt_en_out : IN STD_LOGIC;
+        DE_Interrupt_en_out,
+        DE_SP_en_out,
+        DE_SP_inc_en_out : IN STD_LOGIC;
 
         EM_IN_en_out, EM_RegWrite_en_out, EM_Mem_to_Reg_en_out, EM_MemWrite_en_out, EM_MemRead_en_out : OUT STD_LOGIC;
         EM_IN_PORT_out, EM_ALU_Out_out, EM_Read_Data1_out, EM_Read_Data2_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -34,6 +36,8 @@ ENTITY EM_Register IS
         -- Phase 2 Outputs:
         EM_SP_before_out,
         EM_SP_after_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        EM_SP_en_out,
+        EM_SP_inc_en_out,
         EM_RET_en_out,
         EM_CALL_en_out,
         EM_PC_or_addrs1_out,
@@ -59,7 +63,7 @@ BEGIN
     main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
 
-        IF rst = '1' THEN --check on reset
+        IF (pipelined_rst = '1' and rising_edge(clk)) THEN --check on reset
             --make all outputs zero
             EM_IN_en_out <= '0';
             EM_RegWrite_en_out <= '0';
@@ -84,8 +88,10 @@ BEGIN
             EM_RTI_en_out <= '0';
             EM_OUT_en_out <= '0';
             EM_Interrupt_en_out <= '0';
+            EM_SP_en_out <= '0';
+            EM_SP_inc_en_out <= '0';
 
-        ELSIF falling_edge(clk) AND (en = '1') THEN --check on enable and falling edge
+        ELSIF (falling_edge(clk) AND (en = '1')) and en_structural = '0' THEN --check on enable and falling edge
             EM_Write_Addr_out <= DE_Write_Addr_out;
             EM_IN_en_out <= DE_IN_en_out;
             EM_RegWrite_en_out <= DE_RegWrite_en_out;
@@ -109,6 +115,8 @@ BEGIN
             EM_RTI_en_out <= DE_RTI_en_out;
             EM_OUT_en_out <= DE_OUT_en_out;
             EM_Interrupt_en_out <= DE_Interrupt_en_out;
+            EM_SP_en_out <= DE_SP_en_out;
+            EM_SP_inc_en_out <= DE_SP_inc_en_out;
         END IF;
         IF falling_edge(clk) THEN
             EM_Memory_Reset_out <= Memory_Reset_in;

@@ -11,8 +11,8 @@ END MUX_MEM_ADD;
 ARCHITECTURE when_else_mux OF MUX_MEM_ADD is
 	BEGIN
 		
-    Read_Addrs <= 	Read_Data1 when SP_en = '0' and (SP_inc_en = '0' or PC_or_addr1_en = '0')
-	else	x"0001" when SP_en = '0' and (SP_inc_en = '0' or PC_or_addr1_en = '1')
-	else	SP_Before when SP_en = '1' and (SP_inc_en = '0' or PC_or_addr1_en = '0')
-    else	SP_After; 
+    Read_Addrs <= x"0001" when PC_or_addr1_en = '1'
+	else Read_Data1 when SP_en = '0' and SP_inc_en = '0'
+	else SP_Before when SP_en = '1' and SP_inc_en = '0'
+    else SP_After; 
 END when_else_mux;
