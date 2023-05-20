@@ -65,7 +65,7 @@ BEGIN
     main_loop : PROCESS (clk, pipelined_rst)
     BEGIN
 
-        IF (pipelined_rst = '1' and rising_edge(clk)) THEN --check on reset
+        IF (pipelined_rst = '1' and falling_edge(clk)) THEN --check on reset
             --make all outputs zero
             EM_IN_en_out <= '0';
             EM_RegWrite_en_out <= '0';
