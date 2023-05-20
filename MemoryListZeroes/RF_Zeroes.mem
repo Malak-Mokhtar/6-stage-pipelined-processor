@@ -1,0 +1,5 @@
+// memory data file (do not edit the following line - required for mem load use)
+// instance=/processor/Internal_Decode_Stage/Internal_Register_File/register_data
+// format=mti addressradix=h dataradix=s version=1.0 wordsperline=4
+0: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+4: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
