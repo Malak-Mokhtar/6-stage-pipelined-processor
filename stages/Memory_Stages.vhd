@@ -159,8 +159,8 @@ BEGIN
 
     MUX_MEM_ADD_MAP : MUX_MEM_ADD PORT MAP(
         Read_Data1 => EM_Read_Data1_out,
-        SP_Before => EM_SP_before_out,
-        SP_After => EM_SP_after_out,
+        SP_Before => SP_before_sig,
+        SP_After => SP_after_sig,
         SP_en => EM_SP_en_out,
         SP_inc_en => EM_SP_inc_en_out,
         PC_or_addr1_en => EM_PC_or_addrs1_en_out,
