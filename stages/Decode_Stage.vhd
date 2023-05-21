@@ -5,7 +5,7 @@ USE ieee.numeric_std.ALL;
 ENTITY Decode_Stage IS
     PORT (
         --INPUT PORTS    
-        clk, rst : IN STD_LOGIC;
+        clk, rst, FD_Interrupt_Signal_out : IN STD_LOGIC;
         FD_Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         FD_Read_Address,
         FD_IN_PORT,
@@ -61,7 +61,8 @@ ENTITY Decode_Stage IS
         PC_disable : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
-        DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0) 
+        DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0);
+        MW_Interrupt_en_out : OUT STD_LOGIC
 
     );
 END Decode_Stage;
@@ -93,15 +94,16 @@ ARCHITECTURE arch OF Decode_Stage IS
     --Control Unit (Edited in Phase 2)
     COMPONENT Control_Unit IS
     PORT (
+        clk, FD_Interrupt_Signal_out : IN STD_LOGIC;
         OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
         RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC
-
     );
     END COMPONENT;
+
 
     --Register File
     COMPONENT Reg_file IS
@@ -118,7 +120,7 @@ ARCHITECTURE arch OF Decode_Stage IS
     COMPONENT MUX_DEC_PC IS 
 	PORT ( PC_Added,DE_Read_Data1_final_out,MW_Read_Data_out: IN std_logic_vector (15 DOWNTO 0);
 			MW_RET_en_out,DE_JMP_en_out,DE_CALL_en_out,DE_JZ_en_out,ZF_OUT,DE_JC_en_out, CF_OUT,MW_PC_or_addrs1_en_out,MW_RTI_en_out : IN  std_logic;
-			IN_PC : OUT std_logic_vector (15 DOWNTO 0));
+			IN_PC : OUT std_logic_vector (15 DOWNTO 0); MW_Interrupt_en_out : in STD_LOGIC);
     END COMPONENT;
 
     -- MUX 2X1 to choose Add value
@@ -167,6 +169,8 @@ BEGIN
 
     -- control unit initalization (Edited in Phase 2)
     Control_Unit_MAP : Control_Unit PORT MAP(
+        clk => clk,
+        FD_Interrupt_Signal_out => FD_Interrupt_Signal_out,
         OPCODE => FD_Inst(31 DOWNTO 27),
         IN_en => IN_en,
         Carry_en => Carry_en,
@@ -242,7 +246,8 @@ BEGIN
         CF_OUT => CF_OUT,
         MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out,
         MW_RTI_en_out => MW_RTI_en_out,
-        IN_PC => IN_PC
+        IN_PC => IN_PC,
+        MW_Interrupt_en_out => MW_Interrupt_en_out
     );
 
     Read_Data1 <= Read_Data1_sig;

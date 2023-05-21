@@ -6,11 +6,12 @@ ENTITY FD_Register IS
     PORT (
         clk, en_structural, en_load_use : IN STD_LOGIC;
         rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out,MW_RET_en_out, DE_Interrupt_en_out, --
-        DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out: IN STD_LOGIC;
+        DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out, Interrupt: IN STD_LOGIC;
         Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
-        FD_Read_Address_out, FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        FD_Read_Address_out, FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        FD_Interrupt_Signal_out : OUT STD_LOGIC;
     );
 END FD_Register;
 
@@ -38,10 +39,12 @@ BEGIN
             FD_Inst_out <= (OTHERS => '0');
             FD_Read_Address_out <= (OTHERS => '0');
             FD_IN_PORT_out <= (OTHERS => '0');
+            FD_Interrupt_Signal_out <= '0';
         ELSIF falling_edge(clk) AND en = '1' THEN --check on enable and falling edge
             FD_Inst_out <= Inst;
             FD_Read_Address_out <= Read_Address;
             FD_IN_PORT_out <= IN_PORT;
+            FD_Interrupt_Signal_out <= Interrupt;
         END IF;
     END PROCESS; -- main_loop
 

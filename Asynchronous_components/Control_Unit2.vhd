@@ -1,9 +1,12 @@
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
+USE IEEE.numeric_std.all;
+use IEEE.std_logic_unsigned.all;
 
 ENTITY Control_Unit IS
 
     PORT (
+        clk, FD_Interrupt_Signal_out : IN STD_LOGIC;
         OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
         RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en : OUT STD_LOGIC;
@@ -16,12 +19,36 @@ END Control_Unit;
 
 --                                                                                                                                                                                                                                                  A4 B3 C2 D1 E0
 ARCHITECTURE my_Control_Unit OF Control_Unit IS
+
+SIGNAL SP_en_normal : STD_LOGIC;
+SIGNAL SP_inc_en_normal : STD_LOGIC;
+SIGNAL POP_en_interrupt : STD_LOGIC;
+SIGNAL PUSH_en_interrupt : STD_LOGIC;
+SIGNAL MemWrite_en_normal : STD_LOGIC;
+SIGNAL MemRead_en_normal : STD_LOGIC;
+SIGNAL Interrupt_en_sig : STD_LOGIC := '0';
+SIGNAL counter : STD_LOGIC_VECTOR(1 DOWNTO 0) := "00";
+
 BEGIN
+
+    interrupt : PROCESS (clk)
+    BEGIN
+        IF rising_edge(clk) AND FD_Interrupt_Signal_out = '1' AND counter ="00" THEN
+            -- change PC on rising edge
+            Interrupt_en_sig <= '1';
+            counter <= "01";
+        ELSIF rising_edge(clk) and counter = "11" THEN
+            Interrupt_en_sig <= '0';
+            counter <= "00";
+        ELSIF rising_edge(clk) AND Interrupt_en_sig = '1' THEN
+            counter <= STD_LOGIC_VECTOR(unsigned(counter) + 1);
+        END IF;
+    END PROCESS; -- main_loop
 
     In_en <= NOT OPCODE(4) AND NOT OPCODE(3) AND OPCODE(2) and (not OPCODE(0));
     Carry_en <= ((not OPCODE(4) and OPCODE(1)) and (not OPCODE(0))) or (not OPCODE(4) and (OPCODE(2) and OPCODE(1))) or ( ( not OPCODE(4) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) ) or (( not OPCODE(4) and OPCODE(3)) and ( not OPCODE(2)  and  not OPCODE(1) ) ) or (( OPCODE(3) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) );
     ALU_en <= (not OPCODE(4)) AND OPCODE(3);
-    MemRead_en <= ((OPCODE(4) and OPCODE(3)) AND OPCODE(2)) OR ((OPCODE(4) AND OPCODE(1)) AND (not OPCODE(3)));
+    MemRead_en_normal <= ((OPCODE(4) and OPCODE(3)) AND OPCODE(2)) OR ((OPCODE(4) AND OPCODE(1)) AND (not OPCODE(3)));
     Mem_to_Reg_en <= OPCODE(4) AND ((NOT OPCODE(3)) AND OPCODE(1));
     
     ----------- 00100 OR (((NOT OPCODE(4) AND NOT OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) AND NOT OPCODE(0))
@@ -30,7 +57,7 @@ BEGIN
     (((NOT OPCODE(4))) AND OPCODE(3)) OR (((OPCODE(4) AND NOT OPCODE(3))) AND (((NOT OPCODE(2)) AND NOT OPCODE(1)) AND NOT OPCODE(0)))
     OR (((NOT OPCODE(4) AND NOT OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) AND NOT OPCODE(0))
     OR (((OPCODE(4) AND NOT OPCODE(3)) AND NOT OPCODE(2)) AND (OPCODE(1) AND NOT OPCODE(0)));
-    MemWrite_en <= ((((OPCODE(4) AND (NOT OPCODE(3))) AND (NOT OPCODE(2))) AND (NOT OPCODE(1))) AND OPCODE(0)) OR (((OPCODE(4) AND (NOT OPCODE(3))) AND (OPCODE(2) AND (NOT OPCODE(1)))) AND (NOT OPCODE(0))) OR (((((OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2))) AND OPCODE(1))) AND OPCODE(0));
+    MemWrite_en_normal <= ((((OPCODE(4) AND (NOT OPCODE(3))) AND (NOT OPCODE(2))) AND (NOT OPCODE(1))) AND OPCODE(0)) OR (((OPCODE(4) AND (NOT OPCODE(3))) AND (OPCODE(2) AND (NOT OPCODE(1)))) AND (NOT OPCODE(0))) OR (((((OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2))) AND OPCODE(1))) AND OPCODE(0));
     --------
     SETC_en <= (NOT OPCODE(4)) AND (NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (NOT OPCODE(1)) AND OPCODE(0);
     CLRC_en <= (NOT OPCODE(4)) AND (NOT OPCODE(3)) AND (NOT OPCODE(0)) AND OPCODE(1);
@@ -42,20 +69,35 @@ BEGIN
     RET_en <= OPCODE(4) AND OPCODE(3) AND OPCODE(2) AND (NOT OPCODE(1)) AND (NOT OPCODE(0));
     OUT_en <= NOT OPCODE(4) AND (NOT OPCODE(3)) AND (NOT OPCODE(2)) AND OPCODE(1) AND OPCODE(0);
     RTI_en <= OPCODE(4) AND OPCODE(3) AND OPCODE(2) AND (NOT OPCODE(1)) AND OPCODE(0);
-    PC_or_addrs1_en <= '0';
-    SP_en <= (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR
+    SP_en_normal <= (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR
     (((OPCODE(4) AND NOT OPCODE(3)) AND NOT OPCODE(2)) AND (NOT OPCODE(1) AND OPCODE(0))) OR
     (((OPCODE(4) AND NOT OPCODE(3)) AND NOT OPCODE(2)) AND (OPCODE(1) AND NOT OPCODE(0))) OR
     (((OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(1))) AND OPCODE(0)));
-    SP_inc_en <=  (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR ((((OPCODE(4) AND NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (OPCODE(1))) AND NOT OPCODE(0))));
+    SP_inc_en_normal <=  (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR ((((OPCODE(4) AND NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (OPCODE(1))) AND NOT OPCODE(0))));
     R1_en <= (NOT OPCODE(4) AND OPCODE(3)) OR (OPCODE(3) AND NOT OPCODE(2)) OR (((OPCODE(4) AND NOT OPCODE(3) ) AND (OPCODE(2) AND  NOT OPCODE(1))) AND NOT OPCODE(0));
     R2_en <= ((NOT OPCODE(3) AND NOT OPCODE(2)) AND (OPCODE(1) AND OPCODE(0))) OR (((NOT OPCODE(4) AND NOT OPCODE(3)) AND OPCODE(2)) AND (NOT OPCODE(1) AND OPCODE(0))) OR ((NOT OPCODE(4) AND
     OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(0))) OR ((NOT OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(1))) OR (((NOT OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) AND NOT OPCODE(0)) OR
     ((OPCODE(4) AND NOT OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(0))) OR ((((OPCODE(4) AND NOT OPCODE(3)) AND OPCODE(2)) AND NOT OPCODE(1)) AND NOT OPCODE(0));
     ------ To be removed when interrupt is handled
-    PC_disable <= '0';
-    Interrupt_en <= '0';
-    FLAGS_en <= '0';
+    -- PUSH FLAGS
+    FLAGS_en <= NOT counter(1) AND counter(0); --01
+
+    -- PUSH FLAGS (01) OR PC (10)
+    PUSH_en_interrupt <= counter(1) OR counter(0);
+    SP_en <= SP_en_normal OR PUSH_en_interrupt;
+    MemWrite_en <= MemWrite_en_normal OR  PUSH_en_interrupt;
+    
+    -- POP M[1] 11
+    POP_en_interrupt <= counter(1) AND counter(0);
+    SP_inc_en <= SP_inc_en_normal OR POP_en_interrupt;
+    MemRead_en <= MemRead_en_normal OR POP_en_interrupt;
+
+    -- Common
+    Interrupt_en <= Interrupt_en_sig;
+    PC_disable <= Interrupt_en_sig; -- FREEZING WORKS LATE
+    PC_or_addrs1_en <= Interrupt_en_sig;
+
+    
 
 END my_Control_Unit;
 
