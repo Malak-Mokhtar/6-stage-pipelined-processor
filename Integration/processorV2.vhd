@@ -238,7 +238,7 @@ ARCHITECTURE arch OF processor IS
     COMPONENT FD_Register IS
     PORT (
         clk, en_structural, en_load_use : IN STD_LOGIC;
-        rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out, DE_Interrupt_en_out,
+        rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out, MW_RET_en_out ,DE_Interrupt_en_out,
         DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out: IN STD_LOGIC;
         Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -610,6 +610,7 @@ BEGIN
         DE_RET_en_out => DE_RET_en_out,
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
+        MW_RET_en_out => MW_RET_en_out,
         DE_Interrupt_en_out => DE_Interrupt_en_out,
         DE_RTI_en_out => DE_RTI_en_out,
         EM_RTI_en_out => EM_RTI_en_out,
@@ -939,7 +940,7 @@ BEGIN
     --WriteBack Stage
     Internal_WriteBack_Stage : WriteBack_Stage PORT MAP(
         clk => clk,
-        general_rst => general_rst,
+        general_rst => rst,
         MW_IN_en_out => MW_IN_en_out,
         MW_RegWrite_en_out => MW_RegWrite_en_out,
         MW_Mem_to_Reg_en_out => MW_Mem_to_Reg_en_out,
