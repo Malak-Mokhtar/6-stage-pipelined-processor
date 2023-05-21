@@ -62,7 +62,7 @@ ENTITY Decode_Stage IS
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
         DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0);
-        MW_Interrupt_en_out : OUT STD_LOGIC
+        MW_Interrupt_en_out : IN STD_LOGIC
 
     );
 END Decode_Stage;

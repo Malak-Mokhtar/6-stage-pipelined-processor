@@ -22,6 +22,7 @@ ARCHITECTURE my_Control_Unit OF Control_Unit IS
 
 SIGNAL SP_en_normal : STD_LOGIC;
 SIGNAL SP_inc_en_normal : STD_LOGIC;
+SIGNAL SP_en_interrupt : STD_LOGIC;
 SIGNAL POP_en_interrupt : STD_LOGIC;
 SIGNAL PUSH_en_interrupt : STD_LOGIC;
 SIGNAL MemWrite_en_normal : STD_LOGIC;
@@ -82,9 +83,10 @@ BEGIN
     -- PUSH FLAGS
     FLAGS_en <= NOT counter(1) AND counter(0); --01
 
-    -- PUSH FLAGS (01) OR PC (10)
-    PUSH_en_interrupt <= counter(1) OR counter(0);
-    SP_en <= SP_en_normal OR PUSH_en_interrupt;
+    -- PUSH FLAGS (01) OR PC (10) 01, 10
+    PUSH_en_interrupt <= counter(1) XOR counter(0);
+    SP_en_interrupt <= counter(1) OR counter(0);
+    SP_en <= SP_en_normal OR SP_en_interrupt;
     MemWrite_en <= MemWrite_en_normal OR  PUSH_en_interrupt;
     
     -- POP M[1] 11

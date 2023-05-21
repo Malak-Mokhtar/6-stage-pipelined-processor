@@ -24,7 +24,8 @@ ENTITY Fetch_Stage IS
         
         -- Outputs:
         Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        EM_PC_or_addrs1_en_out, MM_PC_or_addrs1_en_out, MW_PC_or_addrs1_en_out : IN STD_LOGIC
     );
 END Fetch_Stage;
 
@@ -37,7 +38,8 @@ ARCHITECTURE arch OF Fetch_Stage IS
     PORT (
         clk, rst, DE_JMP_en_out, DE_CALL_en_out, MW_RTI_en_out, MW_RET_en_out, DE_PC_disable_out, en_load_use, en_structural, DE_JZ_en_out, ZF_OUT, DE_JC_en_out, CF_OUT : IN STD_LOGIC;
         IN_PC, IN_DATA : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        EM_PC_or_addrs1_en_out, MM_PC_or_addrs1_en_out, MW_PC_or_addrs1_en_out : IN STD_LOGIC
     );
     END COMPONENT;
     --Instruction Memory component
@@ -68,7 +70,10 @@ BEGIN
         CF_OUT => CF_OUT ,
         IN_PC => IN_PC,
         IN_DATA => IN_DATA,
-        Read_Address => Internal_Read_Address
+        Read_Address => Internal_Read_Address,
+        EM_PC_or_addrs1_en_out => EM_PC_or_addrs1_en_out, 
+        MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out, 
+        MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out
     );
 
     Internal_Instruction_Memory : Instruction_Memory PORT MAP(

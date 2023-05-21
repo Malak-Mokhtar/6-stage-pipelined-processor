@@ -35,7 +35,8 @@ ARCHITECTURE arch OF processor IS
         
         -- Outputs:
         Read_Address : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
+        Inst : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
+        EM_PC_or_addrs1_en_out, MM_PC_or_addrs1_en_out, MW_PC_or_addrs1_en_out : IN STD_LOGIC
     );
     END COMPONENT;
 
@@ -100,7 +101,7 @@ ARCHITECTURE arch OF processor IS
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
         DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0);
-        MW_Interrupt_en_out : OUT STD_LOGIC
+        MW_Interrupt_en_out : IN STD_LOGIC
 
     );
     END COMPONENT;
@@ -246,7 +247,7 @@ ARCHITECTURE arch OF processor IS
         Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
         FD_Read_Address_out, FD_IN_PORT_out : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
-        FD_Interrupt_Signal_out : OUT STD_LOGIC;
+        FD_Interrupt_Signal_out : OUT STD_LOGIC
     );
     END COMPONENT;
     --Decode Execute Register
@@ -603,7 +604,10 @@ BEGIN
         IN_PC => IN_PC,
         IN_DATA => Read_Data, --
         Read_Address => Read_Address,
-        Inst => Inst
+        Inst => Inst,
+        EM_PC_or_addrs1_en_out => EM_PC_or_addrs1_out,
+        MM_PC_or_addrs1_en_out => MM_PC_or_addrs1_en_out, 
+        MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out
     );
     --Internal FD Register
     Internal_FD_Register : FD_Register PORT MAP(

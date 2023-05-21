@@ -38,7 +38,7 @@ ENTITY MW_Register IS
         MW_FLAGS_en_out,
         MW_PC_or_addrs1_en_out : OUT STD_LOGIC;
         MM_Interrupt_en_out : IN STD_LOGIC;
-        MW_Interrupt_en_out : OUT STD_LOGIC;
+        MW_Interrupt_en_out : OUT STD_LOGIC
 
     );
 END MW_Register;
