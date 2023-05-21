@@ -1,0 +1,429 @@
+vsim work.processor
+add wave -position insertpoint  \
+sim:/processor/clk
+# rising
+force -freeze sim:/processor/clk 1 0, 0 {50 ps} -r 100
+add wave -position insertpoint  \
+sim:/processor/rst
+
+# Instruction Cache Zeroed
+mem load -i {C:/Users/MALAK/Desktop/Malak/Uni/Computer Architecture/Project/Computer-Architecture-Project/MemoryListZeroes/Instruction_Cache_Zeroes.mem} /processor/Internal_Fetch_Stage/Internal_Instruction_Memory/instruction_cache
+
+# Data memory Zeroed
+mem load -i {C:/Users/MALAK/Desktop/Malak/Uni/Computer Architecture/Project/Computer-Architecture-Project/MemoryListZeroes/Data_Memory_Zeroes.mem} /processor/Internal_Memory_Stages/Data_memory_MAP/memory_data
+
+# Import Data memory of testcases 1
+mem load -i {C:/Users/MALAK/Desktop/Malak/Uni/Computer Architecture/Project/Computer-Architecture-Project/assembler/Data_memory.mem} /processor/Internal_Memory_Stages/Data_memory_MAP/memory_data
+
+# Import Instructions of testcases 1
+mem load -i {C:/Users/MALAK/Desktop/Malak/Uni/Computer Architecture/Project/Computer-Architecture-Project/assembler/Instructions.mem} /processor/Internal_Fetch_Stage/Internal_Instruction_Memory/instruction_cache
+
+# IN PORT
+add wave -position insertpoint  \
+sim:/processor/IN_Port
+force -freeze sim:/processor/IN_Port 0000000001000100 0
+
+# Insert wave for everything
+add wave -position insertpoint  \
+sim:/processor/Internal_Decode_Stage/Internal_Register_File/register_data
+add wave -position insertpoint  \
+sim:/processor/Internal_Fetch_Stage/CF_OUT \
+sim:/processor/Internal_Fetch_Stage/clk \
+sim:/processor/Internal_Fetch_Stage/DE_CALL_en_out \
+sim:/processor/Internal_Fetch_Stage/DE_JC_en_out \
+sim:/processor/Internal_Fetch_Stage/DE_JMP_en_out \
+sim:/processor/Internal_Fetch_Stage/DE_JZ_en_out \
+sim:/processor/Internal_Fetch_Stage/DE_PC_disable_out \
+sim:/processor/Internal_Fetch_Stage/en_load_use \
+sim:/processor/Internal_Fetch_Stage/en_structural \
+sim:/processor/Internal_Fetch_Stage/IN_DATA \
+sim:/processor/Internal_Fetch_Stage/IN_PC \
+sim:/processor/Internal_Fetch_Stage/Inst \
+sim:/processor/Internal_Fetch_Stage/Internal_Read_Address \
+sim:/processor/Internal_Fetch_Stage/MW_RET_en_out \
+sim:/processor/Internal_Fetch_Stage/MW_RTI_en_out \
+sim:/processor/Internal_Fetch_Stage/pc_rst \
+sim:/processor/Internal_Fetch_Stage/Read_Address \
+sim:/processor/Internal_Fetch_Stage/ZF_OUT
+add wave -position insertpoint  \
+sim:/processor/Internal_FD_Register/Carry_rst \
+sim:/processor/Internal_FD_Register/CF_OUT \
+sim:/processor/Internal_FD_Register/clk \
+sim:/processor/Internal_FD_Register/DE_CALL_en_out \
+sim:/processor/Internal_FD_Register/DE_Interrupt_en_out \
+sim:/processor/Internal_FD_Register/DE_JC_en_out \
+sim:/processor/Internal_FD_Register/DE_JMP_en_out \
+sim:/processor/Internal_FD_Register/DE_JZ_en_out \
+sim:/processor/Internal_FD_Register/DE_RET_en_out \
+sim:/processor/Internal_FD_Register/DE_RTI_en_out \
+sim:/processor/Internal_FD_Register/EM_RET_en_out \
+sim:/processor/Internal_FD_Register/EM_RTI_en_out \
+sim:/processor/Internal_FD_Register/en \
+sim:/processor/Internal_FD_Register/en_load_use \
+sim:/processor/Internal_FD_Register/en_structural \
+sim:/processor/Internal_FD_Register/FD_IN_PORT_out \
+sim:/processor/Internal_FD_Register/FD_Inst_out \
+sim:/processor/Internal_FD_Register/FD_Read_Address_out \
+sim:/processor/Internal_FD_Register/IN_PORT \
+sim:/processor/Internal_FD_Register/Inst \
+sim:/processor/Internal_FD_Register/MM_RET_en_out \
+sim:/processor/Internal_FD_Register/MM_RTI_en_out \
+sim:/processor/Internal_FD_Register/pipelined_rst \
+sim:/processor/Internal_FD_Register/Read_Address \
+sim:/processor/Internal_FD_Register/RET_rst \
+sim:/processor/Internal_FD_Register/rst \
+sim:/processor/Internal_FD_Register/RTI_rst \
+sim:/processor/Internal_FD_Register/Zero_rst \
+sim:/processor/Internal_FD_Register/ZF_OUT
+add wave -position insertpoint  \
+sim:/processor/Internal_Decode_Stage/Add_Value_sig \
+sim:/processor/Internal_Decode_Stage/ALU_en \
+sim:/processor/Internal_Decode_Stage/CALL_en \
+sim:/processor/Internal_Decode_Stage/CALL_en_sig \
+sim:/processor/Internal_Decode_Stage/Carry_en \
+sim:/processor/Internal_Decode_Stage/CF_OUT \
+sim:/processor/Internal_Decode_Stage/clk \
+sim:/processor/Internal_Decode_Stage/CLRC_en \
+sim:/processor/Internal_Decode_Stage/DE_CALL_en_out \
+sim:/processor/Internal_Decode_Stage/DE_JC_en_out \
+sim:/processor/Internal_Decode_Stage/DE_JMP_en_out \
+sim:/processor/Internal_Decode_Stage/DE_JZ_en_out \
+sim:/processor/Internal_Decode_Stage/DE_MemRead_en_out \
+sim:/processor/Internal_Decode_Stage/DE_Read_Address1 \
+sim:/processor/Internal_Decode_Stage/DE_Read_Address2 \
+sim:/processor/Internal_Decode_Stage/DE_Read_Data1_final_out \
+sim:/processor/Internal_Decode_Stage/DE_Write_Addr_out \
+sim:/processor/Internal_Decode_Stage/EM_MemRead_en_out \
+sim:/processor/Internal_Decode_Stage/EM_Write_Addr_out \
+sim:/processor/Internal_Decode_Stage/en_load_use \
+sim:/processor/Internal_Decode_Stage/FD_IN_PORT \
+sim:/processor/Internal_Decode_Stage/FD_IN_PORT_out \
+sim:/processor/Internal_Decode_Stage/FD_Inst \
+sim:/processor/Internal_Decode_Stage/FD_Read_Address \
+sim:/processor/Internal_Decode_Stage/FLAGS_en \
+sim:/processor/Internal_Decode_Stage/Immediate_en \
+sim:/processor/Internal_Decode_Stage/Immediate_en_sig \
+sim:/processor/Internal_Decode_Stage/IN_en \
+sim:/processor/Internal_Decode_Stage/IN_PC \
+sim:/processor/Internal_Decode_Stage/Interrupt_en \
+sim:/processor/Internal_Decode_Stage/JC_en \
+sim:/processor/Internal_Decode_Stage/JMP_en \
+sim:/processor/Internal_Decode_Stage/JZ_en \
+sim:/processor/Internal_Decode_Stage/Mem_to_Reg_en \
+sim:/processor/Internal_Decode_Stage/MemRead_en \
+sim:/processor/Internal_Decode_Stage/MemWrite_en \
+sim:/processor/Internal_Decode_Stage/MW_PC_or_addrs1_en_out \
+sim:/processor/Internal_Decode_Stage/MW_Read_Data_out \
+sim:/processor/Internal_Decode_Stage/MW_RegWrite_en \
+sim:/processor/Internal_Decode_Stage/MW_RET_en_out \
+sim:/processor/Internal_Decode_Stage/MW_RTI_en_out \
+sim:/processor/Internal_Decode_Stage/MW_Write_Address \
+sim:/processor/Internal_Decode_Stage/MW_Write_Data \
+sim:/processor/Internal_Decode_Stage/OPCODE \
+sim:/processor/Internal_Decode_Stage/OUT_en \
+sim:/processor/Internal_Decode_Stage/PC_Added_sig \
+sim:/processor/Internal_Decode_Stage/PC_disable \
+sim:/processor/Internal_Decode_Stage/PC_or_addrs1_en \
+sim:/processor/Internal_Decode_Stage/R1_en_sig \
+sim:/processor/Internal_Decode_Stage/R2_en_sig \
+sim:/processor/Internal_Decode_Stage/Read_Data1 \
+sim:/processor/Internal_Decode_Stage/Read_Data1_sig \
+sim:/processor/Internal_Decode_Stage/Read_Data2 \
+sim:/processor/Internal_Decode_Stage/Read_Data2_sig \
+sim:/processor/Internal_Decode_Stage/RegWrite_en \
+sim:/processor/Internal_Decode_Stage/RET_en \
+sim:/processor/Internal_Decode_Stage/rst \
+sim:/processor/Internal_Decode_Stage/RTI_en \
+sim:/processor/Internal_Decode_Stage/SETC_en \
+sim:/processor/Internal_Decode_Stage/SP_en \
+sim:/processor/Internal_Decode_Stage/SP_inc_en \
+sim:/processor/Internal_Decode_Stage/Write_address_RD \
+sim:/processor/Internal_Decode_Stage/ZF_OUT
+add wave -position insertpoint  \
+sim:/processor/Internal_DE_Register/ALU_en \
+sim:/processor/Internal_DE_Register/CALL_en \
+sim:/processor/Internal_DE_Register/Carry_en \
+sim:/processor/Internal_DE_Register/clk \
+sim:/processor/Internal_DE_Register/CLRC_en \
+sim:/processor/Internal_DE_Register/DE_ALU_en_out \
+sim:/processor/Internal_DE_Register/DE_CALL_en_out \
+sim:/processor/Internal_DE_Register/DE_Carry_en_out \
+sim:/processor/Internal_DE_Register/DE_CLRC_en_out \
+sim:/processor/Internal_DE_Register/DE_en_load_use_out \
+sim:/processor/Internal_DE_Register/DE_FLAGS_en_out \
+sim:/processor/Internal_DE_Register/DE_Immediate_en_out \
+sim:/processor/Internal_DE_Register/DE_IN_en_out \
+sim:/processor/Internal_DE_Register/DE_IN_PORT_out \
+sim:/processor/Internal_DE_Register/DE_Interrupt_en_out \
+sim:/processor/Internal_DE_Register/DE_JC_en_out \
+sim:/processor/Internal_DE_Register/DE_JMP_en_out \
+sim:/processor/Internal_DE_Register/DE_JZ_en_out \
+sim:/processor/Internal_DE_Register/DE_Mem_to_Reg_en_out \
+sim:/processor/Internal_DE_Register/DE_MemRead_en_out \
+sim:/processor/Internal_DE_Register/DE_MemWrite_en_out \
+sim:/processor/Internal_DE_Register/DE_OPCODE_out \
+sim:/processor/Internal_DE_Register/DE_OUT_en_out \
+sim:/processor/Internal_DE_Register/DE_PC_disable_out \
+sim:/processor/Internal_DE_Register/DE_PC_or_addrs1_en_out \
+sim:/processor/Internal_DE_Register/DE_Read_Address1 \
+sim:/processor/Internal_DE_Register/DE_Read_Address2 \
+sim:/processor/Internal_DE_Register/DE_Read_Data1_out \
+sim:/processor/Internal_DE_Register/DE_Read_Data2_out \
+sim:/processor/Internal_DE_Register/DE_RegWrite_en_out \
+sim:/processor/Internal_DE_Register/DE_RET_en_out \
+sim:/processor/Internal_DE_Register/DE_RTI_en_out \
+sim:/processor/Internal_DE_Register/DE_SETC_en_out \
+sim:/processor/Internal_DE_Register/DE_SP_en_out \
+sim:/processor/Internal_DE_Register/DE_SP_inc_en_out \
+sim:/processor/Internal_DE_Register/DE_Write_Addr_out \
+sim:/processor/Internal_DE_Register/en_load_use \
+sim:/processor/Internal_DE_Register/en_structural \
+sim:/processor/Internal_DE_Register/FD_IN_PORT_out \
+sim:/processor/Internal_DE_Register/FLAGS_en \
+sim:/processor/Internal_DE_Register/Immediate_en \
+sim:/processor/Internal_DE_Register/IN_en \
+sim:/processor/Internal_DE_Register/Inst_20_to_18_Write_Addrs \
+sim:/processor/Internal_DE_Register/Inst_31_to_27_OPCODE \
+sim:/processor/Internal_DE_Register/Interrupt_en \
+sim:/processor/Internal_DE_Register/JC_en \
+sim:/processor/Internal_DE_Register/JMP_en \
+sim:/processor/Internal_DE_Register/JZ_en \
+sim:/processor/Internal_DE_Register/Mem_to_Reg_en \
+sim:/processor/Internal_DE_Register/MemRead_en \
+sim:/processor/Internal_DE_Register/MemWrite_en \
+sim:/processor/Internal_DE_Register/OUT_en \
+sim:/processor/Internal_DE_Register/PC_disable \
+sim:/processor/Internal_DE_Register/PC_or_addrs1_en \
+sim:/processor/Internal_DE_Register/pipelined_rst \
+sim:/processor/Internal_DE_Register/Read_Address1 \
+sim:/processor/Internal_DE_Register/Read_Address2 \
+sim:/processor/Internal_DE_Register/Read_Data1 \
+sim:/processor/Internal_DE_Register/Read_Data2 \
+sim:/processor/Internal_DE_Register/RegWrite_en \
+sim:/processor/Internal_DE_Register/RET_en \
+sim:/processor/Internal_DE_Register/rst \
+sim:/processor/Internal_DE_Register/RTI_en \
+sim:/processor/Internal_DE_Register/SETC_en \
+sim:/processor/Internal_DE_Register/SP_en \
+sim:/processor/Internal_DE_Register/SP_inc_en
+add wave -position insertpoint  \
+sim:/processor/Internal_Execute_Stage/ALU_Out \
+sim:/processor/Internal_Execute_Stage/CF_EXCEPT_RTI_SIG \
+sim:/processor/Internal_Execute_Stage/CF_OUT \
+sim:/processor/Internal_Execute_Stage/CF_RTI_SIG \
+sim:/processor/Internal_Execute_Stage/CF_selected_SIG \
+sim:/processor/Internal_Execute_Stage/CF_SIG \
+sim:/processor/Internal_Execute_Stage/clk \
+sim:/processor/Internal_Execute_Stage/DE_ALU_en_out \
+sim:/processor/Internal_Execute_Stage/DE_Carry_en \
+sim:/processor/Internal_Execute_Stage/DE_Carry_en_out \
+sim:/processor/Internal_Execute_Stage/DE_CLRC_en_out \
+sim:/processor/Internal_Execute_Stage/DE_Immediate_en_out \
+sim:/processor/Internal_Execute_Stage/DE_JC_en_out \
+sim:/processor/Internal_Execute_Stage/DE_JZ_en_out \
+sim:/processor/Internal_Execute_Stage/DE_MemRead_en \
+sim:/processor/Internal_Execute_Stage/DE_MemRead_en_out \
+sim:/processor/Internal_Execute_Stage/DE_MemWrite_en \
+sim:/processor/Internal_Execute_Stage/DE_MemWrite_en_out \
+sim:/processor/Internal_Execute_Stage/DE_OPCODE_out \
+sim:/processor/Internal_Execute_Stage/DE_Read_Address1 \
+sim:/processor/Internal_Execute_Stage/DE_Read_Address2 \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data1_final \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data1_final_out_sig \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data1_out \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data2_final \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data2_final_out_sig \
+sim:/processor/Internal_Execute_Stage/DE_Read_Data2_out \
+sim:/processor/Internal_Execute_Stage/DE_RTI_en_out \
+sim:/processor/Internal_Execute_Stage/DE_SETC_en_out \
+sim:/processor/Internal_Execute_Stage/EM_ALU_or_IN_out \
+sim:/processor/Internal_Execute_Stage/EM_ALU_OUT \
+sim:/processor/Internal_Execute_Stage/EM_en_load_use_out \
+sim:/processor/Internal_Execute_Stage/EM_IN_en_out \
+sim:/processor/Internal_Execute_Stage/EM_IN_PORT_out \
+sim:/processor/Internal_Execute_Stage/EM_MemRead_en_out \
+sim:/processor/Internal_Execute_Stage/EM_MemWrite_en_out \
+sim:/processor/Internal_Execute_Stage/EM_RegWrite_en_out \
+sim:/processor/Internal_Execute_Stage/EM_Write_Addr_out \
+sim:/processor/Internal_Execute_Stage/en_structural \
+sim:/processor/Internal_Execute_Stage/general_rst \
+sim:/processor/Internal_Execute_Stage/MM_ALU_or_Mem_Out_out \
+sim:/processor/Internal_Execute_Stage/MM_ALU_OUT \
+sim:/processor/Internal_Execute_Stage/MM_RegWrite_en_out \
+sim:/processor/Internal_Execute_Stage/MM_Write_Addr_out \
+sim:/processor/Internal_Execute_Stage/MW_FLAGS_en_out \
+sim:/processor/Internal_Execute_Stage/MW_Read_Data_out \
+sim:/processor/Internal_Execute_Stage/MW_RegWrite_en_out \
+sim:/processor/Internal_Execute_Stage/MW_RTI_en_out \
+sim:/processor/Internal_Execute_Stage/MW_Write_Addr_out \
+sim:/processor/Internal_Execute_Stage/NF_OUT \
+sim:/processor/Internal_Execute_Stage/NF_RTI_SIG \
+sim:/processor/Internal_Execute_Stage/NF_selected_SIG \
+sim:/processor/Internal_Execute_Stage/NF_SIG \
+sim:/processor/Internal_Execute_Stage/Read_Data \
+sim:/processor/Internal_Execute_Stage/Read_data1_sel_sig \
+sim:/processor/Internal_Execute_Stage/Read_data2_sel_sig \
+sim:/processor/Internal_Execute_Stage/Write_data \
+sim:/processor/Internal_Execute_Stage/ZF_EXCEPT_RTI_SIG \
+sim:/processor/Internal_Execute_Stage/ZF_OUT \
+sim:/processor/Internal_Execute_Stage/ZF_RTI_SIG \
+sim:/processor/Internal_Execute_Stage/ZF_selected_SIG \
+sim:/processor/Internal_Execute_Stage/ZF_SIG
+add wave -position insertpoint  \
+sim:/processor/Internal_EM_Register/ALU_Out \
+sim:/processor/Internal_EM_Register/CF_OUT \
+sim:/processor/Internal_EM_Register/clk \
+sim:/processor/Internal_EM_Register/DE_CALL_en_out \
+sim:/processor/Internal_EM_Register/DE_Carry_en_out \
+sim:/processor/Internal_EM_Register/DE_en_load_use_out \
+sim:/processor/Internal_EM_Register/DE_FLAGS_en_out \
+sim:/processor/Internal_EM_Register/DE_IN_en_out \
+sim:/processor/Internal_EM_Register/DE_IN_PORT_out \
+sim:/processor/Internal_EM_Register/DE_Interrupt_en_out \
+sim:/processor/Internal_EM_Register/DE_Mem_to_Reg_en_out \
+sim:/processor/Internal_EM_Register/DE_MemRead_en_out \
+sim:/processor/Internal_EM_Register/DE_MemWrite_en_out \
+sim:/processor/Internal_EM_Register/DE_OUT_en_out \
+sim:/processor/Internal_EM_Register/DE_PC_or_addrs1_out \
+sim:/processor/Internal_EM_Register/DE_Read_Data1_final_out \
+sim:/processor/Internal_EM_Register/DE_Read_Data2_final_out \
+sim:/processor/Internal_EM_Register/DE_RegWrite_en_out \
+sim:/processor/Internal_EM_Register/DE_RET_en_out \
+sim:/processor/Internal_EM_Register/DE_RTI_en_out \
+sim:/processor/Internal_EM_Register/DE_SP_en_out \
+sim:/processor/Internal_EM_Register/DE_SP_inc_en_out \
+sim:/processor/Internal_EM_Register/DE_Write_Addr_out \
+sim:/processor/Internal_EM_Register/EM_ALU_Out_out \
+sim:/processor/Internal_EM_Register/EM_CALL_en_out \
+sim:/processor/Internal_EM_Register/EM_Carry_en_out \
+sim:/processor/Internal_EM_Register/EM_CF_OUT_out \
+sim:/processor/Internal_EM_Register/EM_en_load_use_out \
+sim:/processor/Internal_EM_Register/EM_FLAGS_en_out \
+sim:/processor/Internal_EM_Register/EM_IN_en_out \
+sim:/processor/Internal_EM_Register/EM_IN_PORT_out \
+sim:/processor/Internal_EM_Register/EM_Interrupt_en_out \
+sim:/processor/Internal_EM_Register/EM_Mem_to_Reg_en_out \
+sim:/processor/Internal_EM_Register/EM_Memory_Reset_out \
+sim:/processor/Internal_EM_Register/EM_MemRead_en_out \
+sim:/processor/Internal_EM_Register/EM_MemWrite_en_out \
+sim:/processor/Internal_EM_Register/EM_NF_OUT_out \
+sim:/processor/Internal_EM_Register/EM_OUT_en_out \
+sim:/processor/Internal_EM_Register/EM_PC_or_addrs1_out \
+sim:/processor/Internal_EM_Register/EM_Read_Data1_out \
+sim:/processor/Internal_EM_Register/EM_Read_Data2_out \
+sim:/processor/Internal_EM_Register/EM_RegWrite_en_out \
+sim:/processor/Internal_EM_Register/EM_RET_en_out \
+sim:/processor/Internal_EM_Register/EM_RTI_en_out \
+sim:/processor/Internal_EM_Register/EM_SP_en_out \
+sim:/processor/Internal_EM_Register/EM_SP_inc_en_out \
+sim:/processor/Internal_EM_Register/EM_Write_Addr_out \
+sim:/processor/Internal_EM_Register/EM_ZF_OUT_out \
+sim:/processor/Internal_EM_Register/en \
+sim:/processor/Internal_EM_Register/en_structural \
+sim:/processor/Internal_EM_Register/Memory_Reset_in \
+sim:/processor/Internal_EM_Register/NF_OUT \
+sim:/processor/Internal_EM_Register/pipelined_rst \
+sim:/processor/Internal_EM_Register/rst \
+sim:/processor/Internal_EM_Register/ZF_OUT
+add wave -position insertpoint  \
+sim:/processor/Internal_Memory_Stages/clk \
+sim:/processor/Internal_Memory_Stages/EM_ALU_Out_out \
+sim:/processor/Internal_Memory_Stages/EM_CALL_en_out \
+sim:/processor/Internal_Memory_Stages/EM_CF_OUT_out \
+sim:/processor/Internal_Memory_Stages/EM_FLAGS_en_out \
+sim:/processor/Internal_Memory_Stages/EM_IN_en_out \
+sim:/processor/Internal_Memory_Stages/EM_IN_PORT_out \
+sim:/processor/Internal_Memory_Stages/EM_Interrupt_en_out \
+sim:/processor/Internal_Memory_Stages/EM_Mem_to_Reg_en_out \
+sim:/processor/Internal_Memory_Stages/EM_Memory_Reset_out \
+sim:/processor/Internal_Memory_Stages/EM_MemRead_en_out \
+sim:/processor/Internal_Memory_Stages/EM_MemWrite_en_out \
+sim:/processor/Internal_Memory_Stages/EM_NF_OUT_out \
+sim:/processor/Internal_Memory_Stages/EM_OUT_en_out \
+sim:/processor/Internal_Memory_Stages/EM_PC_or_addrs1_en_out \
+sim:/processor/Internal_Memory_Stages/EM_Read_Data1_out \
+sim:/processor/Internal_Memory_Stages/EM_RegWrite_en_out \
+sim:/processor/Internal_Memory_Stages/EM_RET_en_out \
+sim:/processor/Internal_Memory_Stages/EM_RTI_en_out \
+sim:/processor/Internal_Memory_Stages/EM_SP_after_out \
+sim:/processor/Internal_Memory_Stages/EM_SP_before_out \
+sim:/processor/Internal_Memory_Stages/EM_SP_en_out \
+sim:/processor/Internal_Memory_Stages/EM_SP_inc_en_out \
+sim:/processor/Internal_Memory_Stages/EM_Write_Addr_out \
+sim:/processor/Internal_Memory_Stages/EM_ZF_OUT_out \
+sim:/processor/Internal_Memory_Stages/Flags_sig \
+sim:/processor/Internal_Memory_Stages/general_rst \
+sim:/processor/Internal_Memory_Stages/MM_ALU_Out \
+sim:/processor/Internal_Memory_Stages/MM_CALL_en_out \
+sim:/processor/Internal_Memory_Stages/MM_en \
+sim:/processor/Internal_Memory_Stages/MM_FLAGS_en_out \
+sim:/processor/Internal_Memory_Stages/MM_IN_en \
+sim:/processor/Internal_Memory_Stages/MM_IN_PORT \
+sim:/processor/Internal_Memory_Stages/MM_Mem_to_Reg_en \
+sim:/processor/Internal_Memory_Stages/MM_Memory_Reset_out \
+sim:/processor/Internal_Memory_Stages/MM_OUT_en_out \
+sim:/processor/Internal_Memory_Stages/MM_PC_or_addrs1_en_out \
+sim:/processor/Internal_Memory_Stages/MM_RegWrite_en \
+sim:/processor/Internal_Memory_Stages/MM_RET_en_out \
+sim:/processor/Internal_Memory_Stages/MM_RTI_en_out \
+sim:/processor/Internal_Memory_Stages/MM_Write_Addr \
+sim:/processor/Internal_Memory_Stages/Read_Address \
+sim:/processor/Internal_Memory_Stages/Read_Data \
+sim:/processor/Internal_Memory_Stages/Read_Data1 \
+sim:/processor/Internal_Memory_Stages/Read_Data2 \
+sim:/processor/Internal_Memory_Stages/SP_after_sig \
+sim:/processor/Internal_Memory_Stages/SP_before_sig
+add wave -position insertpoint  \
+sim:/processor/Internal_MW_Register/clk \
+sim:/processor/Internal_MW_Register/en \
+sim:/processor/Internal_MW_Register/MM_ALU_Out_out \
+sim:/processor/Internal_MW_Register/MM_CALL_en_out \
+sim:/processor/Internal_MW_Register/MM_FLAGS_en_out \
+sim:/processor/Internal_MW_Register/MM_IN_en_out \
+sim:/processor/Internal_MW_Register/MM_IN_PORT_out \
+sim:/processor/Internal_MW_Register/MM_Mem_to_Reg_en_out \
+sim:/processor/Internal_MW_Register/MM_Memory_Reset_out \
+sim:/processor/Internal_MW_Register/MM_OUT_en_out \
+sim:/processor/Internal_MW_Register/MM_PC_or_addrs1_en_out \
+sim:/processor/Internal_MW_Register/MM_RegWrite_en_out \
+sim:/processor/Internal_MW_Register/MM_RET_en_out \
+sim:/processor/Internal_MW_Register/MM_RTI_en_out \
+sim:/processor/Internal_MW_Register/MM_Write_Addr_out \
+sim:/processor/Internal_MW_Register/MW_ALU_Out_out \
+sim:/processor/Internal_MW_Register/MW_CALL_en_out \
+sim:/processor/Internal_MW_Register/MW_FLAGS_en_out \
+sim:/processor/Internal_MW_Register/MW_IN_en_out \
+sim:/processor/Internal_MW_Register/MW_IN_PORT_out \
+sim:/processor/Internal_MW_Register/MW_Mem_to_Reg_en_out \
+sim:/processor/Internal_MW_Register/MW_Memory_Reset_out \
+sim:/processor/Internal_MW_Register/MW_OUT_en_out \
+sim:/processor/Internal_MW_Register/MW_PC_or_addrs1_en_out \
+sim:/processor/Internal_MW_Register/MW_Read_Data_out \
+sim:/processor/Internal_MW_Register/MW_RegWrite_en_out \
+sim:/processor/Internal_MW_Register/MW_RET_en_out \
+sim:/processor/Internal_MW_Register/MW_RTI_en_out \
+sim:/processor/Internal_MW_Register/MW_Write_Addr_out \
+sim:/processor/Internal_MW_Register/Read_Data \
+sim:/processor/Internal_MW_Register/rst
+add wave -position insertpoint  \
+sim:/processor/Internal_WriteBack_Stage/clk \
+sim:/processor/Internal_WriteBack_Stage/general_rst \
+sim:/processor/Internal_WriteBack_Stage/MW_ALU_Out_out \
+sim:/processor/Internal_WriteBack_Stage/MW_IN_en_out \
+sim:/processor/Internal_WriteBack_Stage/MW_IN_PORT_out \
+sim:/processor/Internal_WriteBack_Stage/MW_Mem_to_Reg_en_out \
+sim:/processor/Internal_WriteBack_Stage/MW_OUT_en_OUT \
+sim:/processor/Internal_WriteBack_Stage/MW_OUT_en_out_extended \
+sim:/processor/Internal_WriteBack_Stage/MW_Read_Data_out \
+sim:/processor/Internal_WriteBack_Stage/MW_RegWrite_en \
+sim:/processor/Internal_WriteBack_Stage/MW_RegWrite_en_out \
+sim:/processor/Internal_WriteBack_Stage/MW_Write_Addr \
+sim:/processor/Internal_WriteBack_Stage/MW_Write_Addr_out \
+sim:/processor/Internal_WriteBack_Stage/OUT_Port \
+sim:/processor/Internal_WriteBack_Stage/Write_Data
+
+# ----- for reset first time then normal run
+force -freeze sim:/processor/rst 1 0
+run
+force -freeze sim:/processor/rst 0 0
+run 3000ps
