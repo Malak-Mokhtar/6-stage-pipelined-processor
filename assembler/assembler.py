@@ -12,7 +12,7 @@ Register_Translation = {"R0": "000",
 
 def load_file():
 
-    f = open("test2.asm", 'r', encoding='utf-8')
+    f = open("test3.asm", 'r', encoding='utf-8')
     file_lines = f.readlines()
     instructions = []
     for line in file_lines:
@@ -193,7 +193,7 @@ def conversion(assembly_instructions: list[str]):
             # OPCODE
             temp_inst += "01101"
             # Rs1
-            if (registers.size() < 2):
+            if (len(registers)< 2):
                 temp_inst += Register_Translation[registers[0]]
             else:
                 temp_inst += Register_Translation[registers[1]]
@@ -431,7 +431,8 @@ def mem_file_writer(res: list[str], inst: list[str]):
     data_file.write(
         "// format=mti addressradix=d dataradix=s version=1.0 wordsperline=1\n")
     # data_file.write(res[0][1]+": " + bin(int(res[0][1], 16))[2:].zfill(16))
-    data_file.write(res[0][1]+": " + res[1])
+    data_file.write(res[0][1]+": " + res[1]+"\n")
+    data_file.write(res[2][1]+": "+res[3])
 
 
 def main():
