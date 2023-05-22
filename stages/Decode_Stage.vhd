@@ -59,7 +59,7 @@ ENTITY Decode_Stage IS
         en_load_use : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         PC_disable : OUT STD_LOGIC;
-        FLAGS_en : OUT STD_LOGIC;
+        FLAGS_en, RTI_FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
         DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0);
         MW_Interrupt_en_out : IN STD_LOGIC
@@ -97,7 +97,7 @@ ARCHITECTURE arch OF Decode_Stage IS
         clk, FD_Interrupt_Signal_out : IN STD_LOGIC;
         OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
-        RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en : OUT STD_LOGIC;
+        RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en, RTI_FLAGS_en : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC
@@ -196,7 +196,8 @@ BEGIN
         FLAGS_en => FLAGS_en,
         PC_or_addrs1_en => PC_or_addrs1_en,
         R1_en => R1_en_sig,
-        R2_en => R2_en_sig
+        R2_en => R2_en_sig,
+        RTI_FLAGS_en => RTI_FLAGS_en
     );
 
     --Register File Initialization (Edited in phase 2)

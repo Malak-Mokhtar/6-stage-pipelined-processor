@@ -98,7 +98,7 @@ ARCHITECTURE arch OF processor IS
         en_load_use : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         PC_disable : OUT STD_LOGIC;
-        FLAGS_en : OUT STD_LOGIC;
+        FLAGS_en, RTI_FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC;
         DE_Read_Address1, DE_Read_Address2 :  OUT STD_LOGIC_VECTOR(2 downto 0);
         MW_Interrupt_en_out : IN STD_LOGIC
@@ -146,8 +146,8 @@ ARCHITECTURE arch OF processor IS
         DE_RTI_en_out : OUT STD_LOGIC;
         ALU_Out,
         DE_Read_Data1_final,
-        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
-
+        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MW_RTI_FLAGS_en_out : IN STD_LOGIC
     );
     END COMPONENT;
 
@@ -204,7 +204,9 @@ ARCHITECTURE arch OF processor IS
         MM_PC_or_addrs1_en_out,
         MM_RTI_en_out,
         MM_OUT_en_out,
-        MM_FLAGS_en_out : OUT STD_LOGIC
+        MM_FLAGS_en_out : OUT STD_LOGIC;
+        EM_RTI_FLAGS_en_out : IN STD_LOGIC;
+        MM_RTI_FLAGS_en_out : OUT STD_LOGIC
 
     );
     END COMPONENT;
@@ -242,7 +244,7 @@ ARCHITECTURE arch OF processor IS
     PORT (
         clk, en_structural, en_load_use : IN STD_LOGIC;
         rst, ZF_OUT, DE_JZ_en_out, CF_OUT, DE_JC_en_out, DE_RET_en_out, EM_RET_en_out, MM_RET_en_out,MW_RET_en_out, DE_Interrupt_en_out, --
-        DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out, Interrupt: IN STD_LOGIC;
+        DE_RTI_en_out, EM_RTI_en_out, MM_RTI_en_out, MW_RTI_en_out, DE_CALL_en_out, DE_JMP_en_out, Interrupt: IN STD_LOGIC;
         Inst : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         Read_Address, IN_PORT : IN STD_LOGIC_VECTOR(15 DOWNTO 0);
         FD_Inst_out : OUT STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -298,8 +300,9 @@ ARCHITECTURE arch OF processor IS
         DE_Interrupt_en_out : OUT STD_LOGIC;
         DE_Immediate_en_out : OUT STD_LOGIC;
         DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-        DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
-
+        DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        DE_RTI_FLAGS_en_out : OUT STD_LOGIC;
+        RTI_FLAGS_en : IN STD_LOGIC
     );
     END COMPONENT;
 
@@ -348,7 +351,9 @@ ARCHITECTURE arch OF processor IS
         EM_RTI_en_out,
         EM_OUT_en_out,
         EM_Interrupt_en_out,
-        EM_en_load_use_out : OUT STD_LOGIC
+        EM_en_load_use_out : OUT STD_LOGIC;
+        DE_RTI_FLAGS_en_out : IN STD_LOGIC;
+        EM_RTI_FLAGS_en_out : OUT STD_LOGIC
     );
     END COMPONENT;
 
@@ -390,7 +395,9 @@ ARCHITECTURE arch OF processor IS
             MW_FLAGS_en_out,
             MW_PC_or_addrs1_en_out : OUT STD_LOGIC;
             MM_Interrupt_en_out : IN STD_LOGIC;
-            MW_Interrupt_en_out : OUT STD_LOGIC
+            MW_Interrupt_en_out : OUT STD_LOGIC;
+            MM_RTI_FLAGS_en_out : IN STD_LOGIC;
+            MW_RTI_FLAGS_en_out : OUT STD_LOGIC
 
         );
     END COMPONENT;
@@ -458,6 +465,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_Read_Address1 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL DE_Read_Address2 : STD_LOGIC_VECTOR(2 DOWNTO 0);
     SIGNAL PC_disable: STD_LOGIC; 
+    SIGNAL RTI_FLAGS_en : STD_LOGIC;
 
     -- Decode Execute Register
     SIGNAL Inst_20_to_18_Write_Addrs : STD_LOGIC_VECTOR(2 DOWNTO 0);
@@ -489,6 +497,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL DE_PC_disable_out : STD_LOGIC;
     SIGNAL DE_Immediate_en_out: STD_LOGIC;
     SIGNAL DE_en_load_use_out : STD_LOGIC;
+    SIGNAL DE_RTI_FLAGS_en_out : STD_LOGIC;
 
     --Execute stage
     -- Input signals
@@ -545,6 +554,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL EM_OUT_en_out : STD_LOGIC;
     SIGNAL EM_Interrupt_en_out : STD_LOGIC;
     SIGNAL EM_en_load_use_out : STD_LOGIC;
+    SIGNAL EM_RTI_FLAGS_en_out : STD_LOGIC;
     
     -- Memory Stage 
     SIGNAL EM_PC_or_addrs1_en_out : STD_LOGIC;
@@ -560,6 +570,7 @@ ARCHITECTURE arch OF processor IS
     SIGNAL MM_RTI_en_out : STD_LOGIC;
     SIGNAL MM_OUT_en_out : STD_LOGIC;
     SIGNAL MM_Interrupt_en_out : STD_LOGIC;
+    SIGNAL MM_RTI_FLAGS_en_out : STD_LOGIC;
 
     -- MW Register
     SIGNAL MM_IN_en_out : STD_LOGIC;
@@ -580,6 +591,8 @@ ARCHITECTURE arch OF processor IS
 
     SIGNAL MW_FLAGS_en_out, MM_FLAGS_en_out : STD_LOGIC;
     SIGNAL MW_Interrupt_en_out : STD_LOGIC;
+    SIGNAL MW_RTI_FLAGS_en_out : STD_LOGIC;
+
 
    
 
@@ -623,7 +636,7 @@ BEGIN
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
         MW_RET_en_out => MW_RET_en_out,
-        DE_Interrupt_en_out => Interrupt_en,
+        DE_Interrupt_en_out => Interrupt,
         DE_RTI_en_out => DE_RTI_en_out,
         EM_RTI_en_out => EM_RTI_en_out,
         MM_RTI_en_out => MM_RTI_en_out,
@@ -636,7 +649,8 @@ BEGIN
         FD_Read_Address_out => FD_Read_Address, --
         FD_IN_PORT_out => FD_IN_PORT,
         FD_Interrupt_Signal_out => FD_Interrupt_Signal_out,
-        Interrupt => Interrupt
+        Interrupt => Interrupt,
+        MW_RTI_en_out => MW_RTI_en_out
     );
 
     --Internal Decode Stage
@@ -697,7 +711,8 @@ BEGIN
         en_load_use => en_load_use,
         Interrupt_en => Interrupt_en,
         FD_Interrupt_Signal_out => FD_Interrupt_Signal_out,
-        MW_Interrupt_en_out => MW_Interrupt_en_out
+        MW_Interrupt_en_out => MW_Interrupt_en_out,
+        RTI_FLAGS_en => RTI_FLAGS_en
     );
 
     --Internal DE Register
@@ -766,7 +781,9 @@ BEGIN
         DE_Read_Address1 => DE_Read_Address1,
         DE_Read_Address2 => DE_Read_Address2,
         DE_PC_disable_out => DE_PC_disable_out,
-        DE_en_load_use_out => DE_en_load_use_out
+        DE_en_load_use_out => DE_en_load_use_out,
+        RTI_FLAGS_en => RTI_FLAGS_en,
+        DE_RTI_FLAGS_en_out => DE_RTI_FLAGS_en_out
     );
 
     -- Internal Execute Stage
@@ -814,8 +831,8 @@ BEGIN
         Read_Data => Read_Data,
         EM_en_load_use_out => EM_en_load_use_out,
         EM_IN_PORT_out => EM_IN_PORT_out,
-        EM_IN_en_out => EM_IN_en_out
-
+        EM_IN_en_out => EM_IN_en_out,
+        MW_RTI_FLAGS_en_out => MW_RTI_FLAGS_en_out
     );
 
     Internal_EM_Register : EM_Register PORT MAP(
@@ -872,7 +889,9 @@ BEGIN
         EM_Interrupt_en_out => EM_Interrupt_en_out,
         EM_SP_en_out => EM_SP_en_out,
         EM_SP_inc_en_out => EM_SP_inc_en_out,
-        EM_en_load_use_out => EM_en_load_use_out
+        EM_en_load_use_out => EM_en_load_use_out,
+        DE_RTI_FLAGS_en_out => DE_RTI_FLAGS_en_out,
+        EM_RTI_FLAGS_en_out => EM_RTI_FLAGS_en_out
     );
 
     --Memory Stage
@@ -918,7 +937,9 @@ BEGIN
         MM_RTI_en_out => MM_RTI_en_out,
         MM_OUT_en_out => MM_OUT_en_out,
         MM_FLAGS_en_out => MM_FLAGS_en_out,
-        MM_Interrupt_en_out => MM_Interrupt_en_out
+        MM_Interrupt_en_out => MM_Interrupt_en_out,
+        EM_RTI_FLAGS_en_out => EM_RTI_FLAGS_en_out,
+        MM_RTI_FLAGS_en_out => MM_RTI_FLAGS_en_out
     );
     --MW Register
     Internal_MW_Register : MW_Register PORT MAP(
@@ -954,7 +975,9 @@ BEGIN
         MW_PC_or_addrs1_en_out => MW_PC_or_addrs1_en_out,
         MW_FLAGS_en_out => MW_FLAGS_en_out,
         MW_Interrupt_en_out => MW_Interrupt_en_out,
-        MM_Interrupt_en_out => MM_Interrupt_en_out
+        MM_Interrupt_en_out => MM_Interrupt_en_out,
+        MM_RTI_FLAGS_en_out => MM_RTI_FLAGS_en_out,
+        MW_RTI_FLAGS_en_out => MW_RTI_FLAGS_en_out
     );
     --WriteBack Stage
     Internal_WriteBack_Stage : WriteBack_Stage PORT MAP(

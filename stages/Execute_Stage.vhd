@@ -42,7 +42,8 @@ ENTITY Execute_Stage IS
         DE_RTI_en_out : OUT STD_LOGIC;
         ALU_Out,
         DE_Read_Data1_final,
-        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        DE_Read_Data2_final : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+        MW_RTI_FLAGS_en_out : IN STD_LOGIC
 
     );
 END Execute_Stage;
@@ -187,28 +188,28 @@ BEGIN
     MUX_ZF_MAP : MUX_ZF PORT MAP(
         ZF_EXCEPT_RTI => ZF_EXCEPT_RTI_SIG,
         ZF_RTI => ZF_RTI_SIG,
-        FLAGS_en => MW_FLAGS_en_out,
+        FLAGS_en => MW_RTI_FLAGS_en_out,
         ZF_selected => ZF_selected_SIG
     );
 
     MUX_CF_MAP : MUX_CF PORT MAP(
         CF_EXCEPT_RTI => CF_EXCEPT_RTI_SIG,
         CF_RTI => CF_RTI_SIG,
-        FLAGS_en => MW_FLAGS_en_out,
+        FLAGS_en => MW_RTI_FLAGS_en_out,
         CF_selected => CF_selected_SIG
     );
 
     MUX_NF_MAP : MUX_NF PORT MAP(
         NF_ALU => NF_SIG,
         NF_RTI => NF_RTI_SIG,
-        FLAGS_en => MW_FLAGS_en_out,
+        FLAGS_en => MW_RTI_FLAGS_en_out,
         NF_selected => NF_selected_SIG
     );
 
     ZF_MAP : ZF PORT MAP(
         ZF_Selected => ZF_selected_SIG,
         DE_JZ_en_out => DE_JZ_en_out,
-        MW_FLAGS_en_out => MW_FLAGS_en_out,
+        MW_FLAGS_en_out => MW_RTI_FLAGS_en_out,
         DE_ALU_en_out => DE_ALU_en_out,
         ZF_OUT => ZF_OUT,
         clk => clk,
@@ -218,7 +219,7 @@ BEGIN
     NF_MAP : NF PORT MAP(
         NF_Selected => NF_selected_SIG,
         DE_ALU_en_out => DE_ALU_en_out,
-        MW_FLAGS_en_out => MW_FLAGS_en_out,
+        MW_FLAGS_en_out => MW_RTI_FLAGS_en_out,
         NF_OUT => NF_OUT,
         clk => clk,
         rst => general_rst
@@ -227,7 +228,7 @@ BEGIN
     CF_MAP : CF PORT MAP(
         CF_Selected => CF_selected_SIG,
         DE_Carry_en_out => DE_Carry_en_out,
-        MW_FLAGS_en_out => MW_FLAGS_en_out,
+        MW_FLAGS_en_out => MW_RTI_FLAGS_en_out,
         clk => clk,
         rst => general_rst,
         CF_out => CF_out

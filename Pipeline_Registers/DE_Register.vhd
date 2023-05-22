@@ -49,8 +49,9 @@ ENTITY DE_Register IS
         DE_Interrupt_en_out : OUT STD_LOGIC;
         DE_Immediate_en_out : OUT STD_LOGIC;
         DE_Read_Address1 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
-        DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0)
-
+        DE_Read_Address2 : OUT STD_LOGIC_VECTOR(2 DOWNTO 0);
+        DE_RTI_FLAGS_en_out : OUT STD_LOGIC;
+        RTI_FLAGS_en : IN STD_LOGIC
     );
 END DE_Register;
 
@@ -92,6 +93,7 @@ BEGIN
             DE_PC_disable_out <= '0';
             DE_Immediate_en_out <= '0';
             DE_en_load_use_out <= en_load_use;
+            DE_RTI_FLAGS_en_out <= '0';
 
         ELSIF falling_edge(clk) AND en_structural = '0' THEN --check on enable and falling edge
             DE_IN_en_out <= IN_en;
@@ -127,6 +129,7 @@ BEGIN
             DE_PC_disable_out <= PC_disable;
             DE_Immediate_en_out <= Immediate_en;
             DE_en_load_use_out <= en_load_use;
+            DE_RTI_FLAGS_en_out <= RTI_FLAGS_en;
             
         END IF;
     END PROCESS; -- main_loop

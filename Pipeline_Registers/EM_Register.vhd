@@ -46,7 +46,9 @@ ENTITY EM_Register IS
         EM_RTI_en_out,
         EM_OUT_en_out,
         EM_Interrupt_en_out,
-        EM_en_load_use_out : OUT STD_LOGIC
+        EM_en_load_use_out : OUT STD_LOGIC;
+        DE_RTI_FLAGS_en_out : IN STD_LOGIC;
+        EM_RTI_FLAGS_en_out : OUT STD_LOGIC
     );
 END EM_Register;
 
@@ -87,6 +89,7 @@ BEGIN
             EM_SP_en_out <= '0';
             EM_SP_inc_en_out <= '0';
             EM_en_load_use_out <= '0';
+            EM_RTI_FLAGS_en_out <= '0';
 
         ELSIF (falling_edge(clk) AND (en = '1')) and en_structural = '0' THEN --check on enable and falling edge
             EM_Write_Addr_out <= DE_Write_Addr_out;
@@ -113,6 +116,7 @@ BEGIN
             EM_SP_en_out <= DE_SP_en_out;
             EM_SP_inc_en_out <= DE_SP_inc_en_out;
             EM_en_load_use_out <= DE_en_load_use_out;
+            EM_RTI_FLAGS_en_out <= DE_RTI_FLAGS_en_out;
         END IF;
         IF falling_edge(clk) THEN
             EM_Memory_Reset_out <= Memory_Reset_in;

@@ -27,7 +27,9 @@ ENTITY MM_Register IS
         MM_CALL_en_out,
         MM_PC_or_addrs1_en_out,
         MM_RTI_en_out,
-        MM_OUT_en_out : OUT STD_LOGIC
+        MM_OUT_en_out : OUT STD_LOGIC;
+        EM_RTI_FLAGS_en_out : IN STD_LOGIC;
+        MM_RTI_FLAGS_en_out : OUT STD_LOGIC
     );
 END MM_Register;
 
@@ -52,6 +54,7 @@ BEGIN
             MM_OUT_en_out <= '0';
             MM_FLAGS_en_out <= '0';
             MM_Interrupt_en_out <= '0';
+            MM_RTI_FLAGS_en_out <= '0';
         ELSIF falling_edge(clk) AND ( en = '1') THEN --check on enable and falling edge
             MM_IN_en_out <= EM_IN_en_out;
             MM_IN_PORT_out <= EM_IN_PORT_out;
@@ -66,6 +69,7 @@ BEGIN
             MM_OUT_en_out <= EM_OUT_en_out;
             MM_FLAGS_en_out <= EM_FLAGS_en_out;
             MM_Interrupt_en_out <= EM_Interrupt_en_out;
+            MM_RTI_FLAGS_en_out <= EM_RTI_FLAGS_en_out;
         END IF;
         IF falling_edge(clk) THEN
             MM_Memory_Reset_out <= EM_Memory_Reset_out;

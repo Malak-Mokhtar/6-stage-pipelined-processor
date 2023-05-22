@@ -38,7 +38,9 @@ ENTITY MW_Register IS
         MW_FLAGS_en_out,
         MW_PC_or_addrs1_en_out : OUT STD_LOGIC;
         MM_Interrupt_en_out : IN STD_LOGIC;
-        MW_Interrupt_en_out : OUT STD_LOGIC
+        MW_Interrupt_en_out : OUT STD_LOGIC;
+        MM_RTI_FLAGS_en_out : IN STD_LOGIC;
+        MW_RTI_FLAGS_en_out : OUT STD_LOGIC
 
     );
 END MW_Register;
@@ -65,6 +67,7 @@ BEGIN
             MW_PC_or_addrs1_en_out <= '0';
             MW_FLAGS_en_out <= '0';
             MW_Interrupt_en_out <= '0';
+            MW_RTI_FLAGS_en_out <= '0';
 
         ELSIF falling_edge(clk) AND ( en = '1') THEN --check on enable and falling edge
             MW_IN_en_out <= MM_IN_en_out;
@@ -81,6 +84,7 @@ BEGIN
             MW_PC_or_addrs1_en_out <= MM_PC_or_addrs1_en_out;
             MW_FLAGS_en_out <= MM_FLAGS_en_out;
             MW_Interrupt_en_out <= MM_Interrupt_en_out;
+            MW_RTI_FLAGS_en_out <= MM_RTI_FLAGS_en_out;
         END IF;
         IF falling_edge(clk) THEN
             MW_Memory_Reset_out <= MM_Memory_Reset_out;

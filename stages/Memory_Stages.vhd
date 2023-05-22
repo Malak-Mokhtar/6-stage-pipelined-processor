@@ -54,7 +54,9 @@ ENTITY Memory_Stages IS
         MM_PC_or_addrs1_en_out,
         MM_RTI_en_out,
         MM_OUT_en_out,
-        MM_FLAGS_en_out : OUT STD_LOGIC
+        MM_FLAGS_en_out : OUT STD_LOGIC;
+        EM_RTI_FLAGS_en_out : IN STD_LOGIC;
+        MM_RTI_FLAGS_en_out : OUT STD_LOGIC
 
     );
 END Memory_Stages;
@@ -121,7 +123,9 @@ ARCHITECTURE arch OF Memory_Stages IS
         MM_CALL_en_out,
         MM_PC_or_addrs1_en_out,
         MM_RTI_en_out,
-        MM_OUT_en_out : OUT STD_LOGIC
+        MM_OUT_en_out : OUT STD_LOGIC;
+        EM_RTI_FLAGS_en_out : IN STD_LOGIC;
+        MM_RTI_FLAGS_en_out : OUT STD_LOGIC
     );
     END COMPONENT;
 
@@ -213,7 +217,9 @@ BEGIN
         EM_FLAGS_en_out => EM_FLAGS_en_out,
         MM_FLAGS_en_out => MM_FLAGS_en_out,
         EM_Interrupt_en_out => EM_Interrupt_en_out,
-        MM_Interrupt_en_out => MM_Interrupt_en_out
+        MM_Interrupt_en_out => MM_Interrupt_en_out,
+        EM_RTI_FLAGS_en_out => EM_RTI_FLAGS_en_out,
+        MM_RTI_FLAGS_en_out => MM_RTI_FLAGS_en_out
     );
 
     Stack_Pointer_MAP : Stack_Pointer PORT MAP(

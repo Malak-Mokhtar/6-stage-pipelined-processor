@@ -9,7 +9,7 @@ ENTITY Control_Unit IS
         clk, FD_Interrupt_Signal_out : IN STD_LOGIC;
         OPCODE : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         IN_en, Carry_en, ALU_en, RegWrite_en, Mem_to_Reg_en, MemWrite_en, MemRead_en, SETC_en, CLRC_en, JZ_en, JC_en, JMP_en, CALL_en, Immediate_en, SP_en, SP_inc_en,
-        RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en : OUT STD_LOGIC;
+        RET_en, OUT_en, RTI_en, PC_disable , R1_en, R2_en, RTI_FLAGS_en : OUT STD_LOGIC;
         Interrupt_en : OUT STD_LOGIC;
         FLAGS_en : OUT STD_LOGIC;
         PC_or_addrs1_en : OUT STD_LOGIC
@@ -24,11 +24,14 @@ SIGNAL SP_en_normal : STD_LOGIC;
 SIGNAL SP_inc_en_normal : STD_LOGIC;
 SIGNAL SP_en_interrupt : STD_LOGIC;
 SIGNAL POP_en_interrupt : STD_LOGIC;
+SIGNAL POP_en_RTI : STD_LOGIC;
 SIGNAL PUSH_en_interrupt : STD_LOGIC;
 SIGNAL MemWrite_en_normal : STD_LOGIC;
 SIGNAL MemRead_en_normal : STD_LOGIC;
 SIGNAL Interrupt_en_sig : STD_LOGIC := '0';
+SIGNAL RTI_inst_sig : STD_LOGIC := '0';
 SIGNAL counter : STD_LOGIC_VECTOR(2 DOWNTO 0) := "000";
+SIGNAL counter2 : STD_LOGIC := '0';
 
 BEGIN
 
@@ -45,6 +48,26 @@ BEGIN
             counter <= STD_LOGIC_VECTOR(unsigned(counter) + 1);
         END IF;
     END PROCESS; -- main_loop
+
+    rti : PROCESS (clk)
+    BEGIN
+        IF rising_edge(clk) AND OPCODE = "11101" AND counter2 ='0' THEN
+            -- change PC on rising edge
+            RTI_inst_sig <= '1';
+        ELSIF rising_edge(clk) and counter2 = '1' THEN
+            RTI_inst_sig <= '0';
+            counter2 <= '0';
+        ELSIF rising_edge(clk) AND RTI_inst_sig = '1' THEN
+            counter2 <= '1';
+        END IF;
+    END PROCESS; -- main_loop
+
+        -- POP PC i.e. RET
+        RTI_en <= OPCODE(4) AND OPCODE(3) AND OPCODE(2) AND (NOT OPCODE(1)) AND OPCODE(0);
+
+        -- RTI_FLAGS_en -> 1 in case of POP FLAGS in processor
+        RTI_FLAGS_en <= counter2;
+        SP_inc_en <= SP_inc_en_normal OR counter2;
 
     In_en <= NOT OPCODE(4) AND NOT OPCODE(3) AND OPCODE(2) and (not OPCODE(0));
     Carry_en <= ((not OPCODE(4) and OPCODE(1)) and (not OPCODE(0))) or (not OPCODE(4) and (OPCODE(2) and OPCODE(1))) or ( ( not OPCODE(4) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) ) or (( not OPCODE(4) and OPCODE(3)) and ( not OPCODE(2)  and  not OPCODE(1) ) ) or (( OPCODE(3) and not OPCODE(2)) and ( not OPCODE(1)  and  OPCODE(0) ) );
@@ -69,12 +92,11 @@ BEGIN
     Immediate_en <= ((NOT OPCODE(4)) AND OPCODE(3) AND (NOT OPCODE(2)) AND (NOT OPCODE(1)) AND (NOT OPCODE(0))) OR (OPCODE(4) AND (NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (NOT OPCODE(1)) AND (NOT OPCODE(0)));
     RET_en <= OPCODE(4) AND OPCODE(3) AND OPCODE(2) AND (NOT OPCODE(1)) AND (NOT OPCODE(0));
     OUT_en <= NOT OPCODE(4) AND (NOT OPCODE(3)) AND (NOT OPCODE(2)) AND OPCODE(1) AND OPCODE(0);
-    RTI_en <= OPCODE(4) AND OPCODE(3) AND OPCODE(2) AND (NOT OPCODE(1)) AND OPCODE(0);
     SP_en_normal <= (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR
     (((OPCODE(4) AND NOT OPCODE(3)) AND NOT OPCODE(2)) AND (NOT OPCODE(1) AND OPCODE(0))) OR
     (((OPCODE(4) AND NOT OPCODE(3)) AND NOT OPCODE(2)) AND (OPCODE(1) AND NOT OPCODE(0))) OR
     (((OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(1))) AND OPCODE(0)));
-    SP_inc_en <=  (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR ((((OPCODE(4) AND NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (OPCODE(1))) AND NOT OPCODE(0))));
+    SP_inc_en_normal <=  (((OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) OR ((((OPCODE(4) AND NOT OPCODE(3)) AND (NOT OPCODE(2)) AND (OPCODE(1))) AND NOT OPCODE(0))));
     R1_en <= (NOT OPCODE(4) AND OPCODE(3)) OR (OPCODE(3) AND NOT OPCODE(2)) OR (((OPCODE(4) AND NOT OPCODE(3) ) AND (OPCODE(2) AND  NOT OPCODE(1))) AND NOT OPCODE(0));
     R2_en <= ((NOT OPCODE(3) AND NOT OPCODE(2)) AND (OPCODE(1) AND OPCODE(0))) OR (((NOT OPCODE(4) AND NOT OPCODE(3)) AND OPCODE(2)) AND (NOT OPCODE(1) AND OPCODE(0))) OR ((NOT OPCODE(4) AND
     OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(0))) OR ((NOT OPCODE(4) AND OPCODE(3)) AND (NOT OPCODE(2) AND OPCODE(1))) OR (((NOT OPCODE(4) AND OPCODE(3)) AND (OPCODE(2) AND NOT OPCODE(1))) AND NOT OPCODE(0)) OR
@@ -85,12 +107,13 @@ BEGIN
 
     -- PUSH FLAGS (001) OR PC (010) 01, 10
     PUSH_en_interrupt <= counter(1) XOR counter(0);
-    SP_en <= SP_en_normal OR PUSH_en_interrupt;
+    POP_en_RTI <= counter2;
+    SP_en <= SP_en_normal OR PUSH_en_interrupt OR POP_en_RTI;
     MemWrite_en <= MemWrite_en_normal OR  PUSH_en_interrupt;
     
     -- POP M[1] 011 100
     POP_en_interrupt <= (counter(1) AND counter(0)) OR (counter(2) AND (NOT counter(1)) AND (NOT counter(0)));
-    MemRead_en <= MemRead_en_normal OR POP_en_interrupt;
+    MemRead_en <= MemRead_en_normal OR POP_en_interrupt OR counter2;
 
     -- Common
     Interrupt_en <= ((NOT counter(1)) AND (counter(0)));
