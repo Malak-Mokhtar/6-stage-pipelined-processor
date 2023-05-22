@@ -17,7 +17,7 @@ ARCHITECTURE arch OF PC IS
     SIGNAL PC_disable_final : STD_LOGIC;
 
 BEGIN
-    PC_disable_final <= DE_PC_disable_out OR EM_PC_or_addrs1_en_out OR MM_PC_or_addrs1_en_out OR MW_PC_or_addrs1_en_out;
+    PC_disable_final <= DE_PC_disable_out OR EM_PC_or_addrs1_en_out OR MM_PC_or_addrs1_en_out;
     branch <= ((DE_JZ_en_out) AND (ZF_OUT)) OR ((DE_JC_en_out) AND (CF_OUT));
     -- PC_final_en <= (((NOT DE_JMP_en_out) NOR (NOT DE_CALL_en_out)) NOR (MW_RTI_en_out NOR MW_RET_en_out)) NOR ((DE_PC_disable_out NOR en_load_use) NOR (en_structural NOR branch));
     PC_final_en <= ((DE_JMP_en_out OR DE_CALL_en_out) OR MW_RTI_en_out) OR ((MW_RET_en_out OR (NOT en_load_use AND NOT PC_disable_final))  OR branch) OR ((NOT PC_disable_final) OR (NOT en_structural AND NOT PC_disable_final));
