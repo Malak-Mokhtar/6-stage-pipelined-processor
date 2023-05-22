@@ -172,7 +172,7 @@ BEGIN
         Read_Address => Read_Address,
         Flags => Flags_sig,
         Flags_en => EM_FLAGS_en_out,
-        Interrupt_en => EM_Interrupt_en_out,
+        Interrupt_en => EM_PC_or_addrs1_en_out,
         Read_Data => Read_Data2
     );
 

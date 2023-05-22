@@ -95,7 +95,7 @@ BEGIN
     MemRead_en <= MemRead_en_normal OR POP_en_interrupt;
 
     -- Common
-    Interrupt_en <= Interrupt_en_sig;
+    Interrupt_en <= ((NOT counter(1)) AND (counter(0)));
     PC_disable <= Interrupt_en_sig; -- FREEZING WORKS LATE
     PC_or_addrs1_en <= Interrupt_en_sig;
 

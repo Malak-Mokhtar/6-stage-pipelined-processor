@@ -623,7 +623,7 @@ BEGIN
         EM_RET_en_out => EM_RET_en_out,
         MM_RET_en_out => MM_RET_en_out,
         MW_RET_en_out => MW_RET_en_out,
-        DE_Interrupt_en_out => DE_Interrupt_en_out,
+        DE_Interrupt_en_out => Interrupt_en,
         DE_RTI_en_out => DE_RTI_en_out,
         EM_RTI_en_out => EM_RTI_en_out,
         MM_RTI_en_out => MM_RTI_en_out,
